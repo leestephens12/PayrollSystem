@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
-        "dependencies"
+        "dependencies",
+        "project"
     ],
     "[handlebars]": {
     },
