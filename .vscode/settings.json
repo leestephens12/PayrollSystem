@@ -1,0 +1,9 @@
+{
+    "conventionalCommits.scopes": [
+        "dependencies",
+        "project"
+    ],
+    "[handlebars]": {
+    },
+    "html.format.indentHandlebars": true
+}
