@@ -7,7 +7,8 @@
 	"settings": {
 		"conventionalCommits.scopes": [
 			"dependencies",
-			"project"
+			"project",
+			"paystub"
 		],
 		"cSpell.words": [
 			"Paystub",
