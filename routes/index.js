@@ -1,14 +1,8 @@
-var express = require('express');
-var router = express.Router();
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+const {initializeApp} = require('@firebase/app');
+const {getAuth} = require('@firebase/auth');
+const {getFirestore} = require('@firebase/firestore');
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+const firebaseApp = initializeApp({
   apiKey: "AIzaSyCIPDGbcsCLfq3JBKA6m5q36DrT8ponHRo",
   authDomain: "payrollsystem-1b6ee.firebaseapp.com",
   projectId: "payrollsystem-1b6ee",
@@ -16,11 +10,12 @@ const firebaseConfig = {
   messagingSenderId: "37884169561",
   appId: "1:37884169561:web:0fc7a7309a335014c95048",
   measurementId: "G-WR9YMW4QV6"
-};
+});
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const express = require('express');
+const router = express.Router();
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp)
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
