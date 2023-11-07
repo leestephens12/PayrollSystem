@@ -1,7 +1,9 @@
 {
     "recommendations": [
         "itsmeadarsh.vsc-handlebars-ext",
-        "chaliy.handlebars-preview"
+        "chaliy.handlebars-preview",
+        "dbaeumer.vscode-eslint",
+        "vivaxy.vscode-conventional-commits"
     ],
     "unwantedRecommendations": [],
 }

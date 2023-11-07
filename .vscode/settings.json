@@ -3,7 +3,6 @@
         "dependencies",
         "project"
     ],
-    "[handlebars]": {
-    },
-    "html.format.indentHandlebars": true
+    "[handlebars]": {},
+    "html.format.indentHandlebars": true,
 }

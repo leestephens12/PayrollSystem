@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"conventionalCommits.scopes": [
+			"dependencies",
+			"project"
+		],
+		"cSpell.words": [
+			"Paystub",
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			"itsmeadarsh.vsc-handlebars-ext",
+			"chaliy.handlebars-preview",
+			"dbaeumer.vscode-eslint",
+			"vivaxy.vscode-conventional-commits"
+		],
+		"unwantedRecommendations": [],
+	}
+}
