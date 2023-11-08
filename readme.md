@@ -38,7 +38,7 @@ clone the repository and download the required npm packages
 ```cmd
 git clone https://github.com/leestephens12/PayrollSystem &&
 cd PayrollSystem &&
-npm i
+npm install
 ```
 
 ## Development
