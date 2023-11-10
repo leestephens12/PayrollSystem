@@ -45,6 +45,7 @@ class Employee {
     }
 
     logout() {
+       
     }
 
     getPay() {

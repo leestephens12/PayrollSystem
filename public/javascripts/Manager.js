@@ -9,6 +9,7 @@ class Manager extends Employee {
 
     //add an employee to db
     addEmployee() {
+        
     }
 
     //remove employee from db
