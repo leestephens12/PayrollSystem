@@ -1,6 +1,6 @@
 const {initializeApp} = require('@firebase/app');
 const {getAuth, signInWithEmailAndPassword} = require('@firebase/auth');
-const {getFirestore, doc, getDoc} = require('@firebase/firestore');
+const {getFirestore, collection, doc, getDoc} = require('@firebase/firestore');
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyCIPDGbcsCLfq3JBKA6m5q36DrT8ponHRo",
