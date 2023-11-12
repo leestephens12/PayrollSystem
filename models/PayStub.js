@@ -1,4 +1,3 @@
-import Shift from "./Shift";
 import { isNullOrUndefined } from "./utility/helpers";
 
 /**
@@ -11,7 +10,7 @@ class PayStub {
 	 * @type {Number}
 	 * monetary amount earned
 	 */
-	#amount;
+	#netProfit;
 	/**
 	 * @private
 	 * @type {Date}
@@ -32,23 +31,58 @@ class PayStub {
 	 * the shift that contribute to this Paystub
 	 */
 	#shifts;
+	/**
+	 * @private
+	 * @type {Number}
+	 * @description
+	 * the gross profit earned in the pay period.
+	 * pay without deductions
+	 */
+	#grossProfit;
+	/**
+	 * @private
+	 * @type {Deduction[] | Map<String, number>}
+	 * @description
+	 * the deduction that contribute to this Paystub
+	 */
+	#deductions;
+	
+	/**
+	 * @private
+	 * @type {Number}
+	 * @description
+	 * the total year's net profit
+	 */
+	#yearToDateNetProfit;
+	
+	/**
+	 * @private
+	 * @type {Number}
+	 * @description
+	 * the total year's gross profit
+	 */
+	#yearToDateGrossProfit;
+	
+	/**
+	 * @private
+	 * @type {Map<String, number>  | Deduction[]}
+	 * @description
+	 * the total year's deduction
+	 */
 
 	/**
-	 *
-	 * @param {number} amount - total paid amount
 	 * @param {Date} start - the beginning of the pay period
 	 * @param {Date} end - the end of the pay period
 	 * @param {Shift[]} shifts - contributed shifts to the paystub
 	 */
-	constructor(amount, start, end, shifts) {
-		this.#amount = amount;
+	constructor( start, end, shifts) {
 		this.#start = start;
 		this.#end = end;
 		this.#shifts = shifts;
 	}
 
-	get amount() {
-		return this.#amount;
+	get netProfit() {
+		return this.#netProfit;
 	}
 
 	/**
@@ -59,13 +93,13 @@ class PayStub {
 	 * @throws {Error} if value is less than 0
 	 *
 	 */
-	set amount(value) {
+	set netProfit(value) {
 		if(isNullOrUndefined(value))
 			throw new Error("invalid amount: amount cannot be null or undefined");
 		if(value < 0) {
 			throw new Error("invalid amount: amount must be positive");
 		}
-		this.#amount = value;
+		this.#netProfit = value;
 	}
 
 	/**
@@ -114,21 +148,24 @@ class PayStub {
 		if(isNullOrUndefined(value))
 			throw new Error("invalid shifts: shifts cannot be null or undefined");
 		this.#shifts = value;
-		this.#updateAmount();
+		this.#updatePaystub();
 	}
 
 
 	/**
 	 * @private
 	 * @description
-	 * updates the amount based on the shifts
+	 * updates the paystub details: gross profit, net profit, and its deductions
 	 * @memberof PayStub
 	 *
 	 */
-	#updateAmount() {
+	#updatePaystub() {
+		// calculate gross profit; the sum of all shift earnings
 		for(const shift of this.#shifts) {
-			this.#amount += shift.getEarnings();
+			this.#grossProfit += shift.getEarnings();
 		}
+		// calculate net profit; gross profit - deductions
+		this.#netProfit = this.#grossProfit - this.#deductions;
 	}
 }
 

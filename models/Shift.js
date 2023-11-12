@@ -32,24 +32,24 @@ class Shift {
 	#employee;
 	
 	constructor(startDateTime, endDateTime) {
-		this._startDateTime = startDateTime;
-		this._endDateTime = endDateTime;
+		this.#startDate = startDateTime;
+		this.#endDate = endDateTime;
 	}
 	
 	get startDateTime() {
-		return this._startDateTime;
+		return this.#startDate;
 	}
 	
 	set startDateTime(value) {
-		this._startDateTime = value;
+		this.#startDate = value;
 	}
 	
 	get endDateTime() {
-		return this._endDateTime;
+		return this.#endDate;
 	}
 	
 	set endDateTime(value) {
-		this._endDateTime = value;
+		this.#endDate = value;
 	}
 	
 	requestOff() {
@@ -68,3 +68,5 @@ class Shift {
 		return new Period(this.#startDate, this.#endDate);
 	}
 }
+
+export default Shift;
