@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-import {getFirestore,collection,getDocs,doc,setDoc,getDoc}
+import {getFirestore,collection,getDocs,doc,setDoc,getDoc, updateDoc, arrayUnion, arrayRemove}
     from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"
 const firebaseConfig = {
     apiKey: "AIzaSyAjItgNX9G5m_5FUtjMBiKJo26r7ucxgCY",
@@ -13,6 +13,7 @@ const firebaseConfig = {
 };
 
 var employee;
+var shift;
 document.getElementById("btnLogin").addEventListener("click", btnLoginOnClick);
 document.getElementById("btnClockIn").addEventListener("click", btnClockInOnClick);
 document.getElementById("btnClockOut").addEventListener("click", btnClockOutClick);
@@ -61,7 +62,7 @@ const shiftConverter = {
     toFirestore: (shift) => {
         return {
             startDateTime: shift.startDateTime,
-            endDateTime: shift.endDateTime,
+            endDateTime: shift.endDateTime
 
         };
     },
@@ -72,34 +73,56 @@ const shiftConverter = {
 };
 //Look Here! https://firebase.google.com/docs/firestore/query-data/get-data#web-modular-api
 
-
-// const querySnapshot = await getDocs(collection(db, "cities"));
-// querySnapshot.forEach((doc) => {
-//     // doc.data() is never undefined for query doc snapshots
-//     console.log(doc.id, " => ", doc.data());
-//});
-async function employeeDBCall( docID) {
-        const ref = doc(db, "employees", docID).withConverter(employeeConverter);
-        const docSnap = await getDoc(ref);
+async function dbCall( collection, converter, docID) {
+    const ref = doc(db, collection, docID).withConverter(converter);
+    const docSnap = await getDoc(ref);
+    var flag = 1
     if (docSnap.exists()) {
+        if (collection == "employees"){
             employee = docSnap.data();
             console.log(employee.firstName);
+        }else if (collection == "shifts"){
+            shift = docSnap.data()
+            console.log("Shift Found")
+            console.log(shift.endDateTime)
+            if (shift.endDateTime == "waiting"){
+                alert("Cannot Clock In, you currently have a open shift")
+                flag = 0
+            }else{
+                flag = 1
+            }
+        }
 
+
+    }else{
+        console.log("Not Found")
     }
+    if((flag == 1 ||employee.getLatestShift() == "blank") && collection == "shifts")
+        createNewShift();
 }
-async function shiftDBCall() {
-    const querySnapshot = await getDocs(collection(db, "shifts").withConverter(shiftConverter))
-    querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-    })
-}
+async function createNewShift() {
+    //create new shift add to DB
+    const d = new Date();
+    const ref = doc(db, "shifts", employee.employeeID+d).withConverter(shiftConverter);
+    await setDoc(ref, new Shift(d, "waiting"));
 
+    //Update the Employees shift
+    const washingtonRef = doc(db, "employees", employee.employeeID);
+
+    await updateDoc(washingtonRef, {
+        shifts: arrayUnion( employee.employeeID+d)
+    });
+
+    //Resign in
+    dbCall("employees", employeeConverter,employee.employeeID)
+
+    alert("Clocked In")
+}
 function btnLoginOnClick() {
     console.log("Login BTN Clicked!")
     var employeeId = prompt("Enter Employee ID", "");
     if (employeeId != null) {
-        employeeDBCall(employeeId)
+        dbCall("employees", employeeConverter,employeeId)
     }else {
         alert("You Did Not enter a Value")
     }
@@ -108,12 +131,17 @@ function btnLoginOnClick() {
 
 }
 function btnClockInOnClick() {
-    console.log("Login BTN Clicked!")
-    shiftDBCall()
+    console.log("ClockIn BTN Clicked!")
+
+
+    console.log(employee)
     //Check if person is logged in
-    //if (employee != null){
+    if (employee != null) {
         //Call all shifts of current ID
-       // dbCall("shifts", shiftConverter, "na")
+        dbCall("shifts", shiftConverter, employee.getLatestShift())
+    }else {
+        alert("You are not logged In.")
+    }
 
         //if no open shift, create new one
 

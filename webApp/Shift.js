@@ -1,8 +1,8 @@
 class Shift{
 
     constructor(startDateTime, endDateTime) {
-        this._startDateTime = startDateTime;
-        this._endDateTime = endDateTime;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
     }
 
 

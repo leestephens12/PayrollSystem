@@ -101,7 +101,10 @@
 
      }
      getLatestShift(){
-
+        if (this.shifts.length > 0)
+            return this.shifts[this.shifts.length - 1]
+         else
+             return "blank"
      }
      clockIn(){
 
