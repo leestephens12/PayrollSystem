@@ -1,4 +1,4 @@
-// Import the functions you need from the SDKs you need
+//Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
 import {getFirestore,collection,getDocs,doc,setDoc,getDoc, updateDoc, arrayUnion, arrayRemove}
     from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"
@@ -14,6 +14,7 @@ const firebaseConfig = {
 
 var employee;
 var shift;
+var clockFlag;
 document.getElementById("btnLogin").addEventListener("click", btnLoginOnClick);
 document.getElementById("btnClockIn").addEventListener("click", btnClockInOnClick);
 document.getElementById("btnClockOut").addEventListener("click", btnClockOutClick);
@@ -22,23 +23,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-//
-// const docRef = doc(db, "cities", "SF");
-// const docSnap = await getDoc(docRef);
-//
-// if (docSnap.exists()) {
-//     console.log("Document data:", docSnap.data());
-// } else {
-//     // docSnap.data() will be undefined in this case
-//     console.log("No such document!");
-// }
-
-
-// const querySnapshot = await getDocs(collection(db, "cities"));
-// querySnapshot.forEach((doc) => {
-//     // doc.data() is never undefined for query doc snapshots
-//     console.log(doc.id, " => ", doc.data());
-//});
 const employeeConverter = {
     toFirestore: (employee) => {
         return {
@@ -73,10 +57,11 @@ const shiftConverter = {
 };
 //Look Here! https://firebase.google.com/docs/firestore/query-data/get-data#web-modular-api
 
-async function dbCall( collection, converter, docID) {
+async function dbCall( collection, converter, docID,clockType) {
     const ref = doc(db, collection, docID).withConverter(converter);
     const docSnap = await getDoc(ref);
     var flag = 1
+
     if (docSnap.exists()) {
         if (collection == "employees"){
             employee = docSnap.data();
@@ -85,44 +70,85 @@ async function dbCall( collection, converter, docID) {
             shift = docSnap.data()
             console.log("Shift Found")
             console.log(shift.endDateTime)
-            if (shift.endDateTime == "waiting"){
+            if (shift.endDateTime == "waiting" && clockType != "out"){
                 alert("Cannot Clock In, you currently have a open shift")
                 flag = 0
             }else{
                 flag = 1
             }
         }
-
-
     }else{
+        if(collection == "employees")
+            alert("ID not found")
         console.log("Not Found")
     }
-    if((flag == 1 ||employee.getLatestShift() == "blank") && collection == "shifts")
-        createNewShift();
+    if(clockType == "msg")
+        alert("Clocked In")
+    if((flag == 1 ||employee.getLatestShift() == "blank") && collection == "shifts"){
+        console.log("Pie")
+        if(clockType == "in") {
+            // createNewShift()
+            shift.clockIn(employee)
+
+            //Resign in
+            dbCall("employees", employeeConverter, employee.employeeID, "msg")
+
+          //  alert("Clocked In")
+        }
+        else if (clockType == "out" && shift.endDateTime == "waiting"){
+           // clockOut()
+            shift.clockOut(employee)
+            //Resign in
+            dbCall("employees", employeeConverter, employee.employeeID, "na")
+
+            alert("Clocked Out")}
+        else
+            alert("You have no current shifts to clock out of.")
+    }
+
 }
-async function createNewShift() {
-    //create new shift add to DB
-    const d = new Date();
-    const ref = doc(db, "shifts", employee.employeeID+d).withConverter(shiftConverter);
-    await setDoc(ref, new Shift(d, "waiting"));
+// async function createNewShift() {
+//     //create new shift add to DB
+//     const d = new Date();
+//     const ref = doc(db, "shifts", employee.employeeID+d).withConverter(shiftConverter);
+//     await setDoc(ref, new Shift(d, "waiting"));
+//
+//     //Update the Employees shift
+//     const shiftsRef = doc(db, "employees", employee.employeeID);
+//
+//     await updateDoc(shiftsRef, {
+//         shifts: arrayUnion( employee.employeeID+d)
+//     });
+//
+//     //Resign in
+//     dbCall("employees", employeeConverter,employee.employeeID, "na")
+//
+//     alert("Clocked In")
+// }
 
-    //Update the Employees shift
-    const washingtonRef = doc(db, "employees", employee.employeeID);
+// async function clockOut() {
+//     //create new shift add to DB
+//     const d = new Date();
+//
+//     //Update the Employees shift
+//     const shiftsRef = doc(db, "shifts", employee.getLatestShift());
+//
+//     await updateDoc(shiftsRef, {
+//         endDateTime: d
+//     });
+//
+//     //Resign in
+//     dbCall("employees", employeeConverter,employee.employeeID, "na")
+//
+//     alert("Clocked Out")
+// }
 
-    await updateDoc(washingtonRef, {
-        shifts: arrayUnion( employee.employeeID+d)
-    });
-
-    //Resign in
-    dbCall("employees", employeeConverter,employee.employeeID)
-
-    alert("Clocked In")
-}
+import{Shift} from './Shift.js'
 function btnLoginOnClick() {
     console.log("Login BTN Clicked!")
     var employeeId = prompt("Enter Employee ID", "");
     if (employeeId != null) {
-        dbCall("employees", employeeConverter,employeeId)
+        dbCall("employees", employeeConverter,employeeId, "na")
     }else {
         alert("You Did Not enter a Value")
     }
@@ -138,24 +164,25 @@ function btnClockInOnClick() {
     //Check if person is logged in
     if (employee != null) {
         //Call all shifts of current ID
-        dbCall("shifts", shiftConverter, employee.getLatestShift())
+        dbCall("shifts", shiftConverter, employee.getLatestShift(),"in")
+
+
     }else {
         alert("You are not logged In.")
     }
-
-        //if no open shift, create new one
-
-        //add shift to Employee Object
-        //if open shift, prompt user
-    // }else {
-    //     alert("You are not logged In.")
-    // }
 
 }
 
 function btnClockOutClick() {
     console.log("Login BTN Clicked!")
 
-    dbCall()
+    if (employee != null) {
+        //Call all shifts of current ID
+        dbCall("shifts", shiftConverter, employee.getLatestShift(),"out")
+
+    }else {
+        alert("You are not logged In.")
+    }
 
 }
+

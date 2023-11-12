@@ -1,4 +1,5 @@
-  class Employee {
+
+class Employee {
       constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
 
           this.employeeID = employeeID
