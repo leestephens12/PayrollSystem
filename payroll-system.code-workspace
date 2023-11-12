@@ -11,8 +11,11 @@
 			"paystub"
 		],
 		"cSpell.words": [
+			"Firestore",
 			"Paystub",
+			"paystubs"
 		],
+		"eslint.format.enable": true,
 	},
 	"extensions": {
 		"recommendations": [

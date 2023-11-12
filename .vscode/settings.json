@@ -1,8 +1,13 @@
 {
-    "conventionalCommits.scopes": [
-        "dependencies",
-        "project"
-    ],
-    "[handlebars]": {},
-    "html.format.indentHandlebars": true,
+		"conventionalCommits.scopes": [
+			"dependencies",
+			"project",
+			"paystub"
+		],
+		"cSpell.words": [
+			"Firestore",
+			"Paystub",
+			"paystubs"
+		],
+		"eslint.format.enable": true,
 }
