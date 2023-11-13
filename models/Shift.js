@@ -1,5 +1,5 @@
 import Period from "./utility/Period";
-
+import {v4 as uuid} from "uuid";
 /**
  * @class
  * @description
@@ -7,7 +7,16 @@ import Period from "./utility/Period";
  * @classdesc - holds data for a single shift obj
  */
 class Shift {
-	
+
+	/**
+	 * @type {string}
+	 * @description
+	 * unique id for the shift
+	 * @memberof Shift
+	 * @see {@link https://en.wikipedia.org/wiki/Universally_unique_identifier}
+	 */
+	#id;
+
 	/**
 	 * @type {Date}
 	 * @description
@@ -30,32 +39,33 @@ class Shift {
 	 * @memberof Shift
 	 */
 	#employee;
-	
+
 	constructor(startDateTime, endDateTime) {
 		this.#startDate = startDateTime;
 		this.#endDate = endDateTime;
+		this.#id = uuid();
 	}
-	
+
 	get startDateTime() {
 		return this.#startDate;
 	}
-	
+
 	set startDateTime(value) {
 		this.#startDate = value;
 	}
-	
+
 	get endDateTime() {
 		return this.#endDate;
 	}
-	
+
 	set endDateTime(value) {
 		this.#endDate = value;
 	}
-	
+
 	requestOff() {
 		throw new Error("not implemented");
 	}
-	
+
 	getEarnings() {
 		const wage = this.#employee.getPay();
 		// todo: check if employee is salaried or hourly
@@ -63,7 +73,7 @@ class Shift {
 		const earnedWage = duration.getTotalHours() * wage;
 		return Number.parseFloat(earnedWage.toFixed(2));
 	}
-	
+
 	getDuration() {
 		return new Period(this.#startDate, this.#endDate);
 	}
