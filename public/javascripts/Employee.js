@@ -17,12 +17,13 @@ const firebaseApp = initializeApp({
   const db = getFirestore(firebaseApp);
 class Employee {
     //constructor for employee
-    constructor(employeeId, fname, lname, status, manager, shifts) {
+    constructor(employeeId, fname, lname, status, role, manager, shifts) {
         //instance varibale
         this.employeeId = employeeId;
         this.fname = fname;
         this.lname = lname;
         this.status = status;
+        this.role = role;
         this.manager = manager;
         this.shifts = shifts;
     }

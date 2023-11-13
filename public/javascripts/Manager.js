@@ -1,15 +1,13 @@
+const Employee = require('../javascripts/Employee');
 class Manager extends Employee {
-    constructor(employeeId, fname, lname, status, timeOffRequests) {
-        super(employeeId);
-        super(fname);
-        super(lname);
-        super(status);
+    constructor(employeeId, fname, lname, role, status, timeOffRequests) {
+        super(employeeId, fname, lname, role, status);
         this.timeOffRequests = timeOffRequests;
     }
 
     //add an employee to db
     addEmployee() {
-        
+
     }
 
     //remove employee from db
@@ -24,4 +22,4 @@ class Manager extends Employee {
     viewEmployee() {
 
     }
-}
+}module.exports = Manager;
