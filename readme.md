@@ -57,7 +57,7 @@ and open the development site at <http://localhost:3000/index>
 - [Firebase](https://firebase.google.com/docs/reference/js/): https://console.firebase.google.com/u/0/project/payrollsystem-1b6ee/settings/iam
 - GitHub: https://github.com/leestephens12/PayrollSystem
 - [Vercel](https://vercel.com/docs/getting-started-with-vercel): tbd
-- SRS: Payroll Software Requirements Specification .docx
+- SRS: [Payroll Software Requirements Specification](https://docs.google.com/document/d/1giVTS3RIsNKzhANURo-H77hj-Rq5daoU/edit#heading=h.gjdgxs)
 - Sequence Diagram: https://lucid.app/lucidchart/3e94d423-3ec4-4059-aade-7a82b7970dcd/edit?viewport_loc=-11%2C-10%2C1365%2C620%2C0_0&invitationId=inv_b583a483-bbed-482a-8c21-20ddda2f2b87
 - UML diagram: https://lucid.app/lucidchart/121148a4-ae9d-426d-b5a6-acb289d6110e/edit?invitationId=inv_24cce35c-814c-477d-ad32-3be9d698c704
 - Project Management site: https://op.hapticsandrobots.com/
