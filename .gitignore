@@ -29,3 +29,6 @@ node_modules/
 test.*
 .idea/
 *.log
+
+# private keys/tokens
+service-account.json
