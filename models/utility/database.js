@@ -75,6 +75,10 @@ class Database {
 		return this.#db.collection(collection);
 	}
 
+	static getEmployee(id) {
+		return this.getDoc("employees", id);
+	}
+
 	/**
 	 *
 	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
@@ -91,23 +95,6 @@ class Database {
 	 */
 	static getEmployees() {
 		return this.getDocs("employees");
-	}
-	/**
-	 *
-	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Shift>>}
-	 *
-	 * @example
-	 * const shifts = await Database.getShifts();
-	 * // => QuerySnapshot
-	 * @example
-	 * const shifts = Database.getShifts().then(querySnapshot => {
-	 *   querySnapshot.forEach(doc => {
-	 *     console.log(doc.data());
-	 *   });
-	 * });
-	 */
-	static getShifts() {
-		return this.getDocs("shifts");
 	}
 
 	/**
