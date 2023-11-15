@@ -1,4 +1,5 @@
 const Shift = require('./Shift');
+const Database = require('./utility/database');
 class Employee {
 	/**
      * Converts Employee object to Firestore
@@ -117,7 +118,8 @@ class Employee {
 	}
 
 	login() {
-			//Logs employee in, using firebase authentication
+		//calls function from db class to login user
+		Database.login(email, password);
 	}
 	payStub(){
 

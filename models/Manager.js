@@ -1,3 +1,4 @@
+const Employee = require("./Employee");
 class Manager extends Employee{
 
     constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts,timeOffRequest, testField) {
@@ -22,4 +23,4 @@ class Manager extends Employee{
     set testField(value) {
         this._testField = value;
     }
-}
+} module.exports = Manager;
