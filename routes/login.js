@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-router.use(cookieParser());
-
 //class imports
 const Employee = require('../models/Employee');
 const Manager = require('../models/Manager');
