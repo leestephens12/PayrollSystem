@@ -56,23 +56,40 @@ class Shift {
 	 */
 	static firebaseConverter = {
 		/**
-		 * @param{Shift} shift
-		 * @return {ShiftDbModel}
+		 * @param{Shift[]} shifts
+		 * @return {ShiftDbModel[]}
 		 */
-		toFirestore: (shift) => {
-			return {
-				startDate: shift.startDate,
-				endDate: shift.endDate,
-			};
+		toFirestore: (shifts) => {
+			/**
+			 * Creates a new Shift Class object based on the given shift from firestore.
+			 *
+			 * @param {Shift} shift - The shift object to be converted.
+			 * @return {ShiftDbModel} - The new ShiftClass object.
+			 */
+			function toShiftClass(shift) {
+				return {
+					startDate: shift.startDate,
+					endDate: shift.endDate
+				};
+			}
+			return shifts.map(shift => toShiftClass(shift));
 		},
 		/**
-		 * @param {{data:()=>ShiftDbModel,get:(field:string|FieldPath)=>*}} snapshot
-		 * @param {*} options
-		 * @return {Shift}
+		 * converts shift objects to Shift class from firestore
+		 * @param {ShiftDbModel[]} shifts shifts from firestore
+		 * @returns {Shift[]} shifts
 		 */
-		fromFirestore: (snapshot, options) => {
-			const data = snapshot.data(options);
-			return new Shift(data.startDate, data.endDate);
+		fromFirestore: (shifts) => {
+			/**
+			 * Creates a new Shift object based on the given shift from firestore.
+			 *
+			 * @param {ShiftDbModel} shift - The shift object to be converted.
+			 * @return {Shift} - The new Shift object.
+			 */
+			function toShift(shift) {
+				return new Shift(shift.startDate, shift.endDate);
+			}
+			return shifts.map(shift => toShift(shift));
 		},
 	};
 

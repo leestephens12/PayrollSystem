@@ -1,3 +1,4 @@
+const Shift = require('./Shift');
 class Employee {
 	/**
      * Converts Employee object to Firestore
@@ -12,12 +13,12 @@ class Employee {
 				permissions: employee.permissions,
 				status: employee.status,
 				manager: employee.manager,
-				shifts: employee.shifts
+				shifts: Shift.firebaseConverter.toFirestore(employee.shifts)
 			};
 		},
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
-			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,data.shifts);
+			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,Shift.firebaseConverter.fromFirestore(data.shifts));
 		}
 	};
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
