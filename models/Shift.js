@@ -1,5 +1,14 @@
-import Period from "./utility/Period";
-import {v4 as uuid} from "uuid";
+const  Period = require("./utility/Period");
+const {v4: uuid} = require("uuid");
+
+
+/**
+ * @typedef {Object} ShiftDbModel
+ * @property {Date} startDate - the beginning of the shift
+ * @property {Date} endDate - the end of the shift
+ */
+
+
 /**
  * @class
  * @description
@@ -40,25 +49,51 @@ class Shift {
 	 */
 	#employee;
 
+	/**
+	 * @description
+	 * firebase converter
+	 */
+	static firebaseConverter = {
+		/**
+		 * @param{Shift} shift
+		 * @return {ShiftDbModel}
+		 */
+		toFirestore: (shift) => {
+			return {
+				startDate: shift.startDate,
+				endDate: shift.endDate,
+			};
+		},
+		/**
+		 * @param {{data:()=>ShiftDbModel,get:(field:string|FieldPath)=>*}} snapshot
+		 * @param {*} options
+		 * @return {Shift}
+		 */
+		fromFirestore: (snapshot, options) => {
+			const data = snapshot.data(options);
+			return new Shift(data.startDate, data.endDate);
+		},
+	};
+
 	constructor(startDateTime, endDateTime) {
 		this.#startDate = startDateTime;
 		this.#endDate = endDateTime;
 		this.#id = uuid();
 	}
 
-	get startDateTime() {
+	get startDate() {
 		return this.#startDate;
 	}
 
-	set startDateTime(value) {
+	set startDate(value) {
 		this.#startDate = value;
 	}
 
-	get endDateTime() {
+	get endDate() {
 		return this.#endDate;
 	}
 
-	set endDateTime(value) {
+	set endDate(value) {
 		this.#endDate = value;
 	}
 
@@ -79,4 +114,4 @@ class Shift {
 	}
 }
 
-export default Shift;
+module.exports = Shift;
