@@ -54,7 +54,7 @@ and open the development site at <http://localhost:3000/index>
 
 ### Documentation
 
-- [Firebase](https://firebase.google.com/docs/reference/js/): https://console.firebase.google.com/u/0/project/payrollsystem-1b6ee/settings/iam
+- [Firebase](https://firebase.google.com/docs/firestore/quickstart?hl=en): https://console.firebase.google.com/u/0/project/payrollsystem-1b6ee/settings/iam
 - GitHub: https://github.com/leestephens12/PayrollSystem
 - [Vercel](https://vercel.com/docs/getting-started-with-vercel): tbd
 - SRS: [Payroll Software Requirements Specification](https://docs.google.com/document/d/1giVTS3RIsNKzhANURo-H77hj-Rq5daoU/edit#heading=h.gjdgxs)
