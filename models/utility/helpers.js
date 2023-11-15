@@ -6,8 +6,12 @@
  * @param {any} value - The value to be checked.
  * @return {boolean} Returns true if the value is null or undefined, otherwise returns false.
  */
-export const isNullOrUndefined = (value) => {
+function isNullOrUndefined(value){
 	// same as value === null || value === undefined
 	// refer to https://stackoverflow.com/questions/2559318/how-to-check-for-an-undefined-or-null-variable-in-javascript
 	return value == null;
+}
+
+module.exports ={
+	isNullOrUndefined
 };

@@ -1,5 +1,6 @@
 const  Period = require("./utility/Period");
 const {v4: uuid} = require("uuid");
+const { isNullOrUndefined } = require("./utility/helpers");
 
 
 /**
@@ -85,7 +86,18 @@ class Shift {
 		return this.#startDate;
 	}
 
+	/**
+	 * @param {Date} value
+	 * @throws {Error} if value is not a Date, null or undefined, or is after {@link endDate}
+	 * @throws {Error} if value is after end date
+	 */
 	set startDate(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value > this.#endDate)
+			throw new Error("invalid date: start date must be before end date");
 		this.#startDate = value;
 	}
 
@@ -94,6 +106,12 @@ class Shift {
 	}
 
 	set endDate(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value < this.#startDate)
+			throw new Error("invalid date: end date must be after start date");
 		this.#endDate = value;
 	}
 

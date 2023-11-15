@@ -6,6 +6,7 @@ const serviceAccount = require("../../firestore/service-account.json");
 const Shift = require("../Shift");
 const Employee = require("../Employee");
 
+//todo: delete crud
 class Database {
 	static #app = initializeApp({
 		credential: cert(serviceAccount)
@@ -119,9 +120,10 @@ class Database {
 		}
 	}
 }
-
+// todo: make paystubs db crud
 /**
- * @typedef {"shifts" | "employees"} CollectionName
+ * @typedef {"shifts" | "employees" | "paystubs"} CollectionName
+ * @enum
  * @description
  * The name of the collection in the database
  */
