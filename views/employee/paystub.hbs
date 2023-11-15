@@ -1,0 +1,35 @@
+<h1>Your paystubs</h1>
+
+<label for="search">Search for a paystub:
+    <input type="search" class="input" placeholder="Search..." name="search" autocomplete="off" />
+</label>
+
+<table class="table is-fullwidth is-striped">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>start date</th>
+            <th>end date</th>
+            <th>net amount</th>
+            <th>net deductions</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each paystubs}}
+            <tr>
+                <td>
+                    <a href="/paystub/{{id}}">{{id}}</a>
+                </td>
+                <td>{{startDate}}</td>
+                <td>{{endDate}}</td>
+                <td>{{netAmount}}</td>
+                <td>{{netDeductions}}</td>
+                <td>
+                    <a href="/paystub/{{id}}">View</a>
+                    <a href="/paystub/{{id}}/download">Download</a>
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
