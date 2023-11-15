@@ -13,15 +13,63 @@ class Database {
 	});
 	static #db = getFirestore(this.#app);
 
+	//#region  Employee
+	/**
+	 *
+	 * @param {string} id the id of the employee
+	 * @returns {Promise<DocumentReference<Employee>>}
+	 */
+	static async getEmployee(id) {
+		return this.getDoc("employees", id);
+	}
 
+	/**
+	 *
+	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
+	 *
+	 * @example
+	 * const employees = await Database.getEmployees();
+	 * // => QuerySnapshot
+	 * @example
+	 * const employees = Database.getEmployees().then(querySnapshot => {
+	 *   querySnapshot.forEach(doc => {
+	 *     console.log(doc.data());
+	 *   });
+	 * });
+	 */
+	static async getEmployees() {
+		return this.getDocs("employees");
+	}
 
 	/**
 	 *
 	 * @param {Employee} employee employee object to be updated
 	 * @returns {Promise<WriteResult>} the result of the update
 	 */
-	static updateEmployee(employee) {
+	static async updateEmployee(employee) {
 		return this.updateDoc("employees", employee.id, employee);
+	}
+
+	/**
+	 *
+	 * @param {Employee} employee employee object to be added
+	 * @returns {Promise<DocumentReference<Employee>>} the newly added document
+	 */
+	static async addEmployee(employee) {
+		return this.addDoc("employees", employee);
+	}
+	//#endregion
+
+	/**
+	 * get a document from firestore
+	 * @param {CollectionName} collection name of collection to get document from
+	 * @param {string} id id (name) of document to get
+	 * @returns {Promise<DocumentReference<DocumentData>>} the document reference
+	 */
+	static async getDoc(collection, id) {
+		const db = this.getCollection(collection);
+		const converter = this.#getFirestoreConverter(collection);
+		return db.withConverter(converter).doc(id);
 	}
 
 	/**
@@ -30,21 +78,12 @@ class Database {
 	 * @param {string} id id (name) of document to update
 	 * @param {Promise<WriteResult>} data
 	 */
-	static updateDoc(collection, id, data) {
+	static async updateDoc(collection, id, data) {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).doc(id).update(data);
 	}
 
-
-	/**
-	 *
-	 * @param {Employee} employee employee object to be added
-	 * @returns
-	 */
-	static addEmployee(employee) {
-		return this.addDoc("employees", employee);
-	}
 	/**
 	 *
 	 * @param {CollectionName} collection the collection name
@@ -56,7 +95,7 @@ class Database {
 	 * await Database.addDoc("example", data);
 	 * // => { firstName: "John", lastName: "Doe" }
 	 */
-	static addDoc(collection, data) {
+	static async addDoc(collection, data) {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).add(data);
@@ -75,28 +114,6 @@ class Database {
 		return this.#db.collection(collection);
 	}
 
-	static getEmployee(id) {
-		return this.getDoc("employees", id);
-	}
-
-	/**
-	 *
-	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
-	 *
-	 * @example
-	 * const employees = await Database.getEmployees();
-	 * // => QuerySnapshot
-	 * @example
-	 * const employees = Database.getEmployees().then(querySnapshot => {
-	 *   querySnapshot.forEach(doc => {
-	 *     console.log(doc.data());
-	 *   });
-	 * });
-	 */
-	static getEmployees() {
-		return this.getDocs("employees");
-	}
-
 	/**
 	 *
 	 * @param {CollectionName} collection
@@ -112,7 +129,7 @@ class Database {
 		 })
 	 })
 	 */
-	static getDocs(collection) {
+	static async getDocs(collection) {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).get();
@@ -123,7 +140,7 @@ class Database {
 	 *
 	 * @return {Promise<CollectionReference<DocumentData>[]>} A promise that resolves to an array of collections.
 	 */
-	static getCollections() {
+	static async getCollections() {
 		return this.#db.listCollections();
 	}
 
