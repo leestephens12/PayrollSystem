@@ -23,9 +23,7 @@ class Database {
 	static updateEmployee(employee) {
 		return this.updateDoc("employees", employee.id, employee);
 	}
-	static updateShift(shift) {
-		return this.updateDoc("shifts", shift.id, shift);
-	}
+
 	/**
 	 *
 	 * @param {CollectionName} collection name of collection
@@ -46,22 +44,6 @@ class Database {
 	 */
 	static addEmployee(employee) {
 		return this.addDoc("employees", employee);
-	}
-
-	/**
-	 * Adds a shift to the "shifts" collection.
-	 *
-	 * @param {Shift} shift - The shift object to be added.
-	 * @returns {Promise<DocumentData<Shift>>} The document reference of the added shift.
-	 *
-	 * @example
-	 * const shift = new Shift(new Date("2022-01-01"), new Date("2022-01-02"));
-	 * await Database.addShift(shift);
-	 * // => { id: "...", startDate: Date("2022-01-01"), endDate: Date("2022-01-02") }
-	 *
-	 */
-	static addShift(shift) {
-		return this.addDoc("shifts", shift);
 	}
 	/**
 	 *
@@ -169,8 +151,6 @@ class Database {
 		switch(collection) {
 		case "employees":
 			return Employee.EmployeeConverter;
-		case "shifts":
-			return Shift.firebaseConverter;
 		default:
 			return null;
 		}
@@ -178,7 +158,7 @@ class Database {
 }
 // todo: make paystubs db crud
 /**
- * @typedef {"shifts" | "employees" | "paystubs"} CollectionName
+ * @typedef { "employees" | "paystubs"} CollectionName
  * @enum
  * @description
  * The name of the collection in the database
