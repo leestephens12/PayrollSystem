@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    {{{body}}}
-  </body>
+<html lang="en-CA">
+	<head>
+		<title>{{title}}</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta name="description" content="Payroll System" />
+		<meta name="keywords" content="Payroll, System, Employee, Payroll" />
+		<link rel="icon" type="image/png" href="/images/favicon.png" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+	</head>
+	<body class="container is-fluid">
+		<header>
+			<nav class="navbar">
+				<div class="navbar-brand">
+					<a class="navbar-item" href="/">
+						<img src="/images/logo.png" alt="Payroll Logo" />
+					</a>
+				</div>
+				<div class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/">Home</a>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		<main class="content">
+			{{{body}}}
+		</main>
+
+		<footer></footer>
+	</body>
 </html>
