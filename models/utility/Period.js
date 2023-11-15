@@ -5,30 +5,30 @@ class Period {
 	constructor(start, end) {
 		this.#elapsedMilliseconds = end - start;
 	}
-	
+
 	get elapsedMilliseconds() {
 		return this.#elapsedMilliseconds;
 	}
-	
+
 	get seconds(){
 		return Math.this.getTotalSeconds();
 	}
-	
+
 	get start() {
 		return this.#start;
 	}
 	set start(value) {
 		this.#start = value;
 	}
-	
+
 	get end() {
 		return this.#end;
 	}
 	set end(value) {
 		this.#end = value;
 	}
-	
-	
+
+
 	getTotalMilliseconds = () => this.#elapsedMilliseconds;
 	getTotalSeconds = () => this.getTotalMilliseconds() / 1000;
 	getTotalMinutes = () => this.getTotalSeconds() / 60;
@@ -39,7 +39,7 @@ class Period {
 	getTotalYears = () => this.getTotalWeeks() / 52;
 }
 
-export default Period;
+//export default Period;
 // export { Period };
-// exports.Period = Period;
+exports.Period = Period;
 // module.exports.Period = Period;

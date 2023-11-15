@@ -28,7 +28,7 @@ class Database {
 	 */
 	static updateDoc(collection, id, data) {
 		const db = this.getCollection(collection);
-		const converter = this.getFirestoreConverter(collection);
+		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).doc(id).update(data);
 	}
 
@@ -58,7 +58,7 @@ class Database {
 	 */
 	static addDoc(collection, data) {
 		const db = this.getCollection(collection);
-		const converter = this.getFirestoreConverter(collection);
+		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).add(data);
 	}
 
