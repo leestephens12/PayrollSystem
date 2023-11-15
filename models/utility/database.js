@@ -1,5 +1,6 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, DocumentReference, WriteResult} = require("firebase-admin/firestore");
+const {getAuth, onAuthStateChanged} = require('@firebase/auth');
 
 const serviceAccount = require("../../firestore/service-account.json");
 
@@ -12,6 +13,7 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
+	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -151,6 +153,22 @@ class Database {
 	 * @description
 	 * Returns the converter for the given collection
 	 */
+
+	static login(email, password) {
+		signInWithEmailAndPassword(this.#auth, email, password)
+		.then((userCredential) => {
+			// Signed in and user object is now stored in user object
+			const user = userCredential.user;
+			console.log("signed in user: " + user.uid );
+
+		})
+		.catch((error) => { //if there is an error signing in then display the error message
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			console.log("Message:" + errorMessage + " Error Code: " + errorCode);
+		});
+	}
+
 	static #getFirestoreConverter(collection) {
 		switch(collection) {
 		case "employees":

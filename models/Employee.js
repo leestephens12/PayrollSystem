@@ -117,7 +117,7 @@ class Employee {
 	}
 
 	login() {
-
+			//Logs employee in, using firebase authentication
 	}
 	payStub(){
 
@@ -134,4 +134,4 @@ class Employee {
 	getPayStubDocument(){
 
 	}
-}
+} module.exports = Employee;
