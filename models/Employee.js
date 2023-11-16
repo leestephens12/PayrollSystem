@@ -117,10 +117,10 @@ class Employee {
 		this._shifts = value;
 	}
 
-	login() {
+	/*static login() {
 		//calls function from db class to login user
 		Database.login(email, password);
-	}
+	}*/
 	payStub(){
 
 	}

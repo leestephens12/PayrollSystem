@@ -3,6 +3,7 @@ const router = express.Router();
 //class imports
 const Employee = require('../models/Employee');
 const Manager = require('../models/Manager');
+const Authentication = require('../models/utility/authentication');
 
 router.get('/', function(req, res, next) {
   res.render('login');
@@ -13,7 +14,8 @@ router.post('/', function(req, res){
   const email = req.body.email;
   const password = req.body.password;
   //static method in employee class so we can call without an instance of the object
-  Employee.login("employeetest@test.com", "test123");
+  Authentication.login("employeetest@test.com", "test123");
+  res.redirect('/login');
 });
 
 module.exports = router;

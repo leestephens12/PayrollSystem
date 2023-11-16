@@ -1,7 +1,6 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, DocumentReference, WriteResult} = require("firebase-admin/firestore");
-const {getAuth, onAuthStateChanged, signInWithEmailAndPassword} = require('@firebase/auth');
-
+const {getAuth, signInWithEmailAndPassword} = require('firebase-admin/auth');
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -13,6 +12,7 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
+	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -152,9 +152,6 @@ class Database {
 	 * @description
 	 * Returns the converter for the given collection
 	 */
-
-	static login(email, password) {
-	}
 
 	static #getFirestoreConverter(collection) {
 		switch(collection) {
