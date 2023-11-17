@@ -1,9 +1,16 @@
 const express = require("express");
-const Database = require("../../models/utility/database");
+const Database = require("../models/utility/database");
 const {Router} = express;
 const router = Router();
 
-
+router.get("/", (req, res, next) => {
+	const search =(req.query.search);
+	if(search)
+	{
+		//todo: filter/query based on query
+	}
+	res.render("paystub");
+});
 
 router.get("/employee/paystub", async (req, res, next) => {
 	//todo: add way to check for authentication

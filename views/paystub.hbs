@@ -1,10 +1,21 @@
 <h1>Your paystubs</h1>
 
-<label for="search">Search for a paystub:
-    <input type="search" class="input" placeholder="Search..." name="search" autocomplete="off" />
-</label>
+<form action="/paystub" method="get">
+    <label class="label" for="search">Search for a paystub:</label>
+    <div class="field has-addons is-large">
+        <span class="control is-expanded">
+            <input type="search" class="input" placeholder="Search..." name="search" autocomplete="off" />
+        </span>
+        <span class="control">
+            <button class="button is-primary" type="submit">Search</button>
+        </span>
+    </div>
+    <p class="help">This is a help text</p>
+</form>
 
-<table class="table is-fullwidth is-striped">
+{{!-- credits: https://www.kryogenix.org/code/browser/sorttable/ --}}
+<script async src="sorttable.js"></script>
+<table class="table is-fullwidth is-striped sortable">
     <thead>
         <tr>
             <th>id</th>

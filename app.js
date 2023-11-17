@@ -6,6 +6,7 @@ const logger = require("morgan");
 
 //routers
 const loginRouter = require("./routes/login");
+const paystubRouter = require("./routes/paystub");
 
 const app = express();
 
@@ -20,7 +21,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //routes
-app.use(["/","/login"], loginRouter);
+app.use(["/login","/"], loginRouter);
+app.use("/paystubs?", paystubRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
