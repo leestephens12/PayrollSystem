@@ -1,46 +1,122 @@
-<h1>Your paystubs</h1>
+<section class="columns">
+	<div class="column">
+		<p><em>Your Company Name</em></p>
+		<p>123 Address Rd.</p>
+		<p>City, ON</p>
+		<p>N0L 1R0</p>
+		<p>555-555-5555</p>
+	</div>
+	<div class="column">
+		<p><strong>John Smith</strong></p>
+		<p>123 Address Rd.</p>
+		<p>City, ON</p>
+		<p>N0L 1R0</p>
+	</div>
+</section>
 
-<form action="/paystub" method="get">
-    <label class="label" for="search">Search for a paystub:</label>
-    <div class="field has-addons is-large">
-        <span class="control is-expanded">
-            <input type="search" class="input" placeholder="Search..." name="search" autocomplete="off" />
-        </span>
-        <span class="control">
-            <button class="button is-primary" type="submit">Search</button>
-        </span>
-    </div>
-    <p class="help">This is a help text</p>
-</form>
+<hr>
 
-{{!-- credits: https://www.kryogenix.org/code/browser/sorttable/ --}}
-<script async src="sorttable.js"></script>
-<table class="table is-fullwidth is-striped sortable">
-    <thead>
-        <tr>
-            <th>id</th>
-            <th>start date</th>
-            <th>end date</th>
-            <th>net amount</th>
-            <th>net deductions</th>
-            <th>actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each paystubs}}
-            <tr>
-                <td>
-                    <a href="/paystub/{{id}}">{{id}}</a>
-                </td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{netAmount}}</td>
-                <td>{{netDeductions}}</td>
-                <td>
-                    <a href="/paystub/{{id}}">View</a>
-                    <a href="/paystub/{{id}}/download">Download</a>
-                </td>
-            </tr>
-        {{/each}}
-    </tbody>
+<section class="columns">
+	<p class="column">Pay Period:
+		<br>
+		<time datetime="">2023-11-17</time> - <time datetime="">2023-11-17</time>
+	</p>
+	<p class="column">
+		<strong>Pay Date: </strong>
+		<br>
+		<time datetime="">2023-11-17</time>
+	</p>
+</section>
+
+<table class="table is-striped is-fullwidth">
+	<thead>
+		<tr>
+			<th>Income &nbsp; <p><i style="font-size:16px" title="Edit Income"></i></p></th>
+			<th>This Period</th>
+			<th>Year to Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><p>Regular Salary</p></td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		
+		<tr>
+			<td>Vacation</td>
+			<td>
+				<data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td>Bonus</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td><strong>Gross Income</strong> &nbsp;</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+	</tbody>
+</table>
+
+<table class="table is-striped">
+	<thead>
+		<tr>
+			<th>Deductions</th>
+			<th>Current Total</th>
+			<th>Year to Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Income Tax</td>
+			<td><data value="">$0.00</data></td>
+			<td><data value="">$0.00</data></td>
+		</tr>
+		<tr>
+			<td>CPP</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td>EI</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td><strong>Total Deductions</strong> &nbsp;</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+	</tbody>
+</table>
+
+<table class="table is-striped">
+	<thead>
+		<tr>
+			<th>Total</th>
+			<th>Current</th>
+			<th>Year to Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Income</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td>Deductions</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+		<tr>
+			<td><strong>Net Income</strong> &nbsp;</td>
+			<td><data value="">x</data></td>
+			<td><data value="">x</data></td>
+		</tr>
+	</tbody>
 </table>

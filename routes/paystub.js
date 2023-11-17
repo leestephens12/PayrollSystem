@@ -9,7 +9,12 @@ router.get("/", (req, res, next) => {
 	{
 		//todo: filter/query based on query
 	}
-	res.render("paystub");
+	res.render("paystubs");
+});
+
+router.get("/:id", (req, res, next) => {
+	const id = req.params.id;
+	res.render("paystub", { title: "Paystub", id: id });
 });
 
 router.get("/employee/paystub", async (req, res, next) => {
