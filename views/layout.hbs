@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-CA">
+
 	<head>
 		<title>{{title}}</title>
-		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<link rel="stylesheet" href="/stylesheets/style.css" />
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -11,19 +12,21 @@
 		<link rel="icon" type="image/png" href="/images/favicon.png" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 	</head>
-	<body class="container is-fluid">
+
+	<body class="container is-full-desktop">
 		<header>
 			<nav class="navbar">
-				<div class="navbar-brand">
-					<a class="navbar-item" href="/">
-						<img src="/images/logo.png" alt="Payroll Logo" />
-					</a>
-				</div>
-				<div class="navbar-menu">
-					<div class="navbar-start">
-						<a class="navbar-item" href="/">Home</a>
-					</div>
-				</div>
+				<a class="navbar-item" href="/">
+					<img src="/images/logo.png" alt="Payroll Logo" />
+				</a>
+				<a class="navbar-item" href="/">Home</a>
+				<a class="navbar-item" href="/info">Info</a>
+				<a class="navbar-item" href="/shifts">Shifts</a>
+				<a class="navbar-item" href="/paystub">Paystub</a>
+				<span class="navbar-divider"></span>
+				<a class="navbar-item" href="/login">Login</a>
+				<a class="navbar-item" href="/register">Register</a>
+				<a class="navbar-item" href="/logout">Logout</a>
 			</nav>
 		</header>
 
@@ -33,4 +36,5 @@
 
 		<footer></footer>
 	</body>
+
 </html>

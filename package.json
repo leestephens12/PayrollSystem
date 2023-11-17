@@ -27,6 +27,7 @@
   "devDependencies": {
     "documentation": "14.0.2",
     "eslint": "^8.53.0",
+    "htmlhint": "^1.1.4",
     "jsdoc": "^4.0.2"
   }
 }
