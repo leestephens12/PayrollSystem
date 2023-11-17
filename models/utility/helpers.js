@@ -1,4 +1,4 @@
-//todo: get rid of this and create a sensable class
+//todo: get rid of this and create a sensible class?
 
 /**
  * Checks if a value is null or undefined.

@@ -1,5 +1,4 @@
-import { isNullOrUndefined } from "./utility/helpers";
-
+const {isNullOrUndefined} = require("./utility/helpers");
 /**
  * @class
  * paystub
@@ -41,7 +40,7 @@ class PayStub {
 	#grossProfit;
 	/**
 	 * @private
-	 * @type {Deduction[] | Map<String, number>}
+	 * @type {Deductible[]}
 	 * @description
 	 * the deduction that contribute to this Paystub
 	 */
@@ -107,7 +106,7 @@ class PayStub {
 	 * the beginning date for pay period
 	 * @returns {Date}
 	 * @memberof PayStub
-	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date}
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 	 */
 	get start() {
 		return this.#start;
@@ -165,7 +164,9 @@ class PayStub {
 			this.#grossProfit += shift.getEarnings();
 		}
 		// calculate net profit; gross profit - deductions
-		this.#netProfit = this.#grossProfit - this.#deductions;
+		for(const deductible of this.#deductions)
+			this.#netProfit -= deductible.calculateDeductible(this.#grossProfit);
+		this.#netProfit += this.#grossProfit;
 	}
 }
 
