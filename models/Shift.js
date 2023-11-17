@@ -1,14 +1,5 @@
 const  Period = require("./utility/Period");
-const {v4: uuid} = require("uuid");
 const { isNullOrUndefined } = require("./utility/helpers");
-
-
-/**
- * @typedef {Object} ShiftDbModel
- * @property {Date} startDate - the beginning of the shift
- * @property {Date} endDate - the end of the shift
- */
-
 
 /**
  * @class
@@ -19,13 +10,10 @@ const { isNullOrUndefined } = require("./utility/helpers");
 class Shift {
 
 	/**
-	 * @type {string}
-	 * @description
-	 * unique id for the shift
-	 * @memberof Shift
-	 * @see {@link https://en.wikipedia.org/wiki/Universally_unique_identifier}
+	 * @typedef {Object} ShiftDbModel
+	 * @property {Date} startDate - the beginning of the shift
+	 * @property {Date} endDate - the end of the shift
 	 */
-	#id;
 
 	/**
 	 * @type {Date}
@@ -96,7 +84,6 @@ class Shift {
 	constructor(startDateTime, endDateTime) {
 		this.#startDate = startDateTime;
 		this.#endDate = endDateTime;
-		this.#id = uuid();
 	}
 
 	get startDate() {
