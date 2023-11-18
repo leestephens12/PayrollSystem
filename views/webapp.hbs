@@ -1,76 +1,22 @@
 <p>THIS IS THE WEB APP</p>
-
+<p id="lblMsg"></p>
 <div class="btn">
-    <button id="btnLogin">Login</button>
+    <form method="post">
+    <label for="EmployeeID"><b>EmployeeID</b></label>
+    <input type="text" placeholder="Enter EmployeeID" name="EmployeeID">
+    <button id="btnLogin" type="submit">Login</button>
+    </form>
+    
     <button id="btnClockIn">Clock In</button>
     <button id="btnClockOut">Clock Out</button>
 </div>
-
 <script>
-    
-document.getElementById("btnLogin").addEventListener("click", btnLoginOnClick);
-document.getElementById("btnClockIn").addEventListener("click", btnClockInOnClick);
-document.getElementById("btnClockOut").addEventListener("click", btnClockOutClick);
+    var searchParams = new URLSearchParams(window.location.search);
+    console.log(searchParams.get('result'))
 
-function btnLoginOnClick() {
-    console.log("Login BTN Clicked!")
-    var employeeId = prompt("Enter Employee ID", "");
-    if (employeeId != null) {
-       // dbCall("employees", employeeConverter,employeeId, "na")
-    }else {
-        alert("You Did Not enter a Value")
-    }
-
-
-
-}
-function btnClockInOnClick() {
-    console.log("ClockIn BTN Clicked!")
-
-
-    console.log(employee)
-    //Check if person is logged in
-    if (employee != null) {
-        //Call all shifts of current ID
-      //  dbCall("shifts", shiftConverter, employee.getLatestShift(),"in")
-
-
-    }else {
-        alert("You are not logged In.")
-    }
-
-}
-
-function btnClockOutClick() {
-    console.log("Login BTN Clicked!")
-
-    if (employee != null) {
-        //Call all shifts of current ID
-       // dbCall("shifts", shiftConverter, employee.getLatestShift(),"out")
-
-    }else {
-        alert("You are not logged In.")
-    }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    document.getElementById("lblMsg").innerHTML = searchParams.get('result')
+    //for (const param of searchParams) {
+ //   console.log(param);
+  //  }
 </script>
+
