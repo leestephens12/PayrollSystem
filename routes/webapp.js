@@ -13,7 +13,24 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res){
     var employeeId = req.body.EmployeeID;
     console.log(employeeId)
+    var x = 1
+    // Database.getDocs("employees").then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //         console.log(doc.data());
+    //         var y = doc.data()
+    //         x = y.fname
+    //         console.log("--------")
+    //         console.log(x)
+            
+    //     });
+        
+       
+    // });
+    console.log("x")
+    x = x + 1
     res.redirect('/webapp?result='+employeeId);
+   
+    
     // if (employeeId = "12345")
     //     res.redirect('/webapp?result=ClockedInSuc');
     // else

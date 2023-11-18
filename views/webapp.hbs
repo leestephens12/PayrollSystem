@@ -2,8 +2,8 @@
 <p id="lblMsg"></p>
 <div class="btn">
     <form method="post">
-    <label for="EmployeeID"><b>EmployeeID</b></label>
-    <input type="text" placeholder="Enter EmployeeID" name="EmployeeID">
+    
+    <input type="hidden" placeholder="Enter EmployeeID" name="EmployeeID" id="txtEmployeeID">
     <button id="btnLogin" type="submit">Login</button>
     </form>
     
@@ -11,6 +11,14 @@
     <button id="btnClockOut">Clock Out</button>
 </div>
 <script>
+document.getElementById("btnLogin").addEventListener("click", btnLoginOnClick);
+function btnLoginOnClick() {
+    console.log("Login BTN Clicked!")
+    var employeeId = prompt("Enter Employee ID", "");
+    document.getElementById("txtEmployeeID").value = employeeId
+}
+
+    //click clock in, or clock out. Then will be promted a alert, then will redirect
     var searchParams = new URLSearchParams(window.location.search);
     console.log(searchParams.get('result'))
 
