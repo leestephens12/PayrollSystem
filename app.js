@@ -7,6 +7,7 @@ const logger = require("morgan");
 //routers
 const loginRouter = require("./routes/login");
 const paystubRouter = require("./routes/paystub");
+const webAppRouter = require("./routes/webapp");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //routes
 app.use(["/login","/"], loginRouter);
 app.use("/paystubs?", paystubRouter);
+app.use('/webapp', webAppRouter)
 
 
 // catch 404 and forward to error handler
