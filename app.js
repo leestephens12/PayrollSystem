@@ -8,6 +8,8 @@ const logger = require("morgan");
 const loginRouter = require("./routes/login");
 const paystubRouter = require("./routes/paystub");
 const webAppRouter = require("./routes/webapp");
+const expenseRouter = require("./routes/expense");
+
 
 const app = express();
 
@@ -24,7 +26,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //routes
 app.use(["/login","/"], loginRouter);
 app.use("/paystubs?", paystubRouter);
-app.use('/webapp', webAppRouter)
+app.use("/webapp", webAppRouter);
+app.use("/expense", expenseRouter);
 
 
 // catch 404 and forward to error handler
