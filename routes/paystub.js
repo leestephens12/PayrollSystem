@@ -3,8 +3,11 @@ const Database = require("../models/utility/database");
 const {Router} = express;
 const router = Router();
 
+const Paystub = require("../models/PayStub");
+
 router.get("/", (req, res, next) => {
 	const search =(req.query.search);
+	new Paystub().createPdf();
 	if(search)
 	{
 		//todo: filter/query based on query
