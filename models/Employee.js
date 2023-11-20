@@ -1,9 +1,6 @@
 const Shift = require('./Shift');
-const Database = require('./utility/database');
+
 class Employee {
-	/**
-     * Converts Employee object to Firestore
-     */
 	static EmployeeConverter = {
 		toFirestore: (employee) => {
 			return {
@@ -23,7 +20,6 @@ class Employee {
 		}
 	};
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
-
 		this.employeeID = employeeID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -116,7 +112,7 @@ class Employee {
 	set shifts(value) {
 		this._shifts = value;
 	}
-	
+
 	payStub(){
 
 	}
@@ -132,4 +128,6 @@ class Employee {
 	getPayStubDocument(){
 
 	}
-} module.exports = Employee;
+}
+
+module.exports = Employee;

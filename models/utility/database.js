@@ -1,6 +1,6 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, DocumentReference, WriteResult} = require("firebase-admin/firestore");
-const {getAuth, signInWithEmailAndPassword} = require('firebase-admin/auth');
+const {getAuth, signInWithEmailAndPassword} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -162,6 +162,8 @@ class Database {
 		}
 	}
 }
+
+
 // todo: make paystubs db crud
 /**
  * @typedef { "employees" | "paystubs"} CollectionName
@@ -169,6 +171,5 @@ class Database {
  * @description
  * The name of the collection in the database
  */
-
 
 module.exports = Database;
