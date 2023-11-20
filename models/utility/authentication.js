@@ -14,7 +14,7 @@ class Authentication {
      * @param {string} password password received from routes/login.js
      */
     static async login(email, password) {
-        signInWithEmailAndPassword(this.#auth, email, password) 
+        await signInWithEmailAndPassword(this.#auth, email, password) 
         .then((userCredential) => {
                 // if all goes well then user is signed in
                 const user = userCredential.user;
@@ -38,9 +38,14 @@ class Authentication {
           });
     }
 
-    
+    /**
+     * 
+     * @returns String logged in users uid from firebase
+     */
     static getUid() {
-        return this.#auth.currentUser.uid;
+        if (this.#auth.currentUser) {
+            return this.#auth.currentUser.uid;
+        }
     }
 
 } module.exports = Authentication;
