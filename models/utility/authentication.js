@@ -19,6 +19,7 @@ class Authentication {
                 // if all goes well then user is signed in
                 const user = userCredential.user;
                 console.log(user.uid + " is signed in");
+                
             })
             .catch((error) => {
                 //if there is an error it will output the code and message
@@ -36,4 +37,10 @@ class Authentication {
             console.log("error logging out: " + error);
           });
     }
+
+    
+    static getUid() {
+        return this.#auth.currentUser.uid;
+    }
+
 } module.exports = Authentication;
