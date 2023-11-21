@@ -134,6 +134,8 @@ class Shift {
 	getDuration() {
 		return new Period(this.#startDate, this.#endDate);
 	}
+
+	
 }
 
 module.exports = Shift;
