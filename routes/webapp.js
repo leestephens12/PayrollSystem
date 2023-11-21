@@ -11,18 +11,38 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/", function(req, res){
-	var employeeId = req.body.EmployeeID;
-	console.log(employeeId);
-	var x = 1;
+	const employeeId = req.body.EmployeeID;
+	const type = "clockIn"
+	let employee
+	
+	let returnMsg
 
 
 	Database.getDocs("employees").then((querySnapshot) => {
 	    querySnapshot.forEach((doc) => {
-	        console.log(doc.data());
+	        // console.log(doc.data());
 
-			var emp = doc.data()
-			emp.firstName = "MasonChanged"
-			Database.updateEmployeeShift( "employees", emp)
+			// var emp = doc.data()
+			// emp.firstName = "MasonChanged"
+			// Database.updateEmployeeShift( "employees", emp)
+
+			if(doc.data().EmployeeID = employeeId){
+				employee = doc.data() //set employee to the instance of the employee object
+				let shift
+				let shift2 
+				if (type == "clockIn"){
+					shift = employee.getLatestShift()
+					employee.clockIn()
+					shift2 = employee.getLatestShift()
+					if (shift2.startDate != shift.startDate){
+						Database.updateEmployeeShift("employees",employee)
+						returnMsg = "Clocked in Succesfully"
+					}
+					else
+						returnMsg = "Cant clock in, as you have a open shift waiting"
+				}
+			}
+			
 
 	    });
 
@@ -38,12 +58,12 @@ router.post("/", function(req, res){
             //return unsucessful msg
       //if Unsuccesful
         //Return unsucessful Msg
- 
+		res.redirect("/webapp?result="+returnMsg);
 
 	});
 	
-	x = x + 1;
-	res.redirect("/webapp?result="+employeeId);
+
+	
 
 
 	// if (employeeId = "12345")

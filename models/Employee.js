@@ -1,5 +1,5 @@
 const Shift = require('./Shift');
-
+//const Database = require("../models/utility/database");
 class Employee {
 	static EmployeeConverter = {
 		toFirestore: (employee) => {
@@ -17,17 +17,25 @@ class Employee {
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
 
-			var counter = 0;
-			var i = 0;
-			var shiftList = []
+			var counter = 0; //counter iteration
+			var i = 0; //array index iteration variable
+			var shiftList = [] //holds the list
 			while(counter < (data.shifts.length/2)){
-				var shift = new Shift(data.shifts[i],data.shifts[i+1])
-				shiftList.push(shift)
-				i +=2
+				var shift = new Shift(data.shifts[i],data.shifts[i+1]) //create new shift, with the start and end date
+				shiftList.push(shift) //add it to the list of shifts
+				i +=2 //move forward 2, to the new shift
 				counter +=1
 				
 			}
-			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList);
+
+			let employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList);
+			
+			//set each of the shifts employee value, to the newly created employee
+			employee.shifts.forEach(element => {
+				element.Employee = employee
+			});
+
+			return employee 
 		}
 	};
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
@@ -128,9 +136,22 @@ class Employee {
 
 	}
 	getLatestShift(){
-
+		if (this.shifts.length > 0) //get the last element of array
+			return this.shifts[this.shifts.length - 1]
+	 	else //if blank array
+		 return "blank"
 	}
+	
 	clockIn(){
+		let shift = this.getLatestShift()
+
+		if (shift.endDate == null && shift != "blank"){
+			//shift.endDate = new Date()
+			console.log("shift already open")
+			//Database.updateEmployeeShift( "employees", this)
+		}else{
+			this.shifts.push(new Shift(new Date))
+		}
 
 	}
 	clockOut(){
@@ -143,13 +164,16 @@ class Employee {
 
 		//return all but the last shift
 		var shiftArray = [];
-		var i = 1;
+		//var i = 1;
 		this._shifts.forEach(element => {
-			if(i < this._shifts.length){
+		//	if(i < this._shifts.length){ //if this is not the last shift
+
+
 			shiftArray.push(element.startDate)
-			shiftArray.push(element.endDate)
-		}
-		i++
+			if (element.endDate != null)
+				shiftArray.push(element.endDate)
+		//}
+		//i++
 			
 		});
 		return shiftArray

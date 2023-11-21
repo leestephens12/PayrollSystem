@@ -89,11 +89,19 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		var shiftList = employee.shiftToArray();
-		shiftList.push("Pizza")
+	//	shiftList.push("Pizza")
 		var data = {   shifts: shiftList }
 		return db.withConverter(converter).doc(employee.employeeID).update(data);
 	}
 
+	static async addEmployeeShift(collection, employee) {
+		const db = this.getCollection(collection);
+		const converter = this.#getFirestoreConverter(collection);
+		var shiftList = employee.shiftToArray();
+		shiftList.push("Pizza")
+		var data = {   shifts: shiftList }
+		return db.withConverter(converter).doc(employee.employeeID).update(data);
+	}
 	/**
 	 *
 	 * @param {CollectionName} collection the collection name
