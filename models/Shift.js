@@ -151,6 +151,49 @@ class Shift {
 		this.#endDate = value;
 	}
 
+	get status() {
+		return this.#status;
+	}
+
+	set status(value) {
+		if(typeof value !== "string")
+			throw new Error("invalid status: status must be a string");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid status: status cannot be null or undefined");
+		if(!(value == "waiting" || value == "approved" || value == "denied" || value == "requestedOff" || value == "canceled" || value == "completed"))
+			throw new Error("invalid status: status must be one of: waiting, approved, denied, requestedOff, canceled, completed");
+		else
+			this.#status = value;
+	}
+
+	get scheduledStart() {
+		return this.#scheduledStart;
+	}
+
+	set scheduledStart(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value > this.scheduledEnd)
+			throw new Error("invalid date: start date must be before the scheduled end date");
+		this.#scheduledStart = value;
+	}
+
+	get scheduledEnd() {
+		return this.#scheduledEnd;
+	}
+
+	set scheduledEnd(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value < this.scheduledStart)
+			throw new Error("invalid date: end date must be after the scheduled start date");
+		this.#scheduledEnd = value;
+	}
+
 	requestOff() {
 		this.#status = "requestedOff";
 		throw new Error("not implemented");
