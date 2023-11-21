@@ -41,7 +41,7 @@ router.post("/", function(req, res){
  
 
 	});
-	console.log("x");
+	
 	x = x + 1;
 	res.redirect("/webapp?result="+employeeId);
 
