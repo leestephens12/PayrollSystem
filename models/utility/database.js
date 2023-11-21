@@ -19,17 +19,18 @@ class Database {
 	 * @returns {Promise<DocumentReference<Employee>>}
 	 */
 	static async getEmployee(id) {
-		//querys the db to look for the  uid of the logged in user to return the emp object
-		this.#db.collection("employees").where("uid", "==", id)
-		.get()
-		.then(querySnapshot => {
-			querySnapshot.forEach(documentSnapshot => {
-			console.log(documentSnapshot.id, '=>', documentSnapshot.data());
-			});
-		})
-		.catch(error => {
-			console.log(error);
-		});
+		try {
+			const querySnapshot = await this.#db.collection("employees").where("uid", "==", id).get();
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+			     return querySnapshot.docs[0].data(); // Returns the data of the first document
+			} else {
+			     return null;
+			}
+	
+		} catch (error) {
+			return null;
+		}
 	}
 
 	/**
