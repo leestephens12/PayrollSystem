@@ -11,6 +11,7 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
+	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -27,7 +28,7 @@ class Database {
 			} else {
 			     return null;
 			}
-	
+
 		} catch (error) {
 			return null;
 		}
@@ -100,7 +101,7 @@ class Database {
 		var shiftList = employee.shiftToArray();
 	//	shiftList.push("Pizza")
 		var data = {   shifts: shiftList }
-		return db.withConverter(converter).doc(employee.employeeID).update(data);
+		return db.withConverter(converter).doc(employee.uid).update(data);
 	}
 
 	static async addEmployeeShift(collection, employee) {

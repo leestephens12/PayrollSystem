@@ -157,7 +157,19 @@ class Employee {
 
 	}
 	clockOut(){
+		let shift = this.getLatestShift()
 
+		if (shift.endDate == null && shift != "blank"){
+			this.shifts.push(new Shift(new Date))
+
+			//shift.endDate = new Date()
+			//console.log("shift already open")
+			//Database.updateEmployeeShift( "employees", this)
+		}else{
+			//shift.endDate = new Date()
+			console.log("shift already open")
+			//Database.updateEmployeeShift( "employees", this)
+		}
 	}
 	getPayStubDocument(){
 
