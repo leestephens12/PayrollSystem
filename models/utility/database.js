@@ -1,5 +1,5 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
-const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
+const {getFirestore,CollectionReference, getDocs, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult, query, collection, where} = require("firebase-admin/firestore");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -11,6 +11,7 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
+	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -19,7 +20,18 @@ class Database {
 	 * @returns {Promise<DocumentReference<Employee>>}
 	 */
 	static async getEmployee(id) {
-		return this.getDoc("employees", id);
+		try {
+			const querySnapshot = await this.#db.collection("employees").where("uid", "==", id).get();
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+			     return querySnapshot.docs[0].data(); // Returns the data of the first document
+			} else {
+			     return null;
+			}
+
+		} catch (error) {
+			return null;
+		}
 	}
 
 	/**

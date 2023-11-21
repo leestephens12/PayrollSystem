@@ -3,11 +3,11 @@ const router = express.Router();
 const Authentication = require("../models/utility/authentication");
 const Database = require("../models/utility/database");
 
-router.get("/", function(req, res, next) {
+router.get("/", async function(req, res, next) {
 	res.render("empIndex");
-	uid = Authentication.getUid();
+	uid = await Authentication.getUid();
 	console.log(uid);
-	currentEmp = Database.getEmployee(uid);
+	currentEmp = await Database.getEmployee(uid);
 	console.log(currentEmp);
 });
 
