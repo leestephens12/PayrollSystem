@@ -148,9 +148,7 @@ class Database {
 	static async getDocs(collection) {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
-		const querySnapshot = await db.withConverter(converter).get();//this
-  		return querySnapshot.docs.map(doc => doc.data()); // this
-		//return db.withConverter(converter).get();
+		return db.withConverter(converter).get();
 	}
 
 	/**
