@@ -1,9 +1,6 @@
 const Shift = require('./Shift');
-const Database = require('./utility/database');
+
 class Employee {
-	/**
-     * Converts Employee object to Firestore
-     */
 	static EmployeeConverter = {
 		toFirestore: (employee) => {
 			return {
@@ -19,11 +16,21 @@ class Employee {
 		},
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
-			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,Shift.firebaseConverter.fromFirestore(data.shifts));
+
+			var counter = 0;
+			var i = 0;
+			var shiftList = []
+			while(counter < (data.shifts.length/2)){
+				var shift = new Shift(data.shifts[i],data.shifts[i+1])
+				shiftList.push(shift)
+				i +=2
+				counter +=1
+				
+			}
+			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList);
 		}
 	};
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
-
 		this.employeeID = employeeID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -117,10 +124,6 @@ class Employee {
 		this._shifts = value;
 	}
 
-	/*static login() {
-		//calls function from db class to login user
-		Database.login(email, password);
-	}*/
 	payStub(){
 
 	}
@@ -136,4 +139,21 @@ class Employee {
 	getPayStubDocument(){
 
 	}
-} module.exports = Employee;
+	shiftToArray(){
+
+		//return all but the last shift
+		var shiftArray = [];
+		var i = 1;
+		this._shifts.forEach(element => {
+			if(i < this._shifts.length){
+			shiftArray.push(element.startDate)
+			shiftArray.push(element.endDate)
+		}
+		i++
+			
+		});
+		return shiftArray
+	}
+}
+
+module.exports = Employee;

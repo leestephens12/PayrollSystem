@@ -1,16 +1,23 @@
+<link media="print" rel="stylesheet" href="/stylesheets/pdf.css" />
+
 <section class="columns">
-	<div class="column">
-		<p><em>Your Company Name</em></p>
-		<p>123 Address Rd.</p>
-		<p>City, ON</p>
-		<p>N0L 1R0</p>
-		<p>555-555-5555</p>
+	{{!-- http://microformats.org/wiki/h-card --}}
+	<div class="h-card column">
+		<p class="p-name"><em>Your Company Name</em></p>
+		<div class="h-adr">
+			<p class="p-street-address">123 Address Rd.</p>
+			<span class="p-locality">City</span>, <span class="p-region">ON</span>
+			<p class="p-postal-code">N0L 1R0</p>
+		</div>
+		<p class="p-tel">555-555-5555</p>
 	</div>
-	<div class="column">
-		<p><strong>John Smith</strong></p>
-		<p>123 Address Rd.</p>
-		<p>City, ON</p>
-		<p>N0L 1R0</p>
+	<div class="h-card column">
+		<p class="p-name"><strong>John Smith</strong></p>
+		<div class="h-adr">
+			<p class="p-street-address">123 Address Rd.</p>
+			<span class="p-locality">City</span>, <span class="p-region">ON</span>
+			<p class="p-postal-code">N0L 1R0</p>
+		</div>
 	</div>
 </section>
 
@@ -21,8 +28,7 @@
 		<br>
 		<time datetime="">2023-11-17</time> - <time datetime="">2023-11-17</time>
 	</p>
-	<p class="column">
-		<strong>Pay Date: </strong>
+	<p class="column"><strong>Pay Date: </strong>
 		<br>
 		<time datetime="">2023-11-17</time>
 	</p>
@@ -31,22 +37,26 @@
 <table class="table is-striped is-fullwidth">
 	<thead>
 		<tr>
-			<th>Income &nbsp; <p><i style="font-size:16px" title="Edit Income"></i></p></th>
+			<th>Income &nbsp; <p><i style="font-size:16px" title="Edit Income"></i></p>
+			</th>
 			<th>This Period</th>
 			<th>Year to Date</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-			<td><p>Regular Salary</p></td>
+			<td>
+				<p>Regular Salary</p>
+			</td>
 			<td><data value="">x</data></td>
 			<td><data value="">x</data></td>
 		</tr>
-		
+
 		<tr>
 			<td>Vacation</td>
 			<td>
-				<data value="">x</data></td>
+				<data value="">x</data>
+			</td>
 			<td><data value="">x</data></td>
 		</tr>
 		<tr>

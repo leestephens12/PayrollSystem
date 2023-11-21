@@ -1,6 +1,6 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
-const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, DocumentReference, WriteResult} = require("firebase-admin/firestore");
-const {getAuth, signInWithEmailAndPassword} = require('firebase-admin/auth');
+const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
+const {getAuth, signInWithEmailAndPassword} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -48,7 +48,7 @@ class Database {
 	 * @returns {Promise<WriteResult>} the result of the update
 	 */
 	static async updateEmployee(employee) {
-		return this.updateDoc("employees", employee.id, employee);
+		return this.updateDoc("employees", employee.employeeID, employee);
 	}
 
 	/**
@@ -83,6 +83,15 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).doc(id).update(data);
+	}
+
+	static async updateEmployeeShift(collection, employee) {
+		const db = this.getCollection(collection);
+		const converter = this.#getFirestoreConverter(collection);
+		var shiftList = employee.shiftToArray();
+		shiftList.push("Pizza")
+		var data = {   shifts: shiftList }
+		return db.withConverter(converter).doc(employee.employeeID).update(data);
 	}
 
 	/**
@@ -162,6 +171,8 @@ class Database {
 		}
 	}
 }
+
+
 // todo: make paystubs db crud
 /**
  * @typedef { "employees" | "paystubs"} CollectionName
@@ -169,6 +180,5 @@ class Database {
  * @description
  * The name of the collection in the database
  */
-
 
 module.exports = Database;

@@ -2,6 +2,12 @@ const {isNullOrUndefined} = require("./utility/helpers");
 
 class Deductible {
 	/**
+	 * @typedef {"percentage" | "fixed"} DeductibleType
+	 * @description
+	 * the type of the deductible; fixed rate or percentage
+	 */
+
+	/**
 	 * @type {string}
 	 * the name of the deductible
 	 */
@@ -23,7 +29,7 @@ class Deductible {
 	 * the way the deductible is calculated, if it is fixed rate or percentage
 	 */
 	#type;
-	
+
 	/**
 	 * creates a new Deductible object
 	 * @param {string} name
@@ -37,7 +43,7 @@ class Deductible {
 		this.#value = value;
 		this.#type = type;
 	}
-	
+
 	get name() {
 		return this.#name;
 	}
@@ -55,7 +61,7 @@ class Deductible {
 			throw new Error("name cannot be null or undefined");
 		this.#name = name;
 	}
-	
+
 	get description() {
 		return this.#description;
 	}
@@ -72,7 +78,7 @@ class Deductible {
 			throw new Error("description cannot be null or undefined");
 		this.#description = description;
 	}
-	
+
 	/**
 	 * returns the deductible's value
 	 * @return {number}
@@ -80,7 +86,7 @@ class Deductible {
 	get value() {
 		return this.#value;
 	}
-	
+
 	/**
 	 * sets the value to be deducted
 	 * @param {number} value - The new value to be deducted
@@ -92,7 +98,7 @@ class Deductible {
 			throw new TypeError("value must be a number");
 		this.#value = value;
 	}
-	
+
 	/**
 	 * returns the type of the deductible
 	 * @return {DeductibleType}
@@ -100,7 +106,7 @@ class Deductible {
 	get type() {
 		return this.#type;
 	}
-	
+
 	/**
 	 * sets the type of the deductible
 	 * @param {DeductibleType} type
@@ -114,7 +120,7 @@ class Deductible {
 			throw new Error("type must be 'percentage' or 'fixed'");
 		this.#type = type;
 	}
-	
+
 	/**
 	 * calculates the amount to be deducted from the given (gross) pay
 	 * @param {number} pay - the amount of pay to be deducted from
@@ -127,12 +133,7 @@ class Deductible {
 		else
 			return this.#value;
 	}
-	
-}
 
-/**
- * @typedef {"percentage" | "fixed"} DeductibleType
- * 
- */
+}
 
 module.exports = Deductible;
