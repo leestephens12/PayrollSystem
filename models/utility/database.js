@@ -1,6 +1,5 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
-const {getAuth, signInWithEmailAndPassword} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -12,7 +11,6 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
-	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -150,7 +148,9 @@ class Database {
 	static async getDocs(collection) {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
-		return db.withConverter(converter).get();
+		const querySnapshot = await db.withConverter(converter).get();//this
+  		return querySnapshot.docs.map(doc => doc.data()); // this
+		//return db.withConverter(converter).get();
 	}
 
 	/**

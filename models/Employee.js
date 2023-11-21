@@ -11,7 +11,8 @@ class Employee {
 				permissions: employee.permissions,
 				status: employee.status,
 				manager: employee.manager,
-				shifts: Shift.firebaseConverter.toFirestore(employee.shifts)
+				shifts: Shift.firebaseConverter.toFirestore(employee.shifts),
+				uid: employee.uid
 			};
 		},
 		fromFirestore: (snapshot, options) => {
@@ -28,7 +29,7 @@ class Employee {
 				
 			}
 
-			let employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList);
+			let employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
 			
 			//set each of the shifts employee value, to the newly created employee
 			employee.shifts.forEach(element => {
@@ -38,7 +39,7 @@ class Employee {
 			return employee 
 		}
 	};
-	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts) {
+	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
 		this.employeeID = employeeID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -47,6 +48,7 @@ class Employee {
 		this.status = status;
 		this.manager = manager;
 		this.shifts = shifts;
+		this.uid = uid;
 	}
 
 	get employeeID() {
@@ -177,6 +179,14 @@ class Employee {
 			
 		});
 		return shiftArray
+	}
+
+	get uid() {
+		return this._uid;
+	}
+
+	set uid(value) {
+		this._uid = value;
 	}
 }
 
