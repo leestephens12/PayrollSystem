@@ -22,7 +22,6 @@
     "firebase-admin": "^11.11.0",
     "hbs": "^4.2.0",
     "http-errors": "~1.6.3",
-    "jspdf": "^2.5.1",
     "morgan": "~1.9.1",
     "puppeteer": "^21.5.2"
   },

@@ -3,6 +3,7 @@ const Database = require("../models/utility/database");
 const {Router} = express;
 const router = Router();
 
+
 const Paystub = require("../models/PayStub");
 
 router.get("/", (req, res, next) => {
@@ -18,6 +19,13 @@ router.get("/", (req, res, next) => {
 router.get("/:id", (req, res, next) => {
 	const id = req.params.id;
 	res.render("paystub", { title: "Paystub", id: id });
+});
+
+router.get("/:id/download", async (req, res, next) => {
+	const id = req.params.id;
+	const paystub = new Paystub();
+	const pdf = await paystub.createPdf();
+	res.attachment(`paystub_${paystub.start}-${paystub.end}.pdf`).send(pdf);
 });
 
 router.get("/employee/paystub", async (req, res, next) => {

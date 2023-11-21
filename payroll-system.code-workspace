@@ -10,7 +10,8 @@
 			"project",
 			"paystub",
 			"shift",
-			"db"
+			"db",
+			"firebase"
 		],
 		"cSpell.words": [
 			"Firestore",

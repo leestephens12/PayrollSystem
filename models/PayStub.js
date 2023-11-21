@@ -1,4 +1,4 @@
-const jsPDF =require("jspdf");
+const handlebars = require("handlebars");
 
 const {isNullOrUndefined} = require("./utility/helpers");
 /**
@@ -170,35 +170,25 @@ class PayStub {
 			this.#netProfit -= deductible.calculateDeductible(this.#grossProfit);
 		this.#netProfit += this.#grossProfit;
 	}
-	async createPdf() {
-		const puppeteer = require("puppeteer");         // include library
-		const fs = require("fs");
-		const browser = await puppeteer.launch();     // run browser
-		const page = await browser.newPage();         // create new tab
-		const template = fs.readFileSync("./../views/paystub.hbs", "utf8");
 
+	async createPdf() {
+		const puppeteer = require("puppeteer");
+		const fs = require("fs");
+		const browser = await puppeteer.launch();
+		const page = await browser.newPage();
+		const template = fs.readFileSync(__dirname + "/../views/paystub.hbs", "utf8");
 		// compile template
 		const compiledTemplate = handlebars.compile(template);
-
 		// render template
 		const html = compiledTemplate({
-			start: this.#start,
-			end: this.#end,
-			shifts: this.#shifts,
-			grossProfit: this.#grossProfit,
-			netProfit: this.#netProfit,
-			deductions: this.#deductions
+			//todo: the actual data
 		});
-
-		// write html
 		await page.setContent(html);
-
-		// generate pdf
 		await page.emulateMediaType("print");
-		await page.pdf({path: "paystub.pdf"});
-		await browser.close();                        // close browser
+		const pdf = await page.pdf();
+		browser.close();
+		return pdf;
 	}
 }
 
 module.exports = PayStub;
-const handlebars = require("handlebars");
