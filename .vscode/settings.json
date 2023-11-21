@@ -1,0 +1,20 @@
+{
+	"conventionalCommits.scopes": [
+		"dependencies",
+		"project",
+		"paystub"
+	],
+	"cSpell.words": [
+		"Firestore",
+		"Paystub",
+		"paystubs"
+	],
+	"eslint.format.enable": true,
+	"htmlhint.documentSelector": [
+		"handlebars",
+		"hbs",
+		"ejs",
+		"html",
+		"htm"
+	],
+}

@@ -1,0 +1,20 @@
+/* from https://www.sitepoint.com/css-printer-friendly-pages */
+header, footer, aside, nav, form, iframe, .menu, .hero, .adslot {
+    display: none;
+  }
+  * {
+    background-image: none !important;
+  }
+
+  img, svg {
+    display: none !important;
+  }
+
+  img.print, svg.print {
+    display: block;
+    max-width: 100%;
+  }
+
+  h1 {
+    break-before: always;
+  }

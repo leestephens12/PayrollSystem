@@ -1,0 +1,39 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"conventionalCommits.scopes": [
+			"dependencies",
+			"project",
+			"paystub",
+			"shift",
+			"db"
+		],
+		"cSpell.words": [
+			"Firestore",
+			"Paystub",
+			"paystubs"
+		],
+		"eslint.format.enable": true,
+		"htmlhint.documentSelector": [
+			"handlebars",
+			"hbs",
+			"ejs",
+			"html",
+			"htm"
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			"itsmeadarsh.vsc-handlebars-ext",
+			"chaliy.handlebars-preview",
+			"dbaeumer.vscode-eslint",
+			"vivaxy.vscode-conventional-commits",
+			"htmlhint.vscode-htmlhint"
+		],
+		"unwantedRecommendations": [],
+	}
+}

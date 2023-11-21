@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "itsmeadarsh.vsc-handlebars-ext",
+        "chaliy.handlebars-preview",
+        "dbaeumer.vscode-eslint",
+        "vivaxy.vscode-conventional-commits",
+        "htmlhint.vscode-htmlhint"
+    ],
+    "unwantedRecommendations": [],
+}
