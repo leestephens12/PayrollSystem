@@ -16,7 +16,7 @@ router.post("/", async function(req, res){
 	const password = req.body.password;
 	//static method in employee class so we can call without an instance of the object
 	await Authentication.login("employeetest@test.com", "test123");
-
+  
 	res.redirect("/empIndex");
 });
 
