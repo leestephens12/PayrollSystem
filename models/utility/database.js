@@ -1,5 +1,5 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
-const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
+const {getFirestore,CollectionReference, getDocs, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult, query, collection, where} = require("firebase-admin/firestore");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -19,7 +19,17 @@ class Database {
 	 * @returns {Promise<DocumentReference<Employee>>}
 	 */
 	static async getEmployee(id) {
-		return this.getDoc("employees", id);
+		//querys the db to look for the  uid of the logged in user to return the emp object
+		this.#db.collection("employees").where("uid", "==", id)
+		.get()
+		.then(querySnapshot => {
+			querySnapshot.forEach(documentSnapshot => {
+			console.log(documentSnapshot.id, '=>', documentSnapshot.data());
+			});
+		})
+		.catch(error => {
+			console.log(error);
+		});
 	}
 
 	/**
