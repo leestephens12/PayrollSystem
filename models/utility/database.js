@@ -1,6 +1,5 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
-const {getAuth, signInWithEmailAndPassword} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -12,7 +11,6 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
-	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**
@@ -91,7 +89,7 @@ class Database {
 		var shiftList = employee.shiftToArray();
 	//	shiftList.push("Pizza")
 		var data = {   shifts: shiftList }
-		return db.withConverter(converter).doc(employee.employeeID).update(data);
+		return db.withConverter(converter).doc(employee.uid).update(data);
 	}
 
 	static async addEmployeeShift(collection, employee) {
