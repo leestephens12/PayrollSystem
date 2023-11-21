@@ -1,4 +1,5 @@
 const  Period = require("./utility/Period");
+const Employee = require("./Employee");
 const { isNullOrUndefined } = require("./utility/helpers");
 
 /**
@@ -9,11 +10,22 @@ const { isNullOrUndefined } = require("./utility/helpers");
  */
 class Shift {
 
+	//#region type definitions
 	/**
 	 * @typedef {Object} ShiftDbModel
 	 * @property {Date} startDate - the beginning of the shift
 	 * @property {Date} endDate - the end of the shift
 	 */
+
+	/**
+	 * @typedef {"waiting" | "approved" | "denied" | "requestedOff" | "canceled" | "completed"} ShiftStatus
+	 * @description
+	 * status of shift
+	 *
+	 */
+	//#endregion
+
+
 
 	/**
 	 * @type {Date}
@@ -25,11 +37,26 @@ class Shift {
 	/**
 	 * @type {Date}
 	 * @description
+	 * the scheduled start of the shift
+	 * @memberof Shift
+	 */
+	#scheduledStart;
+	/**
+	 * @type {Date}
+	 * @description
 	 * the end of the shift
 	 * @memberof Shift
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 	 */
 	#endDate;
+	/**
+	 * @type {Date}
+	 * @description
+	 * the scheduled end of the shift
+	 * @memberof Shift
+	 */
+	#scheduledEnd;
+
 	/**
 	 * @type {Employee}
 	 * @description
@@ -37,6 +64,11 @@ class Shift {
 	 * @memberof Shift
 	 */
 	#employee;
+
+	/**
+	 * @type {ShiftStatus}
+	 */
+	#status;
 
 	/**
 	 * @description
@@ -120,6 +152,7 @@ class Shift {
 	}
 
 	requestOff() {
+		this.#status = "requestedOff";
 		throw new Error("not implemented");
 	}
 
