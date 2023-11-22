@@ -1,8 +1,8 @@
 const Employee = require("./Employee");
 class Manager extends Employee{
 
-    constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts,timeOffRequest, testField) {
-        super(employeeID, firstName, lastName, department, permissions, status,manager, shifts);
+    constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts,timeOffRequest, testField, uid) {
+        super(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid);
         this._timeOffRequest = timeOffRequest;
         this._testField = testField;
 
