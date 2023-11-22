@@ -1,9 +1,13 @@
-<p>THIS IS THE WEB APP</p>
+
 <p id="lblMsg"></p>
 <div class="btn">
     <form method="post">
     
     <input type="hidden" placeholder="Enter EmployeeID" name="EmployeeID" id="txtEmployeeID">
+
+    <input type="hidden" placeholder="" name="latitude" id="lblLatitude">
+    <input type="hidden" placeholder="" name="longitude" id="lblLongitude">
+
      <input type="hidden" placeholder="" name="clockType" id="lblClockType">
       <button id="btnClockIn" type="submit">Clock In</button>
     <button id="btnClockOut" type="submit">Clock Out</button>
@@ -16,14 +20,14 @@
 <script>
 document.getElementById("btnClockOut").addEventListener("click", btnClockOutOnClick);
 function btnClockOutOnClick() {
-   
+
     var employeeId = prompt("Enter Employee ID", "");
     document.getElementById("txtEmployeeID").value = employeeId
     document.getElementById("lblClockType").value = "clockOut"
 }
 document.getElementById("btnClockIn").addEventListener("click", btnClockInOnClick);
 function btnClockInOnClick() {
-   
+
     var employeeId = prompt("Enter Employee ID", "");
     document.getElementById("txtEmployeeID").value = employeeId
     document.getElementById("lblClockType").value = "clockIn"
@@ -36,5 +40,21 @@ function btnClockInOnClick() {
     //for (const param of searchParams) {
  //   console.log(param);
   //  }
+
+
+
+if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+
+              document.getElementById("lblLatitude").value = latitude
+              document.getElementById("lblLongitude").value = longitude
+
+   })}
+
+
+   
 </script>
 
