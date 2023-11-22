@@ -31,7 +31,7 @@ class Authentication {
 
     //Logs out current user 
     static async logout() {
-        signOut(auth).then(() => {
+        signOut(this.#auth).then(() => {
             console.log("user is logged out");
           }).catch((error) => {
             console.log("error logging out: " + error);

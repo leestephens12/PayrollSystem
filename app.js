@@ -10,6 +10,7 @@ const paystubRouter = require("./routes/paystub");
 const webAppRouter = require("./routes/webapp");
 const expenseRouter = require("./routes/expense");
 const empIndexRouter = require("./routes/empIndex");
+const logoutRouter = require("./routes/logout");
 
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/paystubs?", paystubRouter);
 app.use("/webapp", webAppRouter);
 app.use("/expense", expenseRouter);
 app.use("/empIndex", empIndexRouter);
+app.use("/logout", logoutRouter);
 
 
 // catch 404 and forward to error handler

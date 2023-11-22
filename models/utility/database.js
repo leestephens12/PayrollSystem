@@ -11,7 +11,6 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
-	static #auth = getAuth(this.#app);
 
 	//#region  Employee
 	/**

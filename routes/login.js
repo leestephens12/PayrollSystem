@@ -7,7 +7,7 @@ const Authentication = require("../models/utility/authentication");
 
 
 router.get("/", function(req, res, next) {
-	res.render("login");
+	res.render("login", {layout: null});
 });
 
 //when user completes log in form this method is called

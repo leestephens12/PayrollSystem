@@ -14,9 +14,7 @@ router.get("/", async function(req, res, next) {
         if (currentEmp) {
             res.cookie("Employee", currentEmp, { httpOnly: true });
             //get the cookie by doing: 	console.log(req.cookies["Employee"]);
-
-            // Now render the page
-            res.render("empIndex");
+            res.render("empIndex", {currentEmp: currentEmp});
         } else {
             // Handle the case where employee data is not found
             res.status(404).send("Employee not found");
