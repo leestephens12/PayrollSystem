@@ -1,75 +1,89 @@
 class Expense {
 
-    constructor(type, amount, from, to, proof) {
-        this.type = type;
-        this.amount = amount;
-        this.from = from;
-        this.to = to;
-        this.proof = proof;
-    }
+	static ExpenseConverter = {
+		toFirestore: (expense) => {
+			return {
+				type: expense.type,
+				amount: expense.amount,
+				from: expense.from,
+			};
+		},
+		fromFirestore: (snapshot, options) => {
+			const data = snapshot.data(options);
+			return new Expense(data.type, data.amount, data.from);
+		}
+	};
 
-    get type() {
-        return this._type;
-    }
+	constructor(type, amount, from, to, proof) {
+		this.type = type;
+		this.amount = amount;
+		this.from = from;
+		this.to = to;
+		this.proof = proof;
+	}
 
-
-    set type(value) {
-        this._type = value;
-    }
-
-
-    get amount() {
-        return this._amount;
-    }
-
-
-    set amount(value) {
-        //Ensure the amount is more than 0
-        if (value <= 0)
-            this.amount = "Null";
-        else
-            this._amount = value;
-    }
+	get type() {
+		return this._type;
+	}
 
 
-    get from() {
-        return this._from;
-    }
+	set type(value) {
+		this._type = value;
+	}
 
 
-    set from(value) {
-        this._from = value;
-    }
+	get amount() {
+		return this._amount;
+	}
 
 
-    get to() {
-        return this._to;
-    }
+	set amount(value) {
+		//Ensure the amount is more than 0
+		if (value <= 0)
+			this.amount = "Null";
+		else
+			this._amount = value;
+	}
 
 
-    set to(value) {
-        this._to = value;
-    }
+	get from() {
+		return this._from;
+	}
 
 
-    get proof() {
-        return this._proof;
-    }
+	set from(value) {
+		this._from = value;
+	}
 
 
-    set proof(value) {
-        this._proof = value;
-    }
+	get to() {
+		return this._to;
+	}
 
 
-    approve() {
+	set to(value) {
+		this._to = value;
+	}
 
 
-    }
-    deny() {
+	get proof() {
+		return this._proof;
+	}
 
 
-    }
+	set proof(value) {
+		this._proof = value;
+	}
+
+
+	approve() {
+
+
+	}
+	deny() {
+
+
+	}
 
 
 

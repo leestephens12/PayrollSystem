@@ -13,6 +13,10 @@ class Database {
 	});
 	static #db = getFirestore(this.#app);
 
+	static async addExpense(expense) {
+		return this.addDoc("expense", expense);
+	}
+
 	//#region  Employee
 	/**
 	 *
