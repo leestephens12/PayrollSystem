@@ -28,7 +28,10 @@ class Expense {
 
 
 	set type(value) {
-		this._type = value;
+		if (value == "Mileage" || value == "Supplies" || value =="Meal")
+			this._type = value;
+		else
+			this._type = "null";
 	}
 
 
@@ -40,7 +43,7 @@ class Expense {
 	set amount(value) {
 		//Ensure the amount is more than 0
 		if (value <= 0)
-			this.amount = "Null";
+			this.amount = "null";
 		else
 			this._amount = value;
 	}
@@ -52,7 +55,13 @@ class Expense {
 
 
 	set from(value) {
-		this._from = value;
+		//Same requirements as employee ID
+		if (value.length == 10 && value.substring(2,3) == "#"){
+			this._from = value;
+		}else {
+		
+			this._from = "null";
+		}
 	}
 
 

@@ -1,24 +1,32 @@
 <h1>Create Expense</h1>
 <form action="/expense" method="post">
 	<div class="container">
+		<label for="from"><b>Employee ID:</b></label>
+		<input type="text" placeholder="Enter Employee ID" name="from" value="{{currentEmp.employeeID}}"><br>
 		<ul>
+			<h4>Type:</h4>
 			<li>
-				<label for="from"><b>Employee ID:</b></label>
-				<input type="text" placeholder="Enter Employee ID" name="from">
+				<label for="Mileage">Mileage</label>
+				<input type="radio" value="Mileage" name="type">
 			</li>
 			<li>
-				<label for="type"><b>Type:</b></label>
-				<input type="text" placeholder="Enter Type" name="type">
+				<label for="Supplies">Supplies</label>
+				<input type="radio" value="Supplies" name="type">
 			</li>
 			<li>
-				<label for="amount"><b>Amount:</b></label>
-				<input type="text" placeholder="Enter Amount" name="amount">
+				<label for="Meal">Meal</label>
+				<input type="radio" value="Meal" name="type">
 			</li>
-			{{!-- <li>
-				<label for="proof"><b>Proof:</b></label>
-				<input type="file" id="myFile" name="proof">
-			</li> --}}
 		</ul>
+
+		<label for="amount"><b>Amount:</b></label>
+		<input type="text" placeholder="Enter Amount" name="amount">
+
+		{{!-- <li>
+			<label for="proof"><b>Proof:</b></label>
+			<input type="file" id="myFile" name="proof">
+		</li> --}}
+
 	</div>
 	<button type="submit">Submit</button>
 </form>
