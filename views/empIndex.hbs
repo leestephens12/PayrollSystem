@@ -1,1 +1,17 @@
 <h1>Welcome {{currentEmp.firstName}} {{currentEmp.lastName}}</h1>
+
+<section>
+    <h2>Your next shift</h2>
+    <a class="button" href="/shifts">View</a>
+    <p>{{nextShift}}</p>
+</section>
+
+<section>
+    <h2>View your paystubs</h2>
+    <a class="button" href="/paystub">View</a>
+    <ul>
+        {{#each paystubs}}
+            <li><a href="/paystub/{{this}}">{{this}}</a></li>
+        {{/each}}
+    </ul>
+</section>
