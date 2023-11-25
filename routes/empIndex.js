@@ -11,9 +11,10 @@ router.get("/", async function(req, res, next) {
         console.log(uid);
 
         const currentEmp = await Database.getEmployee(uid);
+        console.log(currentEmp);
         
         if (currentEmp.permissions == "No") {
-            employee = new Employee(
+            const employee = new Employee(
                 currentEmp.employeeID, 
                 currentEmp.firstName, 
                 currentEmp.lastName, 
@@ -28,7 +29,7 @@ router.get("/", async function(req, res, next) {
             res.render("empIndex", {currentEmp: currentEmp});
         }
         else if (currentEmp.permissions == "Yes") {
-            employee = new Manager(
+            const employee = new Manager(
                 currentEmp.employeeID, 
                 currentEmp.firstName, 
                 currentEmp.lastName, 
@@ -42,7 +43,7 @@ router.get("/", async function(req, res, next) {
                 currentEmp.uid);
             res.cookie("Employee", employee, { httpOnly: true });
             //get the cookie by doing: 	console.log(req.cookies["Employee"]);
-            res.render("empIndex", {currentEmp: currentEmp});
+            res.render("empIndex", {layout: "managerLayout.hbs", currentEmp: currentEmp});
         } 
         else {
             // Handle the case where employee data is not found

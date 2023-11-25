@@ -13,6 +13,7 @@ const expenseRouter = require("./routes/expense");
 const empIndexRouter = require("./routes/empIndex");
 const logoutRouter = require("./routes/logout");
 const shiftsRouter = require("./routes/shifts");
+const employeesRouter = require("./routes/employees");
 
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/expense", expenseRouter);
 app.use("/empIndex", empIndexRouter);
 app.use("/logout", logoutRouter);
 app.use(["/shifts?"], shiftsRouter);
+app.use("/employees", employeesRouter);
 
 
 hbs.registerHelper("json", function (content) {
