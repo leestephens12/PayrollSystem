@@ -3,7 +3,6 @@ const Database = require("../models/utility/database");
 const {Router} = express;
 const router = Router();
 
-
 const Paystub = require("../models/PayStub");
 
 router.get("/", (req, res, next) => {
@@ -40,4 +39,4 @@ router.get("/employee/paystub", async (req, res, next) => {
 	res.render("employee/paystub", { title: "Paystub", paystubs: employee.paystubs });
 });
 
-module.exports= router;
+module.exports = router;

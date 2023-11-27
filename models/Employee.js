@@ -1,4 +1,4 @@
-const Shift = require('./Shift');
+const Shift = require("./Shift");
 //const Database = require("../models/utility/database");
 class Employee {
 	static EmployeeConverter = {
@@ -20,23 +20,23 @@ class Employee {
 
 			var counter = 0; //counter iteration
 			var i = 0; //array index iteration variable
-			var shiftList = [] //holds the list
+			var shiftList = []; //holds the list
 			while(counter < (data.shifts.length/2)){
-				var shift = new Shift(data.shifts[i],data.shifts[i+1]) //create new shift, with the start and end date
-				shiftList.push(shift) //add it to the list of shifts
-				i +=2 //move forward 2, to the new shift
-				counter +=1
-				
+				var shift = new Shift(data.shifts[i],data.shifts[i+1]); //create new shift, with the start and end date
+				shiftList.push(shift); //add it to the list of shifts
+				i +=2; //move forward 2, to the new shift
+				counter +=1;
+
 			}
 
 			let employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
-			
+
 			//set each of the shifts employee value, to the newly created employee
 			employee.shifts.forEach(element => {
-				element.Employee = employee
+				element.Employee = employee;
 			});
 
-			return employee 
+			return employee;
 		}
 	};
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
@@ -126,6 +126,11 @@ class Employee {
 		this._manager = value;
 	}
 
+	/**
+	 * Get the shifts.
+	 *
+	 * @return {Shift[]} The shifts.
+	 */
 	get shifts() {
 		return this._shifts;
 	}
@@ -139,35 +144,35 @@ class Employee {
 	}
 	getLatestShift(){
 		if (this.shifts.length > 0) //get the last element of array
-			return this.shifts[this.shifts.length - 1]
+			return this.shifts[this.shifts.length - 1];
 	 	else //if blank array
-		 return "blank"
+		 return "blank";
 	}
-	
+
 	clockIn(){
-		let shift = this.getLatestShift()
+		let shift = this.getLatestShift();
 
 		if (shift.endDate == null && shift != "blank"){
 			//shift.endDate = new Date()
-			console.log("shift already open")
+			console.log("shift already open");
 			//Database.updateEmployeeShift( "employees", this)
 		}else{
-			this.shifts.push(new Shift(new Date))
+			this.shifts.push(new Shift(new Date));
 		}
 
 	}
 	clockOut(){
-		let shift = this.getLatestShift()
+		let shift = this.getLatestShift();
 
 		if (shift.endDate == null && shift != "blank"){
-			this.shifts.push(new Shift(new Date))
+			this.shifts.push(new Shift(new Date));
 
 			//shift.endDate = new Date()
 			//console.log("shift already open")
 			//Database.updateEmployeeShift( "employees", this)
 		}else{
 			//shift.endDate = new Date()
-			console.log("shift already open")
+			console.log("shift already open");
 			//Database.updateEmployeeShift( "employees", this)
 		}
 	}
@@ -183,14 +188,14 @@ class Employee {
 		//	if(i < this._shifts.length){ //if this is not the last shift
 
 
-			shiftArray.push(element.startDate)
+			shiftArray.push(element.startDate);
 			if (element.endDate != null)
-				shiftArray.push(element.endDate)
-		//}
-		//i++
-			
+				shiftArray.push(element.endDate);
+			//}
+			//i++
+
 		});
-		return shiftArray
+		return shiftArray;
 	}
 
 	get uid() {

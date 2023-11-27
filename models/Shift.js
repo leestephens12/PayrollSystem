@@ -1,4 +1,5 @@
 const  Period = require("./utility/Period");
+const Employee = require("./Employee");
 const { isNullOrUndefined } = require("./utility/helpers");
 
 /**
@@ -9,11 +10,20 @@ const { isNullOrUndefined } = require("./utility/helpers");
  */
 class Shift {
 
+	//#region type definitions
 	/**
 	 * @typedef {Object} ShiftDbModel
 	 * @property {Date} startDate - the beginning of the shift
 	 * @property {Date} endDate - the end of the shift
 	 */
+
+	/**
+	 * @typedef {"waiting" | "approved" | "denied" | "requestedOff" | "canceled" | "completed"} ShiftStatus
+	 * @description
+	 * status of shift
+	 *
+	 */
+	//#endregion
 
 	/**
 	 * @type {Date}
@@ -25,11 +35,26 @@ class Shift {
 	/**
 	 * @type {Date}
 	 * @description
+	 * the scheduled start of the shift
+	 * @memberof Shift
+	 */
+	#scheduledStart;
+	/**
+	 * @type {Date}
+	 * @description
 	 * the end of the shift
 	 * @memberof Shift
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 	 */
 	#endDate;
+	/**
+	 * @type {Date}
+	 * @description
+	 * the scheduled end of the shift
+	 * @memberof Shift
+	 */
+	#scheduledEnd;
+
 	/**
 	 * @type {Employee}
 	 * @description
@@ -37,6 +62,11 @@ class Shift {
 	 * @memberof Shift
 	 */
 	#employee;
+
+	/**
+	 * @type {ShiftStatus}
+	 */
+	#status;
 
 	/**
 	 * @description
@@ -119,7 +149,51 @@ class Shift {
 		this.#endDate = value;
 	}
 
+	get status() {
+		return this.#status;
+	}
+
+	set status(value) {
+		if(typeof value !== "string")
+			throw new Error("invalid status: status must be a string");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid status: status cannot be null or undefined");
+		if(!(value == "waiting" || value == "approved" || value == "denied" || value == "requestedOff" || value == "canceled" || value == "completed"))
+			throw new Error("invalid status: status must be one of: waiting, approved, denied, requestedOff, canceled, completed");
+		else
+			this.#status = value;
+	}
+
+	get scheduledStart() {
+		return this.#scheduledStart;
+	}
+
+	set scheduledStart(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value > this.scheduledEnd)
+			throw new Error("invalid date: start date must be before the scheduled end date");
+		this.#scheduledStart = value;
+	}
+
+	get scheduledEnd() {
+		return this.#scheduledEnd;
+	}
+
+	set scheduledEnd(value) {
+		if(!(value instanceof Date))
+			throw new Error("invalid date: date must be a Date object");
+		if(isNullOrUndefined(value))
+			throw new Error("invalid date: date cannot be null or undefined");
+		if(value < this.scheduledStart)
+			throw new Error("invalid date: end date must be after the scheduled start date");
+		this.#scheduledEnd = value;
+	}
+
 	requestOff() {
+		this.#status = "requestedOff";
 		throw new Error("not implemented");
 	}
 
@@ -134,8 +208,6 @@ class Shift {
 	getDuration() {
 		return new Period(this.#startDate, this.#endDate);
 	}
-
-	
 }
 
 module.exports = Shift;
