@@ -38,6 +38,21 @@ class Database {
 		}
 	}
 
+	static async getEmployeeList(id) {
+		try {
+			const querySnapshot = await this.#db.collection("employees").where("manager", "==", id).get();
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+				return querySnapshot.docs.map(doc => doc.data());
+			} else {
+				return "Query is empty";
+			}
+
+		} catch (error) {
+			return error;
+		}
+	}
+
 	/**
 	 *
 	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
