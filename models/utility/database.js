@@ -70,8 +70,10 @@ class Database {
 	 * @param {Employee} employee employee object to be added
 	 * @returns {Promise<DocumentReference<Employee>>} the newly added document
 	 */
-	static async addEmployee(employee) {
-		return this.addDoc("employees", employee);
+	static async addEmployee(collection, data, employeeID) {
+		const db = this.getCollection(collection);
+		const converter = this.#getFirestoreConverter(collection);
+		return db.withConverter(converter).doc(employeeID).set(data);
 	}
 	//#endregion
 
@@ -132,7 +134,6 @@ class Database {
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).add(data);
 	}
-
 	/**
 	 * get the collection from firestore to perform CRUD operations on
 	 * @param {CollectionName} collection
