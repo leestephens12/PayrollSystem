@@ -18,18 +18,8 @@ class Employee {
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
 
-			var counter = 0; //counter iteration
-			var i = 0; //array index iteration variable
-			var shiftList = []; //holds the list
-			while(counter < (data.shifts.length/2)){
-				var shift = new Shift(data.shifts[i],data.shifts[i+1]); //create new shift, with the start and end date
-				shiftList.push(shift); //add it to the list of shifts
-				i +=2; //move forward 2, to the new shift
-				counter +=1;
-
-			}
-
-			let employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
+			const shiftList = Shift.firebaseConverter.fromFirestore(data.shifts);
+			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
 
 			//set each of the shifts employee value, to the newly created employee
 			employee.shifts.forEach(element => {

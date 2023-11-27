@@ -105,6 +105,12 @@ class Shift {
 			 * @return {Shift} - The new Shift object.
 			 */
 			function toShift(shift) {
+				if(isNullOrUndefined(shift))
+					return [];
+				if(!(shift.startDate instanceof Date))
+					throw new Error("invalid date: start date must be a Date object");
+				if(!( shift.endDate instanceof Date))
+					throw new Error("invalid date: end date must be a Date object");
 				return new Shift(shift.startDate, shift.endDate);
 			}
 			return shifts.map(shift => toShift(shift));

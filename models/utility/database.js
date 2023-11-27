@@ -25,13 +25,15 @@ class Database {
 	 */
 	static async getEmployee(id) {
 		try {
-			const querySnapshot = await this.#db.collection("employees").where("uid", "==", id).get();
+			const querySnapshot = await this.#db.collection("employees")
+				.withConverter(this.#getFirestoreConverter("employees"))
+				.where("uid", "==", id)
+				.get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
-				console.log(querySnapshot.docs[0].data())
-				 return querySnapshot.docs[0].data(); // Returns the data of the first document
+				return querySnapshot.docs[0].data(); // Returns the data of the first document
 			} else {
-				 return null;
+				return null;
 			}
 
 		} catch (error) {
@@ -39,39 +41,9 @@ class Database {
 		}
 	}
 
-	static async getEmployeeClock(id) {
-		try {
-			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id).get();
-			//returns the first entry as we are only expecting one return value
-			if (!querySnapshot.empty) {
-				//console.log(querySnapshot.docs[0].data())
-				 return querySnapshot.docs[0].data(); // Returns the data of the first document
-			} else {
-				 return null;
-			}
-
-		} catch (error) {
-			return null;
-		}
-	}
 	static async getEmployeeList(id) {
 		try {
 			const querySnapshot = await this.#db.collection("employees").where("manager", "==", id).get();
-			//returns the first entry as we are only expecting one return value
-			if (!querySnapshot.empty) {
-				return querySnapshot.docs.map(doc => doc.data());
-			} else {
-				return "Query is empty";
-			}
-
-		} catch (error) {
-			return error;
-		}
-	}
-
-	static async getWorkplace() {
-		try {
-			const querySnapshot = await this.#db.collection("workplace").get()
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
 				return querySnapshot.docs.map(doc => doc.data());
@@ -151,8 +123,8 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		var shiftList = employee.shiftToArray();
-	//	shiftList.push("Pizza")
-		var data = {   shifts: shiftList }
+		shiftList.push("Pizza");
+		var data = {   shifts: shiftList };
 		return db.withConverter(converter).doc(employee.uid).update(data);
 	}
 
@@ -160,8 +132,8 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		var shiftList = employee.shiftToArray();
-		shiftList.push("Pizza")
-		var data = {   shifts: shiftList }
+		shiftList.push("Pizza");
+		var data = {   shifts: shiftList };
 		return db.withConverter(converter).doc(employee.employeeID).update(data);
 	}
 	/**
