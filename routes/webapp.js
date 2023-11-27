@@ -20,13 +20,14 @@ router.post("/", async function(req, res){
 
 	var lat = parseFloat(req.body.latitude)
 	var long = parseFloat(req.body.longitude)
-	var workplace = new Workplace("Test",44.611,-79.446)
+	//var workplace = new Workplace("Test",44.611,-79.446)
 	console.log(workplace)
 	employee = await Database.getEmployeeClock("MD#1234567")
-
-	console.log(employee)
-	employee = doc.data() //set employee to the instance of the employee object
-	console.log(employee)
+	var workplace = await Database.getWorkplace()
+	console.log(workplace)
+//	console.log(employee)
+	//employee = doc.data() //set employee to the instance of the employee object
+//	console.log(employee)
 	if(employee.employeeID == employeeId){
 	//let workplace = Database.getDoc("workplace","lakeheadU")
 		var workplaceFlag = workplace.checkLocation(Math.abs(lat),Math.abs(long),(workplace))
