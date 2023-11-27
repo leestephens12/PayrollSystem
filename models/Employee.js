@@ -1,4 +1,6 @@
+const PayStub = require("./PayStub");
 const Shift = require("./Shift");
+const { Period } = require("./utility/Period");
 //const Database = require("../models/utility/database");
 class Employee {
 	static EmployeeConverter = {
@@ -29,6 +31,10 @@ class Employee {
 			return employee;
 		}
 	};
+
+	/** @type {PayStub} @description The employee's paystubs */
+	#paystubs;
+
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
 		this.employeeID = employeeID;
 		this.firstName = firstName;
@@ -37,6 +43,7 @@ class Employee {
 		this.permissions = permissions;
 		this.status = status;
 		this.manager = manager;
+		this.#paystubs = [];
 		this.shifts = shifts;
 		this.uid = uid;
 	}
@@ -129,9 +136,46 @@ class Employee {
 		this._shifts = value;
 	}
 
-	payStub(){
+	get paystubs(){
+		return this.#paystubs;
+	}
+	set paystubs(value){
+		if((value)==null)
+			throw new Error("invalid paystubs: paystubs cannot be null or undefined");
+		if(!Array.isArray(value))
+			throw new Error("invalid paystubs: paystubs must be an array");
+		this.#paystubs = value;
+	}
+	generatePaystubs(){
+		this.#paystubs = new Array();
+		/**@type {Array<Shift[]>}
+		 * the pay periods (2 weeks)
+		 * an array where each element represents a pay period (an array) containing all the shifts for that pay period
+		 * tl;dr an array of Shift arrays  */
+		const payPeriods = [];
+
+		const twoWeekPeriod = new Period(new Date("2020-01-01"), new Date("2020-01-15"));
+
+		let j = 0;
+		for (const shift of this.shifts) {
+			//? for the first shift
+			if(payPeriods[j] == null) // initialize the first array of pay periods
+				payPeriods[j] = [];
+			//? if the shift is outside of the current pay period (j) - from it's first shift's start date
+			else if(new Period(payPeriods[j][0].endDate, shift.startDate) > twoWeekPeriod){
+				j++; //? move to the next pay period
+				payPeriods[j] = [];
+			}
+			//? add the shift to the current pay period
+			payPeriods[j].push(shift);
+		}
+
+		//? generate the paystubs
+		for(const shifts of payPeriods)
+			this.#paystubs.push(new PayStub(shifts));
 
 	}
+
 	getLatestShift(){
 		if (this.shifts.length > 0) //get the last element of array
 			return this.shifts[this.shifts.length - 1];
