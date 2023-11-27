@@ -14,19 +14,6 @@ class PayStub {
 	#netProfit;
 	/**
 	 * @private
-	 * @type {Date}
-	 * the beginning date for pay period
-	 */
-	#start;
-	/**
-	 * @private
-	 * @type {Date}
-	 * @description
-	 * the last date for the pay period
-	 */
-	#end;
-	/**
-	 * @private
 	 * @type {Shift[]}
 	 * @description
 	 * the shift that contribute to this Paystub
@@ -72,13 +59,9 @@ class PayStub {
 	 */
 
 	/**
-	 * @param {Date} start - the beginning of the pay period
-	 * @param {Date} end - the end of the pay period
 	 * @param {Shift[]} shifts - contributed shifts to the paystub
 	 */
-	constructor( start, end, shifts) {
-		this.#start = start;
-		this.#end = end;
+	constructor(shifts) {
 		this.#shifts = shifts;
 	}
 
@@ -111,33 +94,16 @@ class PayStub {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 	 */
 	get start() {
-		return this.#start;
+		return this.#shifts.map(shift => shift.startDate).sort((a, b) => a - b)[0];
 	}
 
 	/**
-	 * Setter function for the start property.
-	 *
-	 * @param {Date} value - The new value for the start property.
-	 * @throws {Error} Throws an error if the start value is null or undefined, or if it is after the end value.
+	 * @type {Date}
+	 * @description
+	 * the last date for the pay period
 	 */
-	set start(value) {
-		if(isNullOrUndefined(value))
-			throw new Error("invalid start date: start date cannot be null or undefined");
-		if(value > this.#end)
-			throw new Error("invalid start date: start date must be before end date");
-		this.#start = value;
-	}
-
 	get end() {
-		return this.#end;
-	}
-
-	set end(value) {
-		if(isNullOrUndefined(value))
-			throw new Error("invalid end date: end date cannot be null or undefined");
-		if(value < this.#start)
-			throw new Error("invalid end date: end date must be after start date");
-		this.#end = value;
+		return this.#shifts.map(shift => shift.endDate).sort((a, b) => b - a)[0];
 	}
 
 	get shifts() {
@@ -148,6 +114,8 @@ class PayStub {
 	set shifts(value) {
 		if(isNullOrUndefined(value))
 			throw new Error("invalid shifts: shifts cannot be null or undefined");
+		if(!(value instanceof Array))
+			throw new Error("invalid shifts: shifts must be an array");
 		this.#shifts = value;
 		this.#updatePaystub();
 	}
@@ -176,7 +144,7 @@ class PayStub {
 		const fs = require("fs");
 		const browser = await puppeteer.launch();
 		const page = await browser.newPage();
-		const template = fs.readFileSync(__dirname + "/../views/paystub.hbs", "utf8");
+		const template = fs.readFileSync(__dirname + "/../views/paystub/paystub.hbs", "utf8");
 		// compile template
 		const compiledTemplate = handlebars.compile(template);
 		// render template
