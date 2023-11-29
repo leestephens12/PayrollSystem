@@ -30,3 +30,21 @@
 	</div>
 	<button type="submit">Submit</button>
 </form>
+<table>
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each expense}}
+        <tr>
+            <td>{{this.from}}</td>
+            <td>{{this.type}}</td>
+            <td>{{this.amount}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

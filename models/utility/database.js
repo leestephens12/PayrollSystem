@@ -17,6 +17,19 @@ class Database {
 		return this.addDoc("expense", expense);
 	}
 
+	static async getExpenseList() {
+		try {
+			const querySnapshot = await this.#db.collection("expense").get();
+			if (!querySnapshot.empty) {
+				return querySnapshot.docs.map(doc => doc.data());
+			} else {
+				return "Query is empty";
+			}
+		} catch (error) {
+			return error;
+		}
+	}
+
 	//#region  Employee
 	/**
 	 *
