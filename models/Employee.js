@@ -24,9 +24,12 @@ class Employee {
 			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
 
 			//set each of the shifts employee value, to the newly created employee
-			employee.shifts.forEach(element => {
-				element.Employee = employee;
-			});
+			if(!employee.shifts)
+				employee.shifts = [];
+			else
+				employee.shifts.forEach(element => {
+					element.Employee = employee;
+				});
 
 			return employee;
 		}
@@ -54,7 +57,7 @@ class Employee {
 
 	set employeeID(value) {
 
-		// id must have the first name, and lastname initial followed by a hastag, then a 7 digit number
+		// id must have the first name, and last name initial followed by a hastag, then a 7 digit number
 		if (value.length == 10 && value.substring(2,3) == "#"){
 			this._employeeID = value;
 		}else {
