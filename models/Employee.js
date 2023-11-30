@@ -112,7 +112,7 @@ class Employee {
 	}
 
 	set status(value) {
-		if (value == "Active" || value =="Suspeneded" || value == "Terminated")
+		if (value == "Active" || value =="Suspended" || value == "Terminated")
 			this._status = value;
 		else
 			this._status = "Null";
@@ -182,8 +182,8 @@ class Employee {
 	getLatestShift(){
 		if (this.shifts.length > 0) //get the last element of array
 			return this.shifts[this.shifts.length - 1];
-	 	else //if blank array
-		 return "blank";
+		else //if blank array
+			return "blank";
 	}
 
 	clockIn(){

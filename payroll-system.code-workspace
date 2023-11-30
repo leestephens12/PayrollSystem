@@ -11,7 +11,8 @@
 			"paystub",
 			"shift",
 			"db",
-			"firebase"
+			"firebase",
+			"employee"
 		],
 		"cSpell.words": [
 			"Firestore",
