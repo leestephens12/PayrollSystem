@@ -8,6 +8,7 @@
             <th>Last Name</th>
             <th>Department</th>
             <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -18,6 +19,10 @@
             <td>{{this.lastName}}</td>
             <td>{{this.department}}</td>
             <td>{{this.status}}</td>
+            <td>
+                <a href="/removeEmployee/?empID={{this.employeeID}}">Remove</a>
+                <a href="/updateEmployee/?empID={{this.employeeID}}">Update</a>
+            </td>
         </tr>
     {{/each}}
     </tbody>

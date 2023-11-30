@@ -15,6 +15,7 @@ const logoutRouter = require("./routes/logout");
 const shiftsRouter = require("./routes/shifts");
 const employeesRouter = require("./routes/employees");
 const addEmployeeRouter = require("./routes/addEmployee");
+const removeEmployeeRouter = require("./routes/removeEmployee");
 
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/logout", logoutRouter);
 app.use(["/shifts?"], shiftsRouter);
 app.use("/employees", employeesRouter);
 app.use("/addEmployee", addEmployeeRouter);
+app.use("/removeEmployee/?", removeEmployeeRouter);
 
 
 hbs.registerHelper("json", function (content) {

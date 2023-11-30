@@ -9,9 +9,14 @@ const Database = require("../models/utility/database");
 router.get("/", async function(req, res, next) {
     const currentEmpID = req.cookies["employeeID"];
     console.log(currentEmpID);
-    const employees = await Database.getEmployeeList(currentEmpID);
-    console.log(employees);
-	res.render("employees", {layout: "managerLayout.hbs", employees: employees});
+    try {
+        const employees = await Database.getEmployeeList(currentEmpID);
+        console.log(employees);
+        res.render("employees", {layout: "managerLayout.hbs", employees: employees});
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 
 module.exports = router;

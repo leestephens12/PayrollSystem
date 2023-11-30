@@ -42,7 +42,8 @@ router.get("/", async function(req, res, next) {
                 currentEmp.timeOffRequests,
                 currentEmp.testField,
                 currentEmp.uid);
-            res.cookie("employeeID", employee.employeeID);
+            console.log("this is the current emp id:" + currentEmp.employeeID);
+            res.cookie("employeeID", currentEmp.employeeID);
             res.cookie("Employee", employee);
             //get the cookie by doing: 	console.log(req.cookies["Employee"]);
             res.render("empIndex", {layout: "managerLayout.hbs", currentEmp: currentEmp});
