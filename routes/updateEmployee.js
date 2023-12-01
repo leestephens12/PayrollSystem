@@ -12,7 +12,7 @@ router.get("/", async function(req, res, next) {
     console.log(empID);
     const employee = await Database.getEmployeeByEmpID(empID);
     console.log(employee);  
-    res.render("updateEmployee", {employee:employee});
+    res.render("updateEmployee", {layout: "managerLayout.hbs", employee:employee});
 });
 
 router.post("/", async function(req, res, next){

@@ -1,5 +1,6 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
 const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult, doc, deleteDoc} = require("firebase-admin/firestore");
+const {createUser, getAuth} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -12,6 +13,7 @@ class Database {
 		credential: cert(serviceAccount)
 	});
 	static #db = getFirestore(this.#app);
+	static #auth = getAuth(this.#app);
 
 	static async addExpense(expense) {
 		return this.addDoc("expense", expense);
@@ -148,10 +150,44 @@ class Database {
 	 * @param {Employee} employee employee object to be added
 	 * @returns {Promise<DocumentReference<Employee>>} the newly added document
 	 */
-	static async addEmployee(collection, data, employeeID) {
-		const db = this.getCollection(collection);
-		const converter = this.#getFirestoreConverter(collection);
-		return db.withConverter(converter).doc(employeeID).set(data);
+	static async addEmployeeToFirestore(collection, data, employeeID) {
+		try {
+			const db = this.getCollection(collection);
+			const converter = this.#getFirestoreConverter(collection);
+			return db.withConverter(converter).doc(employeeID).set(data);
+		}
+		catch(error) {
+			console.log(error);
+		}
+	}
+
+	static async addEmployeeToAuth(email, password, employeeID, employee) {
+		try {
+			const userRecord = await this.#auth.createUser({
+			  email: email,
+			  emailVerified: false,
+			  password: password,
+			  displayName: employeeID,
+			  disabled: false,
+			});
+		
+			console.log('Successfully created new user:', userRecord.uid);
+			const employeeJson = {
+				employeeID: employee.employeeID,
+				firstName: employee.firstName,
+				lastName: employee.lastName,
+				department: employee.department,
+				permissions: employee.permissions,
+				status: employee.status,
+				manager: employee.manager,
+				shifts: [],
+				uid: userRecord.uid
+			}
+			await this.addEmployeeToFirestore("employees", employeeJson, employeeID);
+		  } catch (error) {
+			console.error('Error creating new user:', error);
+			throw error;
+		  }
 	}
 	//#endregion
 

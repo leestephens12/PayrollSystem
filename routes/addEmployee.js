@@ -24,7 +24,7 @@ router.post("/", async function(req,res,next) {
             "null"      
         );
 
-        const employeePlainObject = {
+        /*const employeePlainObject = {
             employeeID: employee.employeeID,
             firstName: employee.firstName,
             lastName: employee.lastName,
@@ -34,9 +34,10 @@ router.post("/", async function(req,res,next) {
             manager: employee.manager,
             shifts: [],
             uid: "null"      
-        }
+        }*/
 
-        await Database.addEmployee("employees", employeePlainObject, employeePlainObject.employeeID);
+        //await Database.addEmployeeToFirestore("employees", employeePlainObject, employeePlainObject.employeeID);
+        await Database.addEmployeeToAuth(req.body.email, req.body.password, employee.employeeID, employee);
         res.redirect("/employees");
         
     } catch (error) {
