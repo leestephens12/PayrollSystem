@@ -57,8 +57,8 @@ class Employee {
 
 	set employeeID(value) {
 
-		// id must have the first name, and last name initial followed by a hastag, then a 7 digit number
-		if (value.length == 10 && value.substring(2,3) == "#"){
+		// id must have the first name, and lastname initial followed by a hastag, then a 7 digit number
+		if (value.length == 10 && value.substring(2,3) == "@"){
 			this._employeeID = value;
 		}else {
 

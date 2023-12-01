@@ -77,6 +77,21 @@ class Database {
 		}
 	}
 
+	static async getEmployeeByEmpID(id) {
+		try {
+			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id).get();
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+				return querySnapshot.docs[0].data(); // Returns the data of the first document
+			} else {
+				return null;
+			}
+
+		} catch (error) {
+			return null;
+		}
+	}
+
 	static async deleteDocument(collection, id) {
 		try {
 			const docRef = this.#db.collection(collection).doc(id);
@@ -124,8 +139,8 @@ class Database {
 	 * @param {Employee} employee employee object to be updated
 	 * @returns {Promise<WriteResult>} the result of the update
 	 */
-	static async updateEmployee(employee) {
-		return this.updateDoc("employees", employee.employeeID, employee);
+	static async updateEmployee(employeeID, employee) {
+		return this.updateDoc("employees", employeeID, employee);
 	}
 
 	/**
