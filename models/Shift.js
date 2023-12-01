@@ -53,15 +53,6 @@ class Shift {
 	#scheduledEnd;
 
 	/**
-	 * todo: remove useless attribute and move up appropriate methods
-	 * @type {Employee}
-	 * @description
-	 * employee associated with the shift
-	 * @memberof Shift
-	 */
-	#employee;
-
-	/**
 	 * @type {ShiftStatus}
 	 */
 	#status;
@@ -276,14 +267,11 @@ class Shift {
 		throw new Error("not implemented");
 	}
 
-	getEarnings() {
-		const wage = this.#employee.getPay();
-		// todo: check if employee is salaried or hourly
-		const duration = this.getDuration();
-		const earnedWage = duration.getTotalHours() * wage;
-		return Number.parseFloat(earnedWage.toFixed(2));
-	}
 
+	/**
+	 * returns the duration of the shift as a Period
+	 * @returns {Period} the duration of the shift
+	 */
 	getDuration() {
 		return new Period(this.startDate, this.endDate);
 	}

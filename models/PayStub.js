@@ -1,9 +1,9 @@
 const handlebars = require("handlebars");
 
 const {isNullOrUndefined} = require("./utility/helpers");
-const Employee = require("./Employee");
 const Deductible = require("./Deductible");
-
+const Shift = require("./Shift");
+const Employee = require("./Employee");
 
 /**
  * Represents a pay stub for an employee.
@@ -21,6 +21,21 @@ class PayStub {
 	 * @see module:payroll-system/models/Employee
 	 */
 	#employee;
+	/** the employee associated with this Paystub */
+	get employee() {
+		return this.#employee;
+	}
+	/**
+	 * @throws {Error} if the value is null or undefined
+	 * @throws {Error} if the value is not an {@link Employee}
+	 */
+	set employee(value) {
+		if(isNullOrUndefined(value))
+			throw new Error("invalid employee: employee cannot be null or undefined");
+		if(!(value instanceof Employee))
+			throw new Error("invalid employee: employee must be an Employee");
+		this.#employee = value;
+	}
 	/**
 	 * @private
 	 * @type {Shift[]}
@@ -84,12 +99,14 @@ class PayStub {
 	 * @param {Number} yearToDateGrossProfit - the year to date gross profit (without deductions) up to this date (exclusive - not including this paystub)
 	 * @param {Number} yearToDateDeductions - the year to date deduction up to this date (exclusive - not including this paystub)
 	*/
-	constructor(shifts, yearToDateGrossProfit, yearToDateDeductions) {
+	constructor(employee, shifts, yearToDateGrossProfit, yearToDateDeductions) {
 		//todo: populate db with deductions or hardcode here what they are
 		this.#deductions = [];
-		this.#shifts = shifts;
-		this.#yearUntilDateDeducted = yearToDateDeductions;
-		this.#yearUntilDateGrossProfit = yearToDateGrossProfit;
+		this.shifts = shifts;
+		this.yearUntilDateDeducted = yearToDateDeductions;
+		this.yearUntilDateGrossProfit = yearToDateGrossProfit;
+		// cheat circular dependency for now; setting to private and not public with validation
+		this.#employee = employee;
 	}
 
 
@@ -110,7 +127,12 @@ class PayStub {
 
 	/** the gross profit earned in the pay period; pay without deductions */
 	get grossProfit() {
-		return this.shifts.reduce((total, shift) => total + shift.getEarnings(), 0);
+		return this.shifts.reduce((total, shift) => {
+			if(this.#employee.wage === "hourly")
+				return total + shift.getDuration().getTotalHours() * this.#employee.hourlyRate;
+			else
+				return total + this.#employee.pay; // / 26;
+		}, 0);
 	}
 	/** the total year's gross profit */
 	get yearToDateGrossProfit() {

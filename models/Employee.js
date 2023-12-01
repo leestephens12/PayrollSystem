@@ -1,6 +1,6 @@
 const PayStub = require("./PayStub");
 const Shift = require("./Shift");
-const { Period } = require("./utility/Period");
+const Period = require("./utility/Period");
 //const Database = require("../models/utility/database");
 class Employee {
 	static EmployeeConverter = {
@@ -22,17 +22,7 @@ class Employee {
 
 			const shifts = Shift.firebaseConverter.fromFirestore(data.shifts);
 
-			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shifts, data.uid);
-
-			//set each of the shifts employee value, to the newly created employee
-			if(!employee.shifts)
-				employee.shifts = [];
-			else
-				employee.shifts.forEach(element => {
-					element.Employee = employee;
-				});
-
-			return employee;
+			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shifts, data.uid);
 		}
 	};
 
@@ -41,6 +31,12 @@ class Employee {
 	 * @type {PayStub[]}
 	 */
 	#paystubs;
+	/** The employee's wage type - how the employee is paid; either salaried or hourly
+	 * @type {"salaried" | "hourly"} */
+	#wage;
+	/** The employee's pay
+	 * @type {number} */
+	#pay;
 
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
 		this.employeeID = employeeID;
@@ -153,6 +149,31 @@ class Employee {
 			throw new Error("invalid paystubs: paystubs must be an array");
 		this.#paystubs = value;
 	}
+
+
+	/** the employee's wage type - how the employee is paid; either salaried or hourly */
+	get wage(){
+		return this.#wage;
+	}
+	set wage(value){
+		if(value == "salaried" || value == "hourly")
+			this.#wage = value;
+		else
+			throw new Error("invalid wage: wage must be either 'salaried' or 'hourly'");
+	}
+
+	/** the amount the employee is paid, per their wage */
+	get pay(){
+		return this.#pay;
+	}
+	set pay(value){
+		if(typeof value != "number")
+			throw new Error("invalid pay: pay must be a number");
+		if(value < 0)
+			throw new Error("invalid pay: pay cannot be negative");
+		this.#pay = value;
+	}
+
 	generatePaystubs(){
 		this.#paystubs = new Array();
 		/**@type {Array<Shift[]>}
@@ -182,12 +203,15 @@ class Employee {
 		{
 			const previousPayStub = this.#paystubs.pop();
 			if(previousPayStub)
-				this.#paystubs.push(new PayStub(shifts, previousPayStub.grossProfit, previousPayStub.deducted));
-			const payStub = new PayStub(shifts);
-			this.#paystubs.push(payStub);
+			{
+				this.paystubs.push(previousPayStub);
+				this.#paystubs.push(new PayStub(this,shifts, previousPayStub.grossProfit, previousPayStub.deducted));
+			}
+			else
+				this.#paystubs.push(new PayStub(this, shifts,0,0));
 		}
-
 	}
+
 
 	getLatestShift(){
 		if (this.shifts.length > 0) //get the last element of array
