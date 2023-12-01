@@ -20,25 +20,9 @@ class Employee {
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
 
-			// const shiftList = Shift.firebaseConverter.fromFirestore(data.shifts);
-			let shiftList = []
-			const shifts = data.shifts
+			const shifts = Shift.firebaseConverter.fromFirestore(data.shifts);
 
-			console.log(shifts)
-			if(shifts.length >0){
-				shifts.forEach(element => {
-					let stringArray = element.split("/")
-					let startDate = stringArray[0]
-					let schStart = stringArray[1]
-					let endDate = stringArray[2]
-					let schEnd = stringArray[3]
-					let shift = new Shift(startDate,endDate)
-					shift.scheduledStart = schStart
-					shift.scheduledEnd = schEnd
-					shiftList.push(shift)
-				});
-		}
-			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
+			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shifts, data.uid);
 
 			//set each of the shifts employee value, to the newly created employee
 			if(!employee.shifts)
