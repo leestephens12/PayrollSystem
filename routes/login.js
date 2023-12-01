@@ -7,7 +7,12 @@ const Authentication = require("../models/utility/authentication");
 
 
 router.get("/", function(req, res, next) {
-	res.render("login", {layout: null});
+	if (req.query.error) {
+		res.render("login", {layout: null, errorMessage: "invalid credentials"});
+	}
+	else{
+		res.render("login", {layout: null});
+	}
 });
 
 //when user completes log in form this method is called
@@ -15,10 +20,14 @@ router.post("/", async function(req, res){
 	const email = req.body.email;
 	const password = req.body.password;
 	//static method in employee class so we can call without an instance of the object
-	await Authentication.login(email, password);
-	
+	try {
+		await Authentication.login(email, password);
+		res.redirect("/empIndex");
+	}
+	catch(error) {
+		res.redirect('/login/?error=true');
+	}
 
-	res.redirect("/empIndex");
 });
 
 module.exports = router;
