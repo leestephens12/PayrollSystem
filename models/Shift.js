@@ -129,10 +129,10 @@ class Shift {
 	 * @description
 	 * creates a new shift
 	 * @param {Date} startDateTime the actual start time (and date) of the shift
-	 * @param {Date} endDateTime the actual end time (and date) of the shift
-	 * @param {Date} scheduledStart the scheduled start time (and date) of the shift
-	 * @param {Date} scheduledEnd the scheduled end time (and date) of the shift
-	 * @throws {Error} if any
+	 * @param {Date | null} endDateTime the actual end time (and date) of the shift
+	 * @param {Date | null} scheduledStart the scheduled start time (and date) of the shift
+	 * @param {Date | null} scheduledEnd the scheduled end time (and date) of the shift
+	 * @throws {Error} if startDateTime is not a Date, or any [scheduled] date is after its corresponding [scheduled] end date
 	 */
 	constructor(startDateTime, endDateTime, scheduledStart, scheduledEnd) {
 		this.startDate = startDateTime;
@@ -141,6 +141,13 @@ class Shift {
 		this.scheduledEnd = scheduledEnd ?? null;
 	}
 
+	/**
+	 * @description
+	 * the start of the shift
+	 * @memberof Shift
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+	 * @returns {Date} the start of the shift
+	 */
 	get startDate() {
 		return this.#startDate;
 	}
@@ -160,6 +167,13 @@ class Shift {
 		this.#startDate = value;
 	}
 
+	/**
+	 * @description
+	 * the end of the shift, or null if the shift has not ended yet
+	 * @memberof Shift
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+	 * @returns {Date | null} the end of the shift
+	 */
 	get endDate() {
 		return this.#endDate;
 	}
@@ -180,6 +194,13 @@ class Shift {
 		this.#endDate = value;
 	}
 
+	/**
+	 * @description
+	 * the status of the shift
+	 * @memberof Shift
+	 * @see {@link ShiftStatus}
+	 * @returns {ShiftStatus} the status of the shift
+	 */
 	get status() {
 		return this.#status;
 	}
@@ -195,6 +216,13 @@ class Shift {
 			this.#status = value;
 	}
 
+	/**
+	 * @description
+	 * the scheduled start of the shift, or null if the shift has not been scheduled, or has not a scheduled start
+	 * @memberof Shift
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+	 * @returns {Date | null} the scheduled start of the shift
+	 */
 	get scheduledStart() {
 		return this.#scheduledStart;
 	}
@@ -215,6 +243,14 @@ class Shift {
 		this.#scheduledStart = value;
 	}
 
+
+	/**
+	 * @description
+	 * the scheduled end of the shift, or null if the shift has not been scheduled, or has not a scheduled end
+	 * @memberof Shift
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+	 * @returns {Date | null} the scheduled end of the shift
+	 */
 	get scheduledEnd() {
 		return this.#scheduledEnd;
 	}
