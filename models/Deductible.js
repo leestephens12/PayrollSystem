@@ -23,6 +23,7 @@ class Deductible {
 	 * the fixed rate or percentage value of the deductible
 	 */
 	#value;
+
 	/**
 	 * @type {DeductibleType}
 	 * @description
@@ -80,7 +81,7 @@ class Deductible {
 	}
 
 	/**
-	 * returns the deductible's value
+	 * the deductible's value to be deducted; either a fixed rate or percentage value
 	 * @return {number}
 	 */
 	get value() {
@@ -127,7 +128,7 @@ class Deductible {
 	 * @return {number} the amount of money to be deducted
 	 * @remarks if the Deductible type is fixed simply the Deductible's value is returned
 	 */
-	calculateDeductible(pay) {
+	calculateDeductibleAmount(pay) {
 		if(this.#type === "percentage")
 			return pay * this.#value;
 		else

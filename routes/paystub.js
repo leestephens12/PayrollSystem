@@ -14,7 +14,6 @@ router.get("/", (req, res, next) => {
 	const employee = new Employee(_employeeID, _firstName, _lastName, _department, _permissions, _status, _manager,_shifts, _uid);
 	employee.generatePaystubs();
 	const paystubs = employee.paystubs;
-	console.dir(employee.paystubs[0]);
 	if(search)
 	{
 		//todo: filter/query based on query
