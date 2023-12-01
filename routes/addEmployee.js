@@ -12,7 +12,7 @@ router.get("/", function(req, res, next) {
 
 router.post("/", async function(req,res,next) {
     try {
-        const employee = new Employee (
+        const employee = new Employee(
             req.body.employeeID,
             req.body.firstName,
             req.body.lastName,
@@ -24,7 +24,19 @@ router.post("/", async function(req,res,next) {
             "null"      
         );
 
-        await Database.addEmployee("employees", employee, employee.employeeID);
+        const employeePlainObject = {
+            employeeID: employee.employeeID,
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            department: employee.department,
+            permissions: employee.permissions,
+            status: employee.status,
+            manager: employee.manager,
+            shifts: [],
+            uid: "null"      
+        }
+
+        await Database.addEmployee("employees", employeePlainObject, employeePlainObject.employeeID);
         res.redirect("/employees");
         
     } catch (error) {

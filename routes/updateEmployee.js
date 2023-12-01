@@ -16,19 +16,31 @@ router.get("/", async function(req, res, next) {
 
 router.post("/", async function(req, res, next){
     try {
-        const employee = {
-            employeeID: req.body.employeeID,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            department: req.body.department,
-            permissions: req.body.permissions,
-            status: req.body.status,
-            manager: req.body.manager,
+        const employee = new Employee(
+            req.body.employeeID,
+            req.body.firstName,
+            req.body.lastName,
+            req.body.department,
+            req.body.permissions,
+            req.body.status,
+            req.body.manager,
+            [],
+            "null"      
+        );
+
+        const employeePlainObject = {
+            employeeID: employee.employeeID,
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            department: employee.department,
+            permissions: employee.permissions,
+            status: employee.status,
+            manager: employee.manager,
             shifts: [],
             uid: "null"      
         }
         console.log(employee);
-        await Database.updateEmployee(employee.employeeID, employee);
+        await Database.updateEmployee(employeePlainObject.employeeID, employeePlainObject);
         res.redirect("/employees");
         
     } catch (error) {
