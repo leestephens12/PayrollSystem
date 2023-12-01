@@ -67,7 +67,7 @@ and open the development site at <http://localhost:3000/index>
 
 
 
-All related types and classes should be annotated using [jsdoc](https://jsdoc.app/).
+All related types and classes should be suffciently annotated using [jsdoc](https://jsdoc.app/).
 
 ## Contributing
 
