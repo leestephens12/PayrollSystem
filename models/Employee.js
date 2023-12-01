@@ -36,7 +36,10 @@ class Employee {
 		}
 	};
 
-	/** @type {PayStub} @description The employee's paystubs */
+	/**
+	 * The employee's paystubs
+	 * @type {PayStub[]}
+	 */
 	#paystubs;
 
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
@@ -176,7 +179,13 @@ class Employee {
 
 		//? generate the paystubs
 		for(const shifts of payPeriods)
-			this.#paystubs.push(new PayStub(shifts));
+		{
+			const previousPayStub = this.#paystubs.pop();
+			if(previousPayStub)
+				this.#paystubs.push(new PayStub(shifts, previousPayStub.grossProfit, previousPayStub.deducted));
+			const payStub = new PayStub(shifts);
+			this.#paystubs.push(payStub);
+		}
 
 	}
 
@@ -202,10 +211,10 @@ class Employee {
 	clockOut(){
 		let shift = this.getLatestShift();
 
-		if (shift.endDate == 'undefined' && shift != "blank"){
-			
+		if (shift.endDate == "undefined" && shift != "blank"){
 
-			shift.endDate = new Date()
+
+			shift.endDate = new Date();
 			//console.log("shift already open")
 			//Database.updateEmployeeShift( "employees", this)
 		}else{
@@ -223,7 +232,7 @@ class Employee {
 		var shiftArray = [];
 		//var i = 1;
 		this._shifts.forEach(element => {
-			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd
+			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd;
 			shiftArray.push(string);
 		});
 		return shiftArray;
