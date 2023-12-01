@@ -45,6 +45,10 @@ app.use("/removeEmployee/?", removeEmployeeRouter);
 app.use("/updateEmployee/?", updateEmployeeRouter);
 
 
+//comparison operator for if statements in hbs
+hbs.registerHelper('eq', function (value1, value2) {
+	return value1 === value2;
+});
 
 hbs.registerHelper("json", function (content) {
 	return JSON.stringify(content);
