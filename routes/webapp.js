@@ -12,6 +12,12 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/", async function(req, res){
+
+//	var string = ["2023-01-01/2023-01-01/2023-02-02/2023-02-03", "2022-01-01/2022-01-01/2022-02-02/2022-02-03" ]
+//	var stringArray = string.split("/")
+	//console.log(stringArray)
+
+
 	const employeeId = req.body.EmployeeID;
 	const type = req.body.clockType;
 	let employee
@@ -21,17 +27,22 @@ router.post("/", async function(req, res){
 	var lat = parseFloat(req.body.latitude)
 	var long = parseFloat(req.body.longitude)
 	//var workplace = new Workplace("Test",44.611,-79.446)
-	console.log(workplace)
-	employee = await Database.getEmployeeClock("MD#1234567")
+//	console.log(workplace)
+	employee = await Database.getEmployeeClock(employeeId)
 	var workplace = await Database.getWorkplace()
 	console.log(workplace)
 //	console.log(employee)
 	//employee = doc.data() //set employee to the instance of the employee object
 //	console.log(employee)
 	if(employee.employeeID == employeeId){
-	//let workplace = Database.getDoc("workplace","lakeheadU")
-		var workplaceFlag = workplace.checkLocation(Math.abs(lat),Math.abs(long),(workplace))
-				//console.log(x)
+		var workplaceFlag
+		workplace.forEach(location => {
+			console.log(location)
+			if (workplaceFlag != true)
+				workplaceFlag =  location.checkLocation(Math.abs(lat),Math.abs(long),(location))
+			
+		});
+		workplaceFlag = true
 		let shift
 		let shift2 
 		if (type == "clockIn" && workplaceFlag){
@@ -46,10 +57,10 @@ router.post("/", async function(req, res){
 			returnMsg = "Cant clock in, as you have a open shift waiting"
 		}
 		else if(type =="clockOut" && workplaceFlag){
-			shift = employee.getLatestShift()
+			shift = employee.getLatestShift().endDate
 			employee.clockOut()
 			shift2 = employee.getLatestShift()
-			if (shift2.startDate != shift.startDate){
+			if (shift2.endDate != shift){
 					Database.updateEmployeeShift("employees",employee)
 					returnMsg = "Clocked Out Succesfully"
 			}

@@ -146,10 +146,10 @@ class Shift {
 	}
 
 	set endDate(value) {
-		if(!(value instanceof Date))
+		if(!(value instanceof Date) && value != 'undefined')
 			throw new Error("invalid date: date must be a Date object");
-		if(isNullOrUndefined(value))
-			throw new Error("invalid date: date cannot be null or undefined");
+		// if(isNullOrUndefined(value))
+		// 	throw new Error("invalid date: date cannot be null or undefined");
 		if(value < this.#startDate)
 			throw new Error("invalid date: end date must be after start date");
 		this.#endDate = value;
@@ -175,10 +175,10 @@ class Shift {
 	}
 
 	set scheduledStart(value) {
-		if(!(value instanceof Date))
+		if(!(value instanceof Date) && value != 'undefined')
 			throw new Error("invalid date: date must be a Date object");
-		if(isNullOrUndefined(value))
-			throw new Error("invalid date: date cannot be null or undefined");
+		// if(isNullOrUndefined(value))
+		// 	throw new Error("invalid date: date cannot be null or undefined");
 		if(value > this.scheduledEnd)
 			throw new Error("invalid date: start date must be before the scheduled end date");
 		this.#scheduledStart = value;
@@ -189,10 +189,10 @@ class Shift {
 	}
 
 	set scheduledEnd(value) {
-		if(!(value instanceof Date))
+		if(!(value instanceof Date) && value != 'undefined')
 			throw new Error("invalid date: date must be a Date object");
-		if(isNullOrUndefined(value))
-			throw new Error("invalid date: date cannot be null or undefined");
+		// if(isNullOrUndefined(value))
+		// 	throw new Error("invalid date: date cannot be null or undefined");
 		if(value < this.scheduledStart)
 			throw new Error("invalid date: end date must be after the scheduled start date");
 		this.#scheduledEnd = value;

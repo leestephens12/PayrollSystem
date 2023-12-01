@@ -1,5 +1,5 @@
 const {initializeApp, applicationDefault, cert} = require("firebase-admin/app");
-const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult} = require("firebase-admin/firestore");
+const {getFirestore,CollectionReference, Timestamp, FieldValue, Filter,FieldPath, FirestoreDataConverter,QueryDocumentSnapshot,DocumentData, arrayUnion, DocumentReference, WriteResult, doc, deleteDoc} = require("firebase-admin/firestore");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
@@ -17,6 +17,19 @@ class Database {
 		return this.addDoc("expense", expense);
 	}
 
+	static async getExpenseList() {
+		try {
+			const querySnapshot = await this.#db.collection("expense").get();
+			if (!querySnapshot.empty) {
+				return querySnapshot.docs.map(doc => doc.data());
+			} else {
+				return "Query is empty";
+			}
+		} catch (error) {
+			return error;
+		}
+	}
+
 	//#region  Employee
 	/**
 	 *
@@ -25,10 +38,7 @@ class Database {
 	 */
 	static async getEmployee(id) {
 		try {
-			const querySnapshot = await this.#db.collection("employees")
-				.withConverter(this.#getFirestoreConverter("employees"))
-				.where("uid", "==", id)
-				.get();
+			const querySnapshot = await this.#db.collection("employees").where("uid", "==", id).get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
 				return querySnapshot.docs[0].data(); // Returns the data of the first document
@@ -38,6 +48,32 @@ class Database {
 
 		} catch (error) {
 			return null;
+		}
+	}
+	static async getEmployeeClock(id) {
+		try {
+			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id)
+			.withConverter(this.#getFirestoreConverter("employees"))
+			.get()
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+				console.log(querySnapshot.docs[0].data())
+				//console.log(querySnapshot.docs[0].data())
+				 return querySnapshot.docs[0].data(); // Returns the data of the first document
+			} else {
+				 return null;
+			}
+
+		} catch (error) {
+			return null;
+		}
+	}
+	static async deleteDocument(collection, id) {
+		try {
+			const docRef = this.#db.collection(collection).doc(id);
+			await docRef.delete();
+		} catch(error) {
+			console.log(error);
 		}
 	}
 
@@ -123,9 +159,9 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		var shiftList = employee.shiftToArray();
-		shiftList.push("Pizza");
+	//	shiftList.push("Pizza");
 		var data = {   shifts: shiftList };
-		return db.withConverter(converter).doc(employee.uid).update(data);
+		return db.withConverter(converter).doc(employee.employeeID).update(data);
 	}
 
 	static async addEmployeeShift(collection, employee) {
@@ -184,6 +220,23 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		return db.withConverter(converter).get();
+	}
+
+	static async getWorkplace() {
+		try {
+			const querySnapshot = await this.#db.collection("workplace")
+			.withConverter(this.#getFirestoreConverter("workplace"))
+			.get()
+			//returns the first entry as we are only expecting one return value
+			if (!querySnapshot.empty) {
+				return querySnapshot.docs.map(doc => doc.data());
+			} else {
+				return "Query is empty";
+			}
+
+		} catch (error) {
+			return error;
+		}
 	}
 
 	/**
