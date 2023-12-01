@@ -16,7 +16,7 @@
 		<p class="p-tel">555-555-5555</p>
 	</div>
 	<div class="h-card column">
-		<p class="p-name"><strong>John Smith</strong></p>
+		<p class="p-name"><strong>{{employee.firstName}} {{employee.lastName}}</strong></p>
 		<div class="h-adr">
 			<p class="p-street-address">123 Address Rd.</p>
 			<span class="p-locality">City</span>, <span class="p-region">ON</span>
@@ -30,19 +30,17 @@
 <section class="columns">
 	<p class="column">Pay Period:
 		<br>
-		<time datetime="">2023-11-17</time> - <time datetime="">2023-11-17</time>
+		<time datetime="{{paystub.startDate}}">{{paystub.startDate}}</time> - <time datetime="{{paystub.endDate}}">{{paystub.endDate}}</time>
 	</p>
-	<p class="column"><strong>Pay Date: </strong>
+	{{!-- <p class="column"><strong>Pay Date: </strong>
 		<br>
 		<time datetime="">2023-11-17</time>
-	</p>
+	</p> --}}
 </section>
 
 <table class="table is-striped is-fullwidth">
 	<thead>
 		<tr>
-			<th>Income &nbsp; <p><i style="font-size:16px" title="Edit Income"></i></p>
-			</th>
 			<th>This Period</th>
 			<th>Year to Date</th>
 		</tr>

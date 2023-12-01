@@ -27,6 +27,7 @@
 			"html",
 			"htm"
 		],
+		"todo-tree.tree.showBadges": false,
 	},
 	"extensions": {
 		"recommendations": [
