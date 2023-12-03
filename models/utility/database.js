@@ -100,7 +100,7 @@ class Database {
 
 	static async getEmployeeByEmpID(id) {
 		try {
-			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id).get();
+			const querySnapshot = await this.#db.collection("employees").withConverter(Employee.EmployeeConverter).where("employeeID", "==", id).get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
 				return querySnapshot.docs[0].data(); // Returns the data of the first document
@@ -129,7 +129,7 @@ class Database {
 	}
 
 	/**
-	 *
+	 * @param {string} employeeID the id of the employee to be updated
 	 * @param {Employee} employee employee object to be updated
 	 * @returns {Promise<WriteResult>} the result of the update
 	 */

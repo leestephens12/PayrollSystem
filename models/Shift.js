@@ -128,7 +128,7 @@ class Shift {
 	 * @throws {Error} if startDateTime is not a Date, or any [scheduled] date is after its corresponding [scheduled] end date
 	 */
 	constructor(startDateTime, endDateTime, scheduledStart, scheduledEnd, status) {
-		this.startDate = startDateTime;
+		this.startDate = startDateTime ?? null;
 		this.endDate = endDateTime ?? null;
 		this.scheduledStart = scheduledStart ?? null;
 		this.scheduledEnd = scheduledEnd ?? null;

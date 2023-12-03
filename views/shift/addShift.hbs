@@ -1,0 +1,103 @@
+<h2>Add shift for {{employee.firstName}} {{employee.lastName}}</h2>
+
+<form method="post">
+
+    <div class="field">
+        <label for="date" class="label">Date</label>
+        <span class="control">
+			<input class="input" type="date" id="date" name="date" placeholder="Date" required>
+		</span>
+        <p class="help">Date of the shift</p>
+    </div>
+
+    <div class="field">
+        <label for="start" class="label">Start time</label>
+        <span class="control">
+			<input class="input" type="time" id="start" name="start" placeholder="Start" required>
+		</span>
+        <p class="help">Start time of the shift</p>
+    </div>
+
+    <div class="field">
+        <label for="end" class="label">End time</label>
+        <span class="control">
+			<input class="input" type="time" id="end" name="end" placeholder="End" required>
+		</span>
+        <p class="help">End time of the shift</p>
+    </div>
+
+    <div class="field">
+        <label for="duration" class="label">Duration</label>
+        <span class="control"><input readonly class="input" type="text" id="duration"></span>
+    </div>
+
+    <input hidden="hidden" name="employeeID" value="{{employee.employeeID}}">
+
+    <input class="button is-primary" type="submit" value="Submit">
+</form>
+
+<script>
+    const form = document.querySelector("form");
+    const date = document.querySelector("#date");
+    const today = new Date().toISOString().split("T")[0];
+    date.min = today;
+    date.value = today;
+    /** @type {HTMLInputElement} */
+    const startInput = document.querySelector("#start");
+    const now = new Date().toTimeString().substring(0, 5);
+    startInput.value = now;
+    /** @type {HTMLInputElement} */
+    const endInput = document.querySelector("#end");
+
+    form.addEventListener("invalid", event => event.target.classList.add("is-danger"));
+
+    // valueAsNumber is the number of milliseconds since 1970-01-01T00:00:00.000Z
+    form.addEventListener("submit", (event) => {
+        const formData = new FormData(form);
+        const start = formData.get("start");
+        const end = formData.get("end");
+
+        startInput.classList.remove("is-danger");
+        endInput.classList.remove("is-danger");
+
+        if (!start || !end || startInput.valueAsDate > endInput.valueAsDate) {
+            if (!start) {
+                startInput.classList.add("is-danger");
+                startInput.focus();
+            }
+            if (!end) {
+                endInput.classList.add("is-danger");
+                endInput.focus();
+            }
+            if (startInput.valueAsDate > endInput.valueAsDate) {
+                startInput.classList.add("is-danger");
+                endInput.classList.add("is-danger");
+
+                alert("Start time must be before end time");
+            }
+
+            event.preventDefault();
+        }
+    });
+
+    startInput.addEventListener("input", updateDuration);
+    endInput.addEventListener("input", updateDuration);
+
+    const durationInput = document.querySelector("#duration");
+
+    function updateDuration() {
+        const start = startInput.valueAsNumber;
+        const end = endInput.valueAsNumber;
+
+        if (!start || !end || start > end) {
+            durationInput.value = "";
+            return;
+        }
+
+        const elapsedTime = end - start;
+        const hours = Math.floor(elapsedTime / 1000 / 60 / 60);
+        const minutes = Math.floor(elapsedTime / 1000 / 60) % 60;
+        durationInput.value = `${hours} hours ${minutes} minutes`;
+    }
+
+</script>

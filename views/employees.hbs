@@ -1,6 +1,6 @@
 <h2>Employee Table</h2>
 <button><a href="/addEmployee">Add Employee</a></button>
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>Employee ID</th>
@@ -12,18 +12,18 @@
         </tr>
     </thead>
     <tbody>
-    {{#each employees}}
-        <tr>
-            <td>{{this.employeeID}}</td>
-            <td>{{this.firstName}}</td>
-            <td>{{this.lastName}}</td>
-            <td>{{this.department}}</td>
-            <td>{{this.status}}</td>
-            <td>
-                <a href="/removeEmployee/?empID={{this.employeeID}}">Remove</a>
-                <a href="/updateEmployee/?empID={{this.employeeID}}">Update</a>
-            </td>
-        </tr>
-    {{/each}}
+        {{#each employees}}
+            <tr>
+                <td>{{this.employeeID}}</td>
+                <td>{{this.firstName}}</td>
+                <td>{{this.lastName}}</td>
+                <td>{{this.department}}</td>
+                <td>{{this.status}}</td>
+                <td>
+                    <a class="button is-primary" href="/updateEmployee/?empID={{this.employeeID}}">Manage</a>
+                    <a class="button is-danger" href="/removeEmployee/?empID={{this.employeeID}}">Remove</a>
+                </td>
+            </tr>
+        {{/each}}
     </tbody>
 </table>

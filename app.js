@@ -46,13 +46,13 @@ app.use("/updateEmployee/?", updateEmployeeRouter);
 
 
 //comparison operator for if statements in hbs
-hbs.registerHelper('eq', function (value1, value2) {
+hbs.registerHelper("eq", function (value1, value2) {
 	return value1 === value2;
 });
 
-hbs.registerHelper("json", function (content) {
-	return JSON.stringify(content);
-});
+hbs.registerHelper("json", content => JSON.stringify(content));
+
+hbs.registerHelper("getShiftDuration", /** @param {Shift} shift */ shift=> shift.getDuration().TotalHours);
 
 
 // catch 404 and forward to error handler

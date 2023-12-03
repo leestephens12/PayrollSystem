@@ -4,6 +4,7 @@ const {Router} =  express;
 const router = Router();
 const Employee = require("../models/Employee");
 const Shift = require("../models/Shift");
+const Database = require("../models/utility/database");
 
 /** @type {Calendar.CalendarOptions } */
 const calendarOptions ={
@@ -18,32 +19,95 @@ const calendarOptions ={
 	},
 };
 
+//#region view shifts
 // view current employee's shifts
 router.get("/", (req, res, next) => {
 	const employee = parseEmployeeFromRequestCookie(req);
-	const shifts = [];
-	const pastShifts = getPastShifts(employee);
-	const upcomingShifts = getUpcomingShifts(employee);
+	const shifts = employee.shifts;
+	const pastShifts = getPastShifts(employee).map(shift => shift.toObject());
+	let upcomingShifts = getUpcomingShifts(employee);
 	//create events for each upcoming shift for the (full)calendar
-	const events = createFullCalendarEventsFromShifts(upcomingShifts);
-	calendarOptions.events = events;
-	res.render("shifts", { title: "Shifts", calendarOptions,upcomingShifts,shifts,pastShifts });
+	calendarOptions.events = createFullCalendarEventsFromShifts(shifts);
+	upcomingShifts = upcomingShifts.map(shift => shift.toObject());
+	res.render("shift/viewShifts", { title: "Shifts", calendarOptions,upcomingShifts,shifts,pastShifts });
 });
 
 //view given employee's shifts; managers only of subordinate employees
-router.get("/:employeeID", (req, res, next) => {
-	const employee = parseEmployeeFromRequestCookie(req);
-	//check if their a manager
-	if(!manager)
-		return res.redirect(403,"/shifts"); //forbidden access
-	const shifts = [];
-	const pastShifts = getPastShifts(employee);
-	const upcomingShifts = getUpcomingShifts(employee);
+router.get("/view/:employeeID", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.params.employeeID;
+	if (!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	const shifts = employee.shifts;
+	const pastShifts = getPastShifts(employee).map(shift => shift.toObject());
+	let upcomingShifts = getUpcomingShifts(employee);
 	//create events for each upcoming shift for the (full)calendar
-	const events= createFullCalendarEventsFromShifts(shifts);
-	calendarOptions.events = events;
-	res.render("shifts", { title: "Shifts", calendarOptions,upcomingShifts,shifts,pastShifts });
+	calendarOptions.events = createFullCalendarEventsFromShifts(shifts);
+	upcomingShifts = upcomingShifts.map(shift => shift.toObject());
+	res.render("shift/viewShifts", {title: "Shifts", calendarOptions, upcomingShifts, shifts, pastShifts,employee});
 });
+
+
+//#endregion
+
+//#region CRUD shifts
+router.get("/create", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.query.employeeID;
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	//check if they're a manager
+	if(!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	//check if the employee has a shift at that time
+	
+	res.render("shift/addShift", {title: "Create Shift", employee});
+});
+
+router.post("/create", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.body.employeeID;
+	/** @type {Employee | null} */
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	//check if they're a manager
+	if(!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const {start, end,date} = req.body;
+	const scheduledStart = new Date(`${date} ${start}`);
+	const scheduledEnd = new Date(`${date} ${end}`);
+	const shift = new Shift(null,null,scheduledStart,scheduledEnd);
+	employee.shifts.push(shift);
+	await Database.updateEmployee(employeeID, Employee.EmployeeConverter.toFirestore(employee));
+	res.redirect(`/shifts/view/${employeeID}`);
+});
+
+//#endregion
+
+/**
+ * Checks if an employee is an employee of the given manager
+ * @param {Employee} manager - The manager object.
+ * @param {string} employeeID - The employee ID of the employee.
+ * @returns {boolean} True if the employee is an employee of the manager, false otherwise.
+ */
+async function isEmployee(manager, employeeID) {
+	/** @type {Employee[]} */
+	const employees = [];
+	(await Database.getEmployees()).forEach(employee =>employees.push(employee.data()));
+	for (const employee of employees)
+		if (employee.manager === manager.employeeID && employee.employeeID === employeeID)
+			return true;
+	return false;
+}
+
+
+/**
+ * Checks if an employee is a manager
+ * @param {Employee} employee - The employee object.
+ * @returns {boolean} True if the employee is a manager, false otherwise.
+ */
+function isManager(employee) {
+	return employee.permissions.toLowerCase() === "yes";
+}
 
 /**
  * creates an array of events for the fullcalendar widget, from an array of shifts
@@ -53,15 +117,31 @@ router.get("/:employeeID", (req, res, next) => {
 function createFullCalendarEventsFromShifts(shifts) {
 	const events = [];
 	for (const shift of shifts) {
-		//todo: add differentiator for past and upcmoing shifts
-		/** @type {import('@fullcalendar/core').EventSourceInput} */
+		/** @type {import('@fullcalendar/core').EventInput} */
 		const event = {
-			title: "Shift",
-			color: "blue",
+			title: `${shift.getDuration().TotalHours}hrs - ${shift.status}`,
 			start: shift.scheduledStart,
 			end: shift.scheduledEnd,
 			editable: false,
 		};
+		switch (shift.status) {
+		case "completed":
+			event.color = "green";
+			break;
+		case "canceled":
+			event.backgroundColor = "red";
+			break;
+		case "requestedOff":
+			event.backgroundColor = "yellow";
+			break;
+		case "not started":
+			event.backgroundColor = "blue";
+			break;
+		case "in progress":
+		default:
+			event.backgroundColor = "purple";
+			break;
+		}
 		events.push(event);
 	}
 	return events;
@@ -70,7 +150,7 @@ function createFullCalendarEventsFromShifts(shifts) {
 /**
  * Retrieves the upcoming shifts for a given employee.
  *
- * @param {Object} employee - The employee object.
+ * @param {Employee} employee - The employee object.
  * @return {Shift[]} An array of upcoming shifts.
  */
 function getUpcomingShifts(employee) {
@@ -80,7 +160,7 @@ function getUpcomingShifts(employee) {
 /**
  * Returns the previously completed (past) shifts of an employee.
  *
- * @param {object} employee - The employee object containing the shifts.
+ * @param {Employee} employee - The employee object containing the shifts.
  * @return {Shift[]} An array of past shifts.
 */
 function getPastShifts(employee) {
