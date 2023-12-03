@@ -117,11 +117,9 @@ class Shift {
 		},
 	};
 
-	constructor(startDateTime, endDateTime, scheduledStart, scheduledEnd) {
+	constructor(startDateTime, endDateTime) {
 		this.#startDate = startDateTime;
 		this.#endDate = endDateTime;
-		this.#scheduledStart = scheduledStart;
-		this.#scheduledEnd = scheduledEnd;
 	}
 
 	get startDate() {

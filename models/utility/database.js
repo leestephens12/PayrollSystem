@@ -77,15 +77,6 @@ class Database {
 		}
 	}
 
-	static async deleteDocument(collection, id) {
-		try {
-			const docRef = this.#db.collection(collection).doc(id);
-			await docRef.delete();
-		} catch(error) {
-			console.log(error);
-		}
-	}
-
 	static async getEmployeeList(id) {
 		try {
 			const querySnapshot = await this.#db.collection("employees").where("manager", "==", id).get();

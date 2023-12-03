@@ -13,80 +13,69 @@ router.get("/", function(req, res, next) {
 
 router.post("/", async function(req, res){
 
-//	var string = ["2023-01-01/2023-01-01/2023-02-02/2023-02-03", "2022-01-01/2022-01-01/2022-02-02/2022-02-03" ]
-//	var stringArray = string.split("/")
-	//console.log(stringArray)
-
-
-	const employeeId = req.body.EmployeeID;
-	const type = req.body.clockType;
+	//collected from the client webpage
+	const employeeId = req.body.EmployeeID; //the employee ID trying to sign in
+	const type = req.body.clockType; // what operation 
+	var lat = parseFloat(req.body.latitude)//geo data
+	var long = parseFloat(req.body.longitude) //geo data
+	
+	//holder variables
 	let employee
 	let returnMsg
-
-
-	var lat = parseFloat(req.body.latitude)
-	var long = parseFloat(req.body.longitude)
-	//var workplace = new Workplace("Test",44.611,-79.446)
-//	console.log(workplace)
+	let  workplaceFlag
+	
+	//Database section, checks employeeId, and gets all possible workplace locations
 	employee = await Database.getEmployeeClock(employeeId)
-	var workplace = await Database.getWorkplace()
-	console.log(workplace)
-//	console.log(employee)
-	//employee = doc.data() //set employee to the instance of the employee object
-//	console.log(employee)
-	if(employee.employeeID == employeeId){
-		var workplaceFlag
-		workplace.forEach(location => {
+	let workplace = await Database.getWorkplace()
+	//console.log(workplace)
+
+
+	if(employee.employeeID == employeeId){//if the employee has been found
+		
+		workplace.forEach(location => { //checks to see that if employee is located at any workplace locations
 			console.log(location)
 			if (workplaceFlag != true)
 				workplaceFlag =  location.checkLocation(Math.abs(lat),Math.abs(long),(location))
 			
 		});
-		workplaceFlag = true
-		let shift
-		let shift2 
-		if (type == "clockIn" && workplaceFlag){
-			shift = employee.getLatestShift()
-			employee.clockIn()
-			shift2 = employee.getLatestShift()
-			if (shift2.startDate != shift.startDate){
+		//workplaceFlag = true //Used to ignore geolocation, for testing
+
+		let shift//shift before operation
+		let shift2 //shift after operation
+
+		if (type == "clockIn" && workplaceFlag){ //if the employee is trying to clock in
+			shift = employee.getLatestShift() //set to the most recent shift
+			employee.clockIn() //attempt to clock in
+			shift2 = employee.getLatestShift() // get the recent shift after modification
+			if (shift2.startDate != shift.startDate){ //checks to see if the shift has been updated.
+				//if the shift has updated, clockin on the database
 				Database.updateEmployeeShift("employees",employee)
-				returnMsg = "Clocked in Succesfully"
+				returnMsg = "Clocked in Succesfully" //return a sucessful message to the user
 			}
-			else
+			else //no Change in shift, thus clockin has failed
 			returnMsg = "Cant clock in, as you have a open shift waiting"
 		}
-		else if(type =="clockOut" && workplaceFlag){
-			shift = employee.getLatestShift().endDate
-			employee.clockOut()
-			shift2 = employee.getLatestShift()
-			if (shift2.endDate != shift){
-					Database.updateEmployeeShift("employees",employee)
+		else if(type =="clockOut" && workplaceFlag){ //if the employee is trying to clock out
+			shift = employee.getLatestShift().endDate //set to the most recent shift
+			employee.clockOut()//attempt to clock in
+			shift2 = employee.getLatestShift() //gets shift after modifcation
+			if (shift2.endDate != shift){ //if a difference occurs
+					Database.updateEmployeeShift("employees",employee) //update in database
 					returnMsg = "Clocked Out Succesfully"
 			}
 			else
 				returnMsg = "Cant clock out, as you have no open shift waiting"
 		}
-		else if(workplaceFlag == false)
+		else if(workplaceFlag == false) //if you are not in the correct geolocation
 				returnMsg = "You are not in the correct location to clock in or out"
 		else
-			returnMsg = "Please try again."
-	}else
+			returnMsg = "Please try again." //if the operation is undefined
+	}else //did not enter the proper id
 		returnMsg = "Invalid Employee ID"
 
 
-	res.redirect("/webapp?result="+returnMsg);
+	res.redirect("/webapp?result="+returnMsg); //return message to client webpage
 
-	
-	
-
-	
-
-
-	// if (employeeId = "12345")
-	//     res.redirect('/webapp?result=ClockedInSuc');
-	// else
-	// res.redirect('/webapp?result=ClockedInFail');
 });
 
 module.exports = router;

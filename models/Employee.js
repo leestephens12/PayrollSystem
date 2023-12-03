@@ -206,11 +206,9 @@ class Employee {
 	clockIn(){
 		let shift = this.getLatestShift();
 
-		if (shift.endDate == "undefined" && shift != "blank"){
-			//shift.endDate = new Date()
+		if (shift.endDate == "undefined" && shift != "blank"){ //checks if a shift is open
 			console.log("shift already open");
-			//Database.updateEmployeeShift( "employees", this)
-		}else{
+		}else{ //if no shift open
 			this.shifts.push(new Shift(new Date));
 		}
 
@@ -218,16 +216,10 @@ class Employee {
 	clockOut(){
 		let shift = this.getLatestShift();
 
-		if (shift.endDate == 'undefined' && shift != "blank"){
-			
-
+		if (shift.endDate == 'undefined' && shift != "blank"){//checks if shift is open
 			shift.endDate = new Date()
-			//console.log("shift already open")
-			//Database.updateEmployeeShift( "employees", this)
-		}else{
-			//shift.endDate = new Date()
+		}else{//if there is no shift to close
 			console.log("shift already open");
-			//Database.updateEmployeeShift( "employees", this)
 		}
 	}
 	getPayStubDocument(){
@@ -239,7 +231,7 @@ class Employee {
 		var shiftArray = [];
 		//var i = 1;
 		this._shifts.forEach(element => {
-			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd
+			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd //generates concat String
 			shiftArray.push(string);
 		});
 		return shiftArray;
