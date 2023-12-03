@@ -1,4 +1,6 @@
 class Period {
+	/** The total number of milliseconds elapsed.
+	 * @type {number} */
 	#elapsedMilliseconds;
 	#start;
 	#end;
@@ -8,10 +10,6 @@ class Period {
 
 	get elapsedMilliseconds() {
 		return this.#elapsedMilliseconds;
-	}
-
-	get seconds(){
-		return Math.this.getTotalSeconds();
 	}
 
 	get start() {
@@ -30,21 +28,44 @@ class Period {
 
 
 	/** Returns the total number of milliseconds elapsed.	 */
-	getTotalMilliseconds = () => this.#elapsedMilliseconds;
-	/** Returns the total number of seconds elapsed.	 */
-	getTotalSeconds = () => this.getTotalMilliseconds() / 1000;
-	/** Returns the total number of minutes elapsed.	 */
-	getTotalMinutes = () => this.getTotalSeconds() / 60;
-	/** Returns the total number of elapsed hours.	 */
-	getTotalHours = () => this.getTotalMinutes() / 60;
-	/** Returns the total number of elapsed days.	 */
-	getTotalDays = () => this.getTotalHours() / 24;
-	/** Returns the total number of elapsed weeks.	 */
-	getTotalWeeks = () => this.getTotalDays() / 7;
-	/** Returns the total number of elapsed months.	 */
-	getTotalMonths = () => this.getTotalDays() / 30;
-	/** Returns the total number of elapsed years.	 */
-	getTotalYears = () => this.getTotalWeeks() / 52;
+	get TotalMilliseconds() {
+		return this.#elapsedMilliseconds;
+	}
+	/** the total number of seconds elapsed.
+	 * @return{number}*/
+	get TotalSeconds() {
+		return this.TotalMilliseconds / 1000;
+	}
+	/** the total number of minutes elapsed.
+	 * @return{number}*/
+	get TotalMinutes() {
+		return this.TotalSeconds / 60;
+	}
+	/** the total number of elapsed hours.
+	 * @return{number}*/
+	get TotalHours() {
+		return this.TotalMinutes / 60;
+	}
+	/** the total number of elapsed days.
+	 * @return{number}*/
+	get TotalDays() {
+		return this.TotalHours / 24;
+	}
+	/** the total number of elapsed weeks.
+	 * @return{number}*/
+	get TotalWeeks() {
+		return this.TotalDays / 7;
+	}
+	/** the total number of elapsed months.
+	 * @return{number}*/
+	get TotalMonths() {
+		return this.TotalDays / 30;
+	}
+	/** the total number of elapsed years.
+	 * @return{number}*/
+	get TotalYears() {
+		return this.TotalWeeks / 52;
+	}
 }
 
 //export default Period;
