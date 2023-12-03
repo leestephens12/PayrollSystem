@@ -1,7 +1,7 @@
 const PayStub = require("./PayStub");
 const Shift = require("./Shift");
-const { Period } = require("./utility/Period");
-//const Database = require("../models/utility/database");
+const Period = require("./utility/Period");
+
 class Employee {
 	static EmployeeConverter = {
 		toFirestore: (employee) => {
@@ -19,41 +19,22 @@ class Employee {
 		},
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
-
-			// const shiftList = Shift.firebaseConverter.fromFirestore(data.shifts);
-			let shiftList = []
-			const shifts = data.shifts
-
-			console.log(shifts)
-			if(shifts.length >0){
-				shifts.forEach(element => {
-					let stringArray = element.split("/")
-					let startDate = stringArray[0]
-					let schStart = stringArray[1]
-					let endDate = stringArray[2]
-					let schEnd = stringArray[3]
-					let shift = new Shift(startDate,endDate)
-					shift.scheduledStart = schStart
-					shift.scheduledEnd = schEnd
-					shiftList.push(shift)
-				});
-		}
-			const employee = new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shiftList, data.uid);
-
-			//set each of the shifts employee value, to the newly created employee
-			if(!employee.shifts)
-				employee.shifts = [];
-			else
-				employee.shifts.forEach(element => {
-					element.Employee = employee;
-				});
-
-			return employee;
+			const shifts = Shift.firebaseConverter.fromFirestore(data.shifts);
+			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shifts, data.uid);
 		}
 	};
 
-	/** @type {PayStub} @description The employee's paystubs */
+	/**
+	 * The employee's paystubs
+	 * @type {PayStub[]}
+	 */
 	#paystubs;
+	/** The employee's wage type - how the employee is paid; either salaried or hourly
+	 * @type {"salaried" | "hourly"} */
+	#wage;
+	/** The employee's pay
+	 * @type {number} */
+	#pay;
 
 	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
 		this.employeeID = employeeID;
@@ -64,7 +45,7 @@ class Employee {
 		this.status = status;
 		this.manager = manager;
 		this.#paystubs = [];
-		this.shifts = shifts;
+		this.shifts = shifts ?? [];
 		this.uid = uid;
 	}
 
@@ -74,8 +55,8 @@ class Employee {
 
 	set employeeID(value) {
 
-		// id must have the first name, and last name initial followed by a hastag, then a 7 digit number
-		if (value.length == 10 && value.substring(2,3) == "#"){
+		// id must have the first name, and lastname initial followed by a hastag, then a 7 digit number
+		if (value.length == 10 && value.substring(2,3) == "@"){
 			this._employeeID = value;
 		}else {
 
@@ -166,6 +147,31 @@ class Employee {
 			throw new Error("invalid paystubs: paystubs must be an array");
 		this.#paystubs = value;
 	}
+
+
+	/** the employee's wage type - how the employee is paid; either salaried or hourly */
+	get wage(){
+		return this.#wage;
+	}
+	set wage(value){
+		if(value == "salaried" || value == "hourly")
+			this.#wage = value;
+		else
+			throw new Error("invalid wage: wage must be either 'salaried' or 'hourly'");
+	}
+
+	/** the amount the employee is paid, per their wage */
+	get pay(){
+		return this.#pay;
+	}
+	set pay(value){
+		if(typeof value != "number")
+			throw new Error("invalid pay: pay must be a number");
+		if(value < 0)
+			throw new Error("invalid pay: pay cannot be negative");
+		this.#pay = value;
+	}
+
 	generatePaystubs(){
 		this.#paystubs = new Array();
 		/**@type {Array<Shift[]>}
@@ -192,9 +198,18 @@ class Employee {
 
 		//? generate the paystubs
 		for(const shifts of payPeriods)
-			this.#paystubs.push(new PayStub(shifts));
-
+		{
+			const previousPayStub = this.#paystubs.pop();
+			if(previousPayStub)
+			{
+				this.paystubs.push(previousPayStub);
+				this.#paystubs.push(new PayStub(this,shifts, previousPayStub.grossProfit, previousPayStub.deducted));
+			}
+			else
+				this.#paystubs.push(new PayStub(this, shifts,0,0));
+		}
 	}
+
 
 	getLatestShift(){
 		if (this.shifts.length > 0) //get the last element of array
@@ -222,16 +237,16 @@ class Employee {
 			console.log("shift already open");
 		}
 	}
-	getPayStubDocument(){
-
+	getLatestPaystub(){
+		return this.paystubs[this.paystubs.length - 1];
 	}
 	shiftToArray(){
 
 		//return all but the last shift
-		var shiftArray = [];
+		let shiftArray = [];
 		//var i = 1;
 		this._shifts.forEach(element => {
-			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd //generates concat String
+			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd;
 			shiftArray.push(string);
 		});
 		return shiftArray;

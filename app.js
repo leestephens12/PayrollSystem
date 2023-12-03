@@ -16,6 +16,7 @@ const shiftsRouter = require("./routes/shifts");
 const employeesRouter = require("./routes/employees");
 const addEmployeeRouter = require("./routes/addEmployee");
 const removeEmployeeRouter = require("./routes/removeEmployee");
+const updateEmployeeRouter = require("./routes/updateEmployee");
 
 
 const app = express();
@@ -41,7 +42,13 @@ app.use(["/shifts?"], shiftsRouter);
 app.use("/employees", employeesRouter);
 app.use("/addEmployee", addEmployeeRouter);
 app.use("/removeEmployee/?", removeEmployeeRouter);
+app.use("/updateEmployee/?", updateEmployeeRouter);
 
+
+//comparison operator for if statements in hbs
+hbs.registerHelper('eq', function (value1, value2) {
+	return value1 === value2;
+});
 
 hbs.registerHelper("json", function (content) {
 	return JSON.stringify(content);

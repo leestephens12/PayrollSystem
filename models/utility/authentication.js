@@ -20,12 +20,6 @@ class Authentication {
                 const user = userCredential.user;
                 console.log(user.uid + " is signed in");
                 
-            })
-            .catch((error) => {
-                //if there is an error it will output the code and message
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode + " " + errorMessage);
             });
     }
 
