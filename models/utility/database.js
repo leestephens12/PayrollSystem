@@ -52,18 +52,37 @@ class Database {
 			return null;
 		}
 	}
+	
+	/**
+	 * Gets all employees from firestore
+	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
+	 */
+	static async getEmployees() {
+		return this.getDocs("employees");
+	}
+	
+	/**
+	 * Gets all managers from firestore
+	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Manager>>}
+	 */
+	static async getManagers() {
+		return this.#db.collection("employees")
+			.withConverter(Employee.EmployeeConverter)
+			.where("permissions", "==", "Yes")
+			.get();
+	}
 	static async getEmployeeClock(id) {
 		try {
 			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id)
-			.withConverter(this.#getFirestoreConverter("employees"))
-			.get()
+				.withConverter(this.#getFirestoreConverter("employees"))
+				.get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
-				console.log(querySnapshot.docs[0].data())
+				console.log(querySnapshot.docs[0].data());
 				//console.log(querySnapshot.docs[0].data())
-				 return querySnapshot.docs[0].data(); // Returns the data of the first document
+				return querySnapshot.docs[0].data(); // Returns the data of the first document
 			} else {
-				 return null;
+				return null;
 			}
 
 		} catch (error) {
@@ -94,15 +113,6 @@ class Database {
 		}
 	}
 
-	static async deleteDocument(collection, id) {
-		try {
-			const docRef = this.#db.collection(collection).doc(id);
-			await docRef.delete();
-		} catch(error) {
-			console.log(error);
-		}
-	}
-
 	static async getEmployeeList(id) {
 		try {
 			const querySnapshot = await this.#db.collection("employees").where("manager", "==", id).get();
@@ -116,24 +126,6 @@ class Database {
 		} catch (error) {
 			return error;
 		}
-	}
-
-	/**
-	 *
-	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<Employee>>}
-	 *
-	 * @example
-	 * const employees = await Database.getEmployees();
-	 * // => QuerySnapshot
-	 * @example
-	 * const employees = Database.getEmployees().then(querySnapshot => {
-	 *   querySnapshot.forEach(doc => {
-	 *     console.log(doc.data());
-	 *   });
-	 * });
-	 */
-	static async getEmployees() {
-		return this.getDocs("employees");
 	}
 
 	/**
@@ -164,14 +156,14 @@ class Database {
 	static async addEmployeeToAuth(email, password, employeeID, employee) {
 		try {
 			const userRecord = await this.#auth.createUser({
-			  email: email,
-			  emailVerified: false,
-			  password: password,
-			  displayName: employeeID,
-			  disabled: false,
+				email: email,
+				emailVerified: false,
+				password: password,
+				displayName: employeeID,
+				disabled: false,
 			});
-		
-			console.log('Successfully created new user:', userRecord.uid);
+
+			console.log("Successfully created new user:", userRecord.uid);
 			const employeeJson = {
 				employeeID: employee.employeeID,
 				firstName: employee.firstName,
@@ -182,12 +174,13 @@ class Database {
 				manager: employee.manager,
 				shifts: [],
 				uid: userRecord.uid
-			}
+			};
 			await this.addEmployeeToFirestore("employees", employeeJson, employeeID);
-		  } catch (error) {
-			console.error('Error creating new user:', error);
+		}
+		catch (error) {
+			console.error("Error creating new user:", error);
 			throw error;
-		  }
+		}
 	}
 	//#endregion
 
@@ -219,7 +212,7 @@ class Database {
 		const db = this.getCollection(collection);
 		const converter = this.#getFirestoreConverter(collection);
 		var shiftList = employee.shiftToArray();
-	//	shiftList.push("Pizza");
+		//	shiftList.push("Pizza");
 		var data = {   shifts: shiftList };
 		return db.withConverter(converter).doc(employee.employeeID).update(data);
 	}
@@ -237,11 +230,6 @@ class Database {
 	 * @param {CollectionName} collection the collection name
 	 * @param {*} data data to upload
 	 * @returns {Promise<DocumentReference<DocumentData>>} the document reference of the uploaded data in firestore
-	 *
-	 * @example
-	 * const data = { firstName: "John", lastName: "Doe" };
-	 * await Database.addDoc("example", data);
-	 * // => { firstName: "John", lastName: "Doe" }
 	 */
 	static async addDoc(collection, data) {
 		const db = this.getCollection(collection);
@@ -252,10 +240,6 @@ class Database {
 	 * get the collection from firestore to perform CRUD operations on
 	 * @param {CollectionName} collection
 	 * @returns {CollectionReference<DocumentData>}
-	 *
-	 * @example
-	 * const collection = Database.getCollection("employees");
-	 * // => CollectionReference
 	 */
 	static getCollection(collection) {
 		return this.#db.collection(collection);
@@ -265,16 +249,6 @@ class Database {
 	 *
 	 * @param {CollectionName} collection
 	 * @returns {Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>>}
-	 *
-	 * @example
-	 * const shifts = await Database.getDocs("info");
-	 * // => QuerySnapshot
-	 * @example
-	 * const shifts = Database.getDocs("items").then(querySnapshot => {
-		 querySnapshot.forEach(doc => {
-			console.log(doc.data());
-		 })
-	 })
 	 */
 	static async getDocs(collection) {
 		const db = this.getCollection(collection);
@@ -285,8 +259,8 @@ class Database {
 	static async getWorkplace() {
 		try {
 			const querySnapshot = await this.#db.collection("workplace")
-			.withConverter(this.#getFirestoreConverter("workplace"))
-			.get()
+				.withConverter(this.#getFirestoreConverter("workplace"))
+				.get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
 				return querySnapshot.docs.map(doc => doc.data());
@@ -328,10 +302,8 @@ class Database {
 	}
 }
 
-
-// todo: make paystubs db crud
 /**
- * @typedef { "employees" | "paystubs"} CollectionName
+ * @typedef { "employees" | "paystubs", "workplace"} CollectionName
  * @enum
  * @description
  * The name of the collection in the database

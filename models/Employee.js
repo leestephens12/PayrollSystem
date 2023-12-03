@@ -1,7 +1,7 @@
 const PayStub = require("./PayStub");
 const Shift = require("./Shift");
 const Period = require("./utility/Period");
-//const Database = require("../models/utility/database");
+
 class Employee {
 	static EmployeeConverter = {
 		toFirestore: (employee) => {
@@ -19,9 +19,7 @@ class Employee {
 		},
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
-
 			const shifts = Shift.firebaseConverter.fromFirestore(data.shifts);
-
 			return new Employee(data.employeeID, data.firstName, data.lastName, data.department,data.permissions,data.status,data.manager,shifts, data.uid);
 		}
 	};
@@ -47,7 +45,7 @@ class Employee {
 		this.status = status;
 		this.manager = manager;
 		this.#paystubs = [];
-		this.shifts = shifts;
+		this.shifts = shifts ?? [];
 		this.uid = uid;
 	}
 
@@ -247,13 +245,13 @@ class Employee {
 			//Database.updateEmployeeShift( "employees", this)
 		}
 	}
-	getPayStubDocument(){
-
+	getLatestPaystub(){
+		return this.paystubs[this.paystubs.length - 1];
 	}
 	shiftToArray(){
 
 		//return all but the last shift
-		var shiftArray = [];
+		let shiftArray = [];
 		//var i = 1;
 		this._shifts.forEach(element => {
 			let string = element.startDate +"/" + element.scheduledStart  + "/" +element.endDate  + "/" + element.scheduledEnd;
