@@ -1,12 +1,5 @@
-<h2>Add Employee Form</h2>
-<script defer>
-    const Handlebars = require("handlebars");
+<h2>Update Employee Form</h2>
 
-    Handlebars.registerHelper("eq", function(value1, value2) {
-        return value1 === value2;
-    });
-
-</script>
 <form action="/addEmployee" method="post">
     <label for="firstName">First Name:</label><br>
     <input class="input" type="text" id="firstName" name="firstName" autocomplete="given-name"
@@ -24,7 +17,7 @@
            value="{{employee.password}}"><br>
 
     <label for="employeeID">Employee ID:</label><br>
-    <input class="input" type="text" id="employeeID" name="employeeID" value="{{employee.employeeID}}"><br>
+    <input class="input" readonly type="text" id="employeeID" name="employeeID" value="{{employee.employeeID}}"><br>
 
     <label for="status">Status:</label><br>
 
@@ -56,10 +49,12 @@
     <input class="input" type="text" id="manager" name="manager" value="{{employee.manager}}"><br>
 
     <label for="permissions">Permissions:</label><br>
-    <input class="input" type="text" id="permissions" name="permissions" value="{{employee.permissions}}"><br>
-
-    <label for="shifts">Shifts: </label><br>
-    <input class="input" type="text" id="shifts" name="shifts" value="{{employee.shifts}}">
+    <span class="select is-fullwidth">
+        <select id="permissions" name="permissions">
+            <option value="Yes" {{#if  (eq employee.permissions "Yes")}}selected{{/if}}>Yes</option>
+            <option value="No" {{#if  (eq employee.permissions "No")}}selected{{/if}}>No</option>
+        </select>
+    </span>
     <br>
     <br>
 
