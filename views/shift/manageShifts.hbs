@@ -18,8 +18,8 @@
                 <td>{{date shift.scheduledEnd}} - {{time shift.scheduledEnd}}</td>
                 <td>{{date shift.end}} - {{time shift.end}}</td>
                 <td>
-                    <a class="is-warning" href="/shift/edit/{{@index}}?employeeID={{../employee.employeeID}}">Edit</a>
-                    <a class="is-danger" href="/shift/delete/{{@index}}?employeeID={{../employee.employeeID}}">Delete</a>
+                    <a class="button is-warning" href="/shift/edit/{{@index}}?employeeID={{../employee.employeeID}}">Edit</a>
+                    <a class="button is-danger" href="/shift/delete/{{@index}}?employeeID={{../employee.employeeID}}">Delete</a>
                 </td>
             </tr>
         {{/each}}
