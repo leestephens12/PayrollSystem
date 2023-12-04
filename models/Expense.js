@@ -3,29 +3,40 @@ class Expense {
 	static ExpenseConverter = {
 		toFirestore: (expense) => {
 			return {
+				id: expense.id,
 				type: expense.type,
 				amount: expense.amount,
+				to: expense.to,
 				from: expense.from,
+				status: expense.status
 			};
 		},
 		fromFirestore: (snapshot, options) => {
 			const data = snapshot.data(options);
-			return new Expense(data.type, data.amount, data.from);
+			return new Expense(data.id, data.type, data.amount, data.to, data.from, data.status);
 		}
 	};
 
-	constructor(type, amount, from, to, proof) {
+	constructor(id, type, amount, to, from, status) {
+		this.id = id;
 		this.type = type;
 		this.amount = amount;
 		this.from = from;
 		this.to = to;
-		this.proof = proof;
+		this.status = status;
+	}
+
+	get id() {
+		return this._id;
+	}
+
+	set id(value) {
+		this._id = value;
 	}
 
 	get type() {
 		return this._type;
 	}
-
 
 	set type(value) {
 		if (value == "Mileage" || value == "Supplies" || value =="Meal")
@@ -48,6 +59,15 @@ class Expense {
 			this._amount = value;
 	}
 
+	get to() {
+		return this._to;
+	}
+
+
+	set to(value) {
+		this._to = value;
+	}
+
 
 	get from() {
 		return this._from;
@@ -64,24 +84,12 @@ class Expense {
 		}
 	}
 
-
-	get to() {
-		return this._to;
+	get status() {
+		return this._status;
 	}
 
-
-	set to(value) {
-		this._to = value;
-	}
-
-
-	get proof() {
-		return this._proof;
-	}
-
-
-	set proof(value) {
-		this._proof = value;
+	set status(value) {
+		this._status = value;
 	}
 
 

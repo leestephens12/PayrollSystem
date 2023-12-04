@@ -17,6 +17,7 @@ const employeesRouter = require("./routes/employees");
 const addEmployeeRouter = require("./routes/addEmployee");
 const removeEmployeeRouter = require("./routes/removeEmployee");
 const updateEmployeeRouter = require("./routes/updateEmployee");
+const expenseActionRouter = require("./routes/expenseAction");
 
 
 const app = express();
@@ -43,6 +44,7 @@ app.use("/employees", employeesRouter);
 app.use("/addEmployee", addEmployeeRouter);
 app.use("/removeEmployee/?", removeEmployeeRouter);
 app.use("/updateEmployee/?", updateEmployeeRouter);
+app.use("/expenseAction", expenseActionRouter);
 
 
 //comparison operator for if statements in hbs

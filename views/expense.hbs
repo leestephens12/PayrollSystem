@@ -1,8 +1,9 @@
+{{#if (eq currentEmp.permissions "No")}}
 <h1>Create Expense</h1>
 <form action="/expense" method="post">
 	<div class="container">
 		<label for="from"><b>Employee ID:</b></label>
-		<input type="text" placeholder="Enter Employee ID" name="from" value="{{currentEmp.employeeID}}"><br>
+		<input type="text" placeholder="Enter Employee ID" name="from" value="{{currentEmp.employeeID}}" readonly><br>
 		<ul>
 			<h4>Type:</h4>
 			<li>
@@ -22,6 +23,9 @@
 		<label for="amount"><b>Amount:</b></label>
 		<input type="text" placeholder="Enter Amount" name="amount">
 
+		<label for="from"><b>Manager(To):</b></label>
+		<input type="text" placeholder="Manager ID" name="to" value="{{currentEmp.manager}}" readonly><br>
+
 		{{!-- <li>
 			<label for="proof"><b>Proof:</b></label>
 			<input type="file" id="myFile" name="proof">
@@ -30,20 +34,42 @@
 	</div>
 	<button type="submit">Submit</button>
 </form>
+{{/if}}
 <table>
     <thead>
         <tr>
+			<th>Expense ID</th>
             <th>Employee ID</th>
             <th>Type</th>
             <th>Amount</th>
+			<th>To</th>
+			<th>status</th>
+			{{#if (eq currentEmp.permissions "Yes") }}
+			<th>Action</td>
+			{{/if}}
         </tr>
     </thead>
     <tbody>
     {{#each expense}}
         <tr>
+			<td>{{this.id}}</td>
             <td>{{this.from}}</td>
             <td>{{this.type}}</td>
             <td>{{this.amount}}</td>
+			<td>{{this.to}}</td>
+			<td>{{this.status}}</td>
+			{{#if (eq ../currentEmp.permissions "Yes")}}
+            <td>
+				<form action="/expenseAction" method="post">
+					<input type="hidden" name="expID" value="{{this.id}}">
+					<select name="approvalStatus">
+						<option value="Approve">Approve</option>
+						<option value="Deny">Deny</option>
+					</select>
+					<button type="submit">Submit</button>
+				</form>
+			</td>
+			{{/if}}
         </tr>
     {{/each}}
     </tbody>
