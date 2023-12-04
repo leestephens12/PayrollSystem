@@ -57,7 +57,7 @@
             <td>{{this.type}}</td>
             <td>${{this.amount}}</td>
 			<td>{{this.to}}</td>
-			<td>{{this.status}}</td>
+			<td {{#if (eq this.status "Approved")}} style="color: green;"{{/if}} {{#if (eq this.status "Denied")}} style="color: red;"{{/if}}>{{this.status}}</td>
 			{{#if (eq ../currentEmp.permissions "Yes")}}
 			{{#if (eq this.status "Pending")}}
             <td>
