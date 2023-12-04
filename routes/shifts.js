@@ -45,7 +45,7 @@ router.get("/view/:employeeID", async (req, res, next) => {
 	//create events for each upcoming shift for the (full)calendar
 	calendarOptions.events = createFullCalendarEventsFromShifts(shifts);
 	upcomingShifts = upcomingShifts.map(shift => shift.toObject());
-	res.render("shift/viewShifts", {title: "Shifts", calendarOptions, upcomingShifts, shifts, pastShifts,employee});
+	res.render("shift/viewShifts", {layout: "managerLayout", calendarOptions, upcomingShifts, shifts, pastShifts, employee});
 });
 
 
@@ -53,16 +53,18 @@ router.get("/view/:employeeID", async (req, res, next) => {
 
 //#region CRUD shifts
 
-router.get("/edit/", async (req, res, next) => {
+router.get("/edit", async (req, res, next) => {
 	const manager = parseEmployeeFromRequestCookie(req);
 	const employeeID = req.query.employeeID;
 	if (!isManager(manager) && isEmployee(manager, employeeID))
 		return res.redirect(403, "/shifts"); //forbidden access
 	const employee = await Database.getEmployeeByEmpID(employeeID);
+	const shifts = employee.shifts.map(shift => shift.toObject());
 	res.render("shift/manageShifts", {
 		title: "Edit Shift",
+		layout: "managerLayout",
 		employee,
-		shifts:employee.shifts.map(shift => shift.toObject())
+		shifts
 	});
 });
 
@@ -74,6 +76,7 @@ router.get("/edit/:shiftIndex", async (req, res, next) => {
 	const employee = await Database.getEmployeeByEmpID(employeeID);
 	/** @type {Shift} */
 	const shift = employee.shifts[req.params.shiftIndex];
+
 	//ensure that some default date is passed to the form for what was initially set
 	let date;
 	if(shift.startDate)
@@ -86,6 +89,7 @@ router.get("/edit/:shiftIndex", async (req, res, next) => {
 		date = shift.scheduledEnd;
 	else
 		date = new Date();
+
 	res.render("shift/editShift.hbs", {
 		title: "Edit Shift",
 		employee,
@@ -129,7 +133,7 @@ router.get("/create", async (req, res, next) => {
 		return res.redirect(403, "/shifts"); //forbidden access
 	//check if the employee has a shift at that time
 
-	res.render("shift/addShift", {title: "Create Shift", employee});
+	res.render("shift/addShift", {title: "Create Shift", employee, layout: "managerLayout"});
 });
 
 router.post("/create", async (req, res, next) => {
