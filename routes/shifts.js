@@ -72,30 +72,54 @@ router.get("/edit/:shiftIndex", async (req, res, next) => {
 	if (!isManager(manager) && isEmployee(manager, employeeID))
 		return res.redirect(403, "/shifts"); //forbidden access
 	const employee = await Database.getEmployeeByEmpID(employeeID);
+	/** @type {Shift} */
 	const shift = employee.shifts[req.params.shiftIndex];
+	//ensure that some default date is passed to the form for what was initially set
+	let date;
+	if(shift.startDate)
+		date = shift.startDate;
+	else if(shift.scheduledStart)
+		date = shift.scheduledStart;
+	else if(shift.endDate)
+		date = shift.endDate;
+	else if(shift.scheduledEnd)
+		date = shift.scheduledEnd;
+	else
+		date = new Date();
 	res.render("shift/editShift.hbs", {
 		title: "Edit Shift",
 		employee,
 		shift,
 		statuses: Shift.ShiftStatuses,
+		date
 	});
 });
 
-router.post("/edit/:shiftIndex", async (req, res, next) => {
+router.post("/edit/:shiftIndex", async (req, res) => {
 	const manager = parseEmployeeFromRequestCookie(req);
-	const employeeID = req.body.employeeID;
+	const employeeID = req.query.employeeID;
+
 	if (!isManager(manager) && isEmployee(manager, employeeID))
 		return res.redirect(403, "/shifts"); //forbidden access
 	const employee = await Database.getEmployeeByEmpID(employeeID);
 	const shift = employee.shifts[req.params.shiftIndex];
-	const {start, end, date, scheduledStart, scheduledEnd, status} = req.body;
-	const startDate = new Date(`${date} ${start}`);
-	const endDate = new Date(`${date} ${end}`);
-	shift.scheduledStart = scheduledStart;
-	shift.scheduledEnd = scheduledEnd;
-	shift.save();
-	res.redirect("/shifts");
+	const {date,  status, startTime: start, endTime: end, scheduledStartTime: scheduledStart, scheduledEndTime: scheduledEnd} = req.body;
+	// if any of the form inputs are empty, set them to null
+	shift.startDate = start ? new Date(`${date} ${start}`) : null;
+	shift.endDate = end ? new Date(`${date} ${end}`) : null;
+	shift.scheduledStart = scheduledStart ? new Date(`${date} ${scheduledStart}`) : null;
+	shift.scheduledEnd = scheduledEnd ? new Date(`${date} ${scheduledEnd}`) : null;
+	shift.status = status;
+	// replace the employee's shift
+	employee.shifts[req.params.shiftIndex] = shift;
+	const result = await Database.updateEmployee(employeeID, Employee.EmployeeConverter.toFirestore(employee));
+	if (!result)
+		res.redirect(`/shifts/edit/${req.params.shiftIndex}?employeeID=${employeeID}`);
+	else
+		res.redirect(`/shifts/edit/?employeeID=${employeeID}`);
 });
+
+
 router.get("/create", async (req, res, next) => {
 	const manager = parseEmployeeFromRequestCookie(req);
 	const employeeID = req.query.employeeID;
@@ -104,7 +128,7 @@ router.get("/create", async (req, res, next) => {
 	if(!isManager(manager) && isEmployee(manager, employeeID))
 		return res.redirect(403, "/shifts"); //forbidden access
 	//check if the employee has a shift at that time
-	
+
 	res.render("shift/addShift", {title: "Create Shift", employee});
 });
 
