@@ -8,9 +8,10 @@ router.post("/", async function(req, res, next) {
     const expID = req.body.expID;
     const status = req.body.approvalStatus;
     console.log("This is the expense ID: " + expID);
-    const currExpense = Database.getExpense(expID);
+    const currExpense = await Database.getExpense(expID);
 
     if (status == "Approve") {
+        console.log(currExpense);
         const expense = {
             id: currExpense.id,
             type: currExpense.type,
@@ -22,7 +23,7 @@ router.post("/", async function(req, res, next) {
         await Database.updateExpense('7363586', expense);
     }
     else {
-
+        console.log("Crr Emp");
     }
 	res.redirect("/expense");
 });

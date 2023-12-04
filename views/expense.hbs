@@ -55,10 +55,11 @@
 			<td>{{this.id}}</td>
             <td>{{this.from}}</td>
             <td>{{this.type}}</td>
-            <td>{{this.amount}}</td>
+            <td>${{this.amount}}</td>
 			<td>{{this.to}}</td>
 			<td>{{this.status}}</td>
 			{{#if (eq ../currentEmp.permissions "Yes")}}
+			{{#if (eq this.status "Pending")}}
             <td>
 				<form action="/expenseAction" method="post">
 					<input type="hidden" name="expID" value="{{this.id}}">
@@ -69,6 +70,7 @@
 					<button type="submit">Submit</button>
 				</form>
 			</td>
+			{{/if}}
 			{{/if}}
         </tr>
     {{/each}}
