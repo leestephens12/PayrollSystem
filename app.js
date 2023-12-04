@@ -51,7 +51,8 @@ hbs.registerHelper("eq", function (value1, value2) {
 });
 
 hbs.registerHelper("json", content => JSON.stringify(content));
-
+hbs.registerHelper("date", date => date instanceof Date ? date.toLocaleDateString() : null);
+hbs.registerHelper("time", date => date instanceof Date ? date.toLocaleTimeString(Intl.NumberFormat().resolvedOptions().locale, {hour: "2-digit", minute: "2-digit",hour12: false}) : null);
 hbs.registerHelper("getShiftDuration", /** @param {Shift} shift */ shift=> shift.getDuration().TotalHours);
 
 

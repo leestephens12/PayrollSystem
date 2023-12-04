@@ -1,0 +1,52 @@
+<h2>Edit shift</h2>
+
+<form action="/shifts/{{shift.id}}" method="POST">
+    <fieldset>
+        <legend>Actual Times</legend>
+        <label class="label" for="date">Date</label>
+        <input class="input" type="date" name="date" id="date" value="{{date shift.startDate}}" required>
+
+        <label class="label" for="startTime">Start time</label>
+        <input type="time" class="input" name="startTime" id="startTime" value="{{time shift.startDate}}" required>
+
+        <label class="label" for="endTime">End time</label>
+        <input type="time" class="input" name="endTime" id="endTime" value="{{time shift.endDate}}" required>
+    </fieldset>
+
+    <fieldset>
+        <legend>Scheduled Times</legend>
+        <label class="label" for="scheduledDate">Date</label>
+        <input class="input"
+               type="date"
+               name="scheduledDate"
+               id="scheduledDate"
+               value="{{date shift.scheduledStart}}"
+               required>
+
+        <label class="label" for="scheduledStartTime">Start time</label>
+        <input type="time" class="input "
+               name="scheduledStartTime"
+               id="scheduledStartTime"
+               value="{{time shift.scheduledStart}}"
+               required>
+
+        <label class="label" for="scheduledEndTime">End time</label>
+        <input type="time" class="input"
+               name="scheduledEndTime"
+               id="scheduledEndTime"
+               value="{{time shift.scheduledEnd}}"
+               required>
+    </fieldset>
+
+    <label class="label" for="status">Status</label>
+    <div class="select is-fullwidth">
+    <select class="input" name="status" id="status" required>
+        {{#each statuses as |status|}}
+            <option {{#if (eq status ../shift.status)}}selected{{/if}} value="{{status}}">{{status}}</option>
+        {{/each}}
+    </select>
+    </div>
+
+    <br>
+    <input class="is-primary button" type="submit" value="Save">
+</form>

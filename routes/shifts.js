@@ -52,6 +52,50 @@ router.get("/view/:employeeID", async (req, res, next) => {
 //#endregion
 
 //#region CRUD shifts
+
+router.get("/edit/", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.query.employeeID;
+	if (!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	res.render("shift/manageShifts", {
+		title: "Edit Shift",
+		employee,
+		shifts:employee.shifts.map(shift => shift.toObject())
+	});
+});
+
+router.get("/edit/:shiftIndex", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.query.employeeID;
+	if (!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	const shift = employee.shifts[req.params.shiftIndex];
+	res.render("shift/editShift.hbs", {
+		title: "Edit Shift",
+		employee,
+		shift,
+		statuses: Shift.ShiftStatuses,
+	});
+});
+
+router.post("/edit/:shiftIndex", async (req, res, next) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.body.employeeID;
+	if (!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	const shift = employee.shifts[req.params.shiftIndex];
+	const {start, end, date, scheduledStart, scheduledEnd, status} = req.body;
+	const startDate = new Date(`${date} ${start}`);
+	const endDate = new Date(`${date} ${end}`);
+	shift.scheduledStart = scheduledStart;
+	shift.scheduledEnd = scheduledEnd;
+	shift.save();
+	res.redirect("/shifts");
+});
 router.get("/create", async (req, res, next) => {
 	const manager = parseEmployeeFromRequestCookie(req);
 	const employeeID = req.query.employeeID;
