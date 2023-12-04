@@ -16,8 +16,12 @@ router.get("/", async function(req, res, next) {
 	const permissions = await currentEmp.permissions;
 	const expense = await Database.getExpenseList(empID, permissions);
 	console.log(expense);
-	
-	res.render("expense", {currentEmp: currentEmp, expense: expense, permissions:permissions});
+	if (currentEmp.permissions == "No") {
+		res.render("expense", {currentEmp: currentEmp, expense: expense, permissions:permissions});
+	}
+	else {
+		res.render("expense", {layout: "managerLayout.hbs", currentEmp: currentEmp, expense: expense, permissions:permissions});
+	}
 });
 
 router.post("/", function(req, res){
@@ -28,7 +32,7 @@ router.post("/", function(req, res){
 	const to = req.body.to;
 	//const proof = req.body.proof;
 
-	var expense = {id: id, type:type, amount:amount, from:from, to:to, status:"pending"};
+	var expense = {id: id, type:type, amount:amount, from:from, to:to, status:"Pending"};
 	console.log("iddddd: " + expense.id);
 	Database.getDocs("expense");
 	Database.addExpense(expense.id, expense);

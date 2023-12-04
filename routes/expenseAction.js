@@ -20,10 +20,18 @@ router.post("/", async function(req, res, next) {
             from: currExpense.from,
             status: "Approved"
         }
-        await Database.updateExpense('7363586', expense);
+        await Database.updateExpense(expense.id, expense);
     }
     else {
-        console.log("Crr Emp");
+        const expense = {
+            id: currExpense.id,
+            type: currExpense.type,
+            amount:currExpense.amount,
+            to: currExpense.to,
+            from: currExpense.from,
+            status: "Denied"
+        }
+        await Database.updateExpense(expense.id, expense);
     }
 	res.redirect("/expense");
 });
