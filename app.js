@@ -69,7 +69,6 @@ hbs.registerHelper("toCurrency",  value =>
 	}).format(value)
 );
 hbs.registerHelper("getDeduction", (deductible,amount)=>deductible.calculateDeductibleAmount(amount));
-module.exports.hbs = hbs;
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -88,3 +87,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+module.exports.hbs = hbs;
