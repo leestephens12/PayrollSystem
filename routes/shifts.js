@@ -5,6 +5,7 @@ const router = Router();
 const Employee = require("../models/Employee");
 const Shift = require("../models/Shift");
 const Database = require("../models/utility/database");
+const { parseEmployeeFromRequestCookie } = require("../models/utility/helpers");
 
 /** @type {Calendar.CalendarOptions } */
 const calendarOptions ={
@@ -226,7 +227,9 @@ function createFullCalendarEventsFromShifts(shifts) {
  * @return {Shift[]} An array of upcoming shifts.
  */
 function getUpcomingShifts(employee) {
-	return employee.shifts.filter(shift => shift.scheduledStart > new Date());
+	return employee.shifts.filter(shift => shift.scheduledStart !== null ?
+		shift.scheduledStart > new Date() :
+		shift.startDate > new Date());
 }
 
 /**
@@ -236,19 +239,9 @@ function getUpcomingShifts(employee) {
  * @return {Shift[]} An array of past shifts.
 */
 function getPastShifts(employee) {
-	return employee.shifts.filter(shift => shift.endDate < new Date());
-}
-
-/**
- * Parses an employee object from the request cookie.
-*
-* @param {Object} req - The request object.
- * @return {Employee} The parsed employee object.
- */
-function parseEmployeeFromRequestCookie(req) {
-	const employeeObject = req.cookies.Employee;
-	const { _employeeID, _firstName, _lastName, _department, _permissions, _status, _manager, _uid, _shifts } = employeeObject;
-	return new Employee(_employeeID, _firstName, _lastName, _department, _permissions, _status, _manager, _shifts, _uid);
+	return employee.shifts.filter(shift => shift.scheduledEnd !== null ?
+		shift.scheduledEnd < new Date() :
+		shift.endDate < new Date());
 }
 
 module.exports = router;

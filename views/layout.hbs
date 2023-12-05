@@ -11,6 +11,7 @@
 		<meta name="keywords" content="Payroll, System, Employee, Payroll" />
 		<link rel="icon" type="image/png" href="/images/favicon.png" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+		<script src="javascript/authNav.js" async></script>
 	</head>
 
 	<body class="container is-full-desktop">
@@ -24,9 +25,9 @@
 				<a class="navbar-item" href="/shifts">Shifts</a>
 				<a class="navbar-item" href="/paystub">Paystub</a>
 				<a class="navbar-item" href="/expense">Expense</a>
-				<a class="navbar-item" href="/login">Login</a>
-				<a class="navbar-item" href="/logout">Logout</a>
-				<h1>{{currentEmp.employeeID}}</h1>
+				<a class="navbar-item" id="login" href="/login">Login</a>
+				<a class="navbar-item" id="logout" href="/logout">Logout</a>
+				<p class=" navbar-item">{{currentEmp.employeeID}}</p>
 			</nav>
 		</header>
 

@@ -203,8 +203,7 @@ class Shift {
 
 	/**
 	 * the status of the shift
-	 * @memberof Shift
-	 * @returns {....ShiftStatus} the status of the shift
+	 * @returns {ShiftStatus}
 	 */
 	get status() {
 		return this.#status;
