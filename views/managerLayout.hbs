@@ -14,7 +14,7 @@
 	</head>
 
 	<body class="container is-full-desktop">
-		<header>
+		<header class="no-print{{!--  --}}">
 			<nav class="navbar">
 				<a class="navbar-item" href="/">
 					<img src="/images/logo.png" alt="Payroll Logo" />
@@ -26,7 +26,7 @@
 				<a class="navbar-item" href="/expense">Expense</a>
                 <a class="navbar-item" href="/employees">Employees</a>
 				<a class="navbar-item" href="/logout">Logout</a>
-				<p class=" navbar-item">{{currentEmp.employeeID}}</>
+				<p class=" navbar-item">{{currentEmp.employeeID}}</p>
 			</nav>
 		</header>
 

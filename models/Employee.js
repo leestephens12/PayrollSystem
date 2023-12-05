@@ -33,10 +33,11 @@ class Employee {
 	 * @type {"salaried" | "hourly"} */
 	#wage;
 	/** The employee's pay
+	 * if wage is salaried, this is the amount paid per pay period
 	 * @type {number} */
 	#pay;
 
-	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid) {
+	constructor(employeeID, firstName, lastName, department, permissions, status,manager, shifts, uid, wage = "hourly", pay = 16.55) {
 		this.employeeID = employeeID;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -47,6 +48,8 @@ class Employee {
 		this.#paystubs = [];
 		this.shifts = shifts ?? [];
 		this.uid = uid;
+		this.#wage = wage;
+		this.#pay = pay;
 	}
 
 	get employeeID() {
@@ -184,6 +187,9 @@ class Employee {
 
 		let j = 0;
 		for (const shift of this.shifts) {
+			if(shift.status !== "completed")
+				continue;
+
 			//? for the first shift
 			if(payPeriods[j] == null) // initialize the first array of pay periods
 				payPeriods[j] = [];
@@ -203,7 +209,7 @@ class Employee {
 			if(previousPayStub)
 			{
 				this.paystubs.push(previousPayStub);
-				this.#paystubs.push(new PayStub(this,shifts, previousPayStub.grossProfit, previousPayStub.deducted));
+				this.#paystubs.push(new PayStub(this,shifts, previousPayStub.grossProfit, previousPayStub.totalDeducted));
 			}
 			else
 				this.#paystubs.push(new PayStub(this, shifts,0,0));
