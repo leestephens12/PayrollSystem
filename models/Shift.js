@@ -12,13 +12,13 @@ class Shift {
 
 	//#region type definitions
 	/**
-	 * @typedef {"requestedOff" | "cancelled" | "completed" | "in progress" | "not started"} ShiftStatus
+	 * @typedef {"requested off" | "cancelled" | "completed" | "in progress" | "not started"} ShiftStatus
 	 * @description
 	 * status of shift
 	 */
 	/** @type {....ShiftStatus[]}
 	 * @readonly	*/
-	static ShiftStatuses = /** @type {ShiftStatus[]} */["requestedOff", "cancelled", "completed", "in progress", "not started"];
+	static ShiftStatuses = /** @type {ShiftStatus[]} */["requested off", "cancelled", "completed", "in progress", "not started"];
 	//#endregion
 
 	/**

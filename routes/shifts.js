@@ -54,7 +54,18 @@ router.get("/view/:employeeID", async (req, res, next) => {
 
 //#region CRUD shifts
 
-router.get("/edit", async (req, res, next) => {
+router.get("/delete/:shiftIndex", async (req, res) => {
+	const manager = parseEmployeeFromRequestCookie(req);
+	const employeeID = req.query.employeeID;
+	if (!isManager(manager) && isEmployee(manager, employeeID))
+		return res.redirect(403, "/shifts"); //forbidden access
+	const employee = await Database.getEmployeeByEmpID(employeeID);
+	employee.shifts.splice(req.params.shiftIndex, 1);
+	Database.updateEmployee(employee.employeeID,Employee.EmployeeConverter.toFirestore(employee));
+	res.redirect("/shifts/edit?employeeID=" + employeeID);
+});
+
+router.get("/edit", async (req, res) => {
 	const manager = parseEmployeeFromRequestCookie(req);
 	const employeeID = req.query.employeeID;
 	if (!isManager(manager) && isEmployee(manager, employeeID))
