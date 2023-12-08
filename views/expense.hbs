@@ -1,8 +1,9 @@
+{{#if (eq currentEmp.permissions "No")}}
 <h1>Create Expense</h1>
 <form action="/expense" method="post">
 	<div class="container">
 		<label for="from"><b>Employee ID:</b></label>
-		<input type="text" placeholder="Enter Employee ID" name="from" value="{{currentEmp.employeeID}}"><br>
+		<input type="text" placeholder="Enter Employee ID" name="from" value="{{currentEmp.employeeID}}" readonly><br>
 		<ul>
 			<h4>Type:</h4>
 			<li>
@@ -18,32 +19,52 @@
 				<input type="radio" value="Meal" name="type">
 			</li>
 		</ul>
-
 		<label for="amount"><b>Amount:</b></label>
-		<input type="text" placeholder="Enter Amount" name="amount">
+		<input type="number" step="0.01" placeholder="Enter Amount" name="amount">
 
-		{{!-- <li>
-			<label for="proof"><b>Proof:</b></label>
-			<input type="file" id="myFile" name="proof">
-		</li> --}}
-
+		<label for="to"><b>Manager(To):</b></label>
+		<input type="text" placeholder="Manager ID" name="to" value="{{currentEmp.manager}}" readonly><br>
 	</div>
 	<button type="submit">Submit</button>
 </form>
+{{/if}}
 <table>
     <thead>
         <tr>
+			<th>Expense ID</th>
             <th>Employee ID</th>
             <th>Type</th>
             <th>Amount</th>
+			<th>To</th>
+			<th>Status</th>
+			{{#if (eq currentEmp.permissions "Yes") }}
+			<th>Action</td>
+			{{/if}}
         </tr>
     </thead>
     <tbody>
     {{#each expense}}
         <tr>
+			<td>{{this.id}}</td>
             <td>{{this.from}}</td>
             <td>{{this.type}}</td>
-            <td>{{this.amount}}</td>
+            <td>${{this.amount}}</td>
+			<td>{{this.to}}</td>
+			<td {{#if (eq this.status "Approved")}} style="color: green;"{{/if}} {{#if (eq this.status "Denied")}} style="color: red;"{{/if}}>{{this.status}}</td>
+			{{#if (eq ../currentEmp.permissions "Yes")}}
+			{{#if (eq this.status "Pending")}}
+            <td>
+				<form action="/expenseAction" method="post">
+					<input type="hidden" name="expID" value="{{this.id}}">
+					<select name="approvalStatus">
+						<option value="Approve">Approve</option>
+						<option value="Deny">Deny</option>
+					</select>
+					<button type="submit">Submit</button>
+				</form>
+			</td>
+			{{/if}}
+			{{/if}}
         </tr>
     {{/each}}
     </tbody>

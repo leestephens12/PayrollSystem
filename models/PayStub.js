@@ -4,6 +4,7 @@ const {isNullOrUndefined} = require("./utility/helpers");
 const Deductible = require("./Deductible");
 const Shift = require("./Shift");
 const Employee = require("./Employee");
+const app = require("../app");
 
 /**
  * Represents a pay stub for an employee.
@@ -62,6 +63,13 @@ class PayStub {
 	 * the deduction that contribute to this Paystub
 	 */
 	#deductions;
+	/**
+	 * the deduction that contribute to this Paystub
+	 * @return {Deductible[]}
+	 */
+	get deductions() {
+		return this.#deductions;
+	}
 
 	/**
 	 * @private
@@ -100,8 +108,12 @@ class PayStub {
 	 * @param {Number} yearToDateDeductions - the year to date deduction up to this date (exclusive - not including this paystub)
 	*/
 	constructor(employee, shifts, yearToDateGrossProfit, yearToDateDeductions) {
-		//todo: populate db with deductions or hardcode here what they are
 		this.#deductions = [];
+		// sample deduction
+		this.#deductions.push(new Deductible("Employer's Insurance", "employment insurance deduction", .015, "percentage"));
+		this.#deductions.push(new Deductible("Canada Pension Plan", "Canadian pension plan deduction", .05, "percentage"));
+		this.#deductions.push(new Deductible("Provincial Tax", "provincial tax deduction", .06, "percentage"));
+		this.#deductions.push(new Deductible("Federal Tax", "federal tax deduction", 0.13, "percentage"));
 		this.shifts = shifts;
 		this.yearUntilDateDeducted = yearToDateDeductions;
 		this.yearUntilDateGrossProfit = yearToDateGrossProfit;
@@ -117,7 +129,7 @@ class PayStub {
 	}
 	/** the net profit earned in the pay periods */
 	get netProfit() {
-		return this.grossProfit - this.deducted;
+		return this.grossProfit - this.totalDeducted;
 	}
 	/** the total year's net profit */
 	get yearToDateNetProfit() {
@@ -129,7 +141,7 @@ class PayStub {
 	get grossProfit() {
 		return this.shifts.reduce((total, shift) => {
 			if(this.#employee.wage === "hourly")
-				return total + shift.getDuration().getTotalHours() * this.#employee.hourlyRate;
+				return total + shift.getDuration().TotalHours * this.#employee.pay;
 			else
 				return total + this.#employee.pay; // / 26;
 		}, 0);
@@ -139,22 +151,16 @@ class PayStub {
 		return this.yearUntilDateGrossProfit + this.grossProfit;
 	}
 
-	/**
-	 * the deduction that contribute to this Paystub
-	 * @return {Deductible[]}
-	 */
-	get deductions() {
-		return this.#deductions;
-	}
+
 
 
 	/** the total amount deducted from this Paystub */
-	get deducted() {
+	get totalDeducted() {
 		return this.deductions.reduce((total, deduction) => total + deduction.calculateDeductibleAmount(this.grossProfit), 0);
 	}
 	/** the deducted amount up to this date (inclusive) */
 	get yearToDateDeducted() {
-		return this.yearUntilDateDeducted + this.deducted;
+		return this.yearUntilDateDeducted + this.totalDeducted;
 	}
 
 	/**
@@ -185,10 +191,12 @@ class PayStub {
 		// compile template
 		const compiledTemplate = handlebars.compile(template);
 		// render template
+
 		const html = compiledTemplate({
-			//todo: the actual data
-		});
-		await page.setContent(html);
+			employee: this.employee,
+			paystub: this,
+		},{allowProtoPropertiesByDefault: true,helpers:  app.hbs.handlebars.helpers,allowProtoMethodsByDefault: true});
+		await page.setContent(html,{ waitUntil: "networkidle0" });
 		await page.emulateMediaType("print");
 		const pdf = await page.pdf();
 		browser.close();

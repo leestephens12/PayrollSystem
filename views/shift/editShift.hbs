@@ -1,0 +1,86 @@
+<h2>Edit shift</h2>
+
+<form method="POST">
+    <fieldset>
+        <label class="label" for="date">Date</label>
+        <input class="input" type="date" name="date" id="date" value="{{date date}}">
+
+        <label class="label" for="status">Status</label>
+        <div class="select is-fullwidth">
+            <select class="input" name="status" id="status" required>
+                {{#each statuses as |status|}}
+                    <option {{#if (eq status "requested off")}}disabled{{/if}} {{#if (eq status ../shift.status)}}selected{{/if}} value="{{status}}">{{status}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </fieldset>
+
+    <hr>
+
+    <fieldset>
+        <legend class="subtitle">Actual Times</legend>
+        <label class="label" for="startTime">Start time</label>
+        <input type="time" class="input" name="startTime" id="startTime" value="{{time shift.startDate}}">
+
+        <label class="label" for="endTime">End time</label>
+        <input type="time" class="input" name="endTime" id="endTime" value="{{time shift.endDate}}">
+    </fieldset>
+
+    <hr />
+    <fieldset>
+        <legend class="subtitle">Scheduled Times</legend>
+
+        <label class="label" for="scheduledStartTime">Start time</label>
+        <input type="time" class="input " name="scheduledStartTime" id="scheduledStartTime"
+            value="{{time shift.scheduledStart}}">
+
+        <label class="label" for="scheduledEndTime">End time</label>
+        <input type="time" class="input" name="scheduledEndTime" id="scheduledEndTime"
+            value="{{time shift.scheduledEnd}}">
+    </fieldset>
+
+
+    <br>
+    <input class="is-primary button" type="submit" value="Save">
+</form>
+
+<script>
+    const form = document.querySelector("form");
+    const date = document.querySelector("#date");
+    const startTimeInput = document.querySelector("#startTime");
+    const endTimeInput = document.querySelector("#endTime");
+    const scheduledStartTimeInput = document.querySelector("#scheduledStartTime");
+    const scheduledEndTimeInput = document.querySelector("#scheduledEndTime");
+    form.addEventListener("submit", (event) => {
+        startTimeInput.classList.remove("is-danger");
+        endTimeInput.classList.remove("is-danger");
+        scheduledStartTimeInput.classList.remove("is-danger");
+        scheduledEndTimeInput.classList.remove("is-danger");
+
+
+        const formData = new FormData(form);
+        const start = formData.get("startTime");
+        const end = formData.get("endTime");
+        const scheduledStart = formData.get("scheduledStartTime");
+        const scheduledEnd = formData.get("scheduledEndTime");
+        const dateValue = formData.get("date");
+        const status = formData.get("status");
+        if (start && end && start > end) {
+            alert("Start time must be before end time");
+            startTimeInput.classList.add("is-danger");
+            endTimeInput.classList.add("is-danger");
+            event.preventDefault();
+        }
+        if (scheduledStart && scheduledEnd && scheduledStart > scheduledEnd) {
+            alert("Scheduled start time must be before scheduled end time");
+            scheduledStartTimeInput.classList.add("is-danger");
+            scheduledEndTimeInput.classList.add("is-danger");
+            event.preventDefault();
+        }
+
+        if(!status || status === "requested off"){
+            alert("Please select a status: that is not requested off (must resolve request)");
+            event.preventDefault();
+        }
+    });
+</script>

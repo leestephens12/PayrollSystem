@@ -1,27 +1,23 @@
-<h2>Add Employee Form</h2>
-<script>
-    const Handlebars = require('handlebars');
+<h2>Update Employee Form</h2>
 
-    Handlebars.registerHelper('eq', function (value1, value2) {
-        return value1 === value2;
-    });
-
-</script>
-<form action="/addEmployee" method="post">
+<form action="/updateEmployee" method="post">
     <label for="firstName">First Name:</label><br>
-    <input class="input" type="text" id="firstName" name="firstName" autocomplete="given-name" value="{{employee.firstName}}"><br>
+    <input class="input" type="text" id="firstName" name="firstName" autocomplete="given-name"
+           value="{{employee.firstName}}"><br>
 
     <label for="lastName">Last Name:</label><br>
-    <input class="input" type="text" id="lastName" name="lastName" autocomplete="family-name" value="{{employee.lastName}}"><br>
+    <input class="input" type="text" id="lastName" name="lastName" autocomplete="family-name"
+           value="{{employee.lastName}}"><br>
 
     <label for="email">Email:</label><br>
     <input class="input" type="email" id="email" name="email" autocomplete="email" value="{{employee.email}}"><br>
 
     <label for="password">Password:</label><br>
-    <input class="input" type="password" id="password" name="password" autocomplete="new-password" value="{{employee.password}}"><br>
+    <input class="input" type="password" id="password" name="password" autocomplete="new-password"
+           value="{{employee.password}}"><br>
 
     <label for="employeeID">Employee ID:</label><br>
-    <input class="input" type="text" id="employeeID" name="employeeID" value="{{employee.employeeID}}"><br>
+    <input class="input" readonly type="text" id="employeeID" name="employeeID" value="{{employee.employeeID}}"><br>
 
     <label for="status">Status:</label><br>
 
@@ -29,44 +25,44 @@
         <select id="status" name="status">
             <option value="Active" {{#if (eq employee.status "Active")}}selected{{/if}}>Active</option>
             <option value="Inactive" {{#if (eq employee.status "Inactive")}}selected{{/if}}>Inactive</option>
-            <option value="Suspended" {{#if (eq employee.status "Suspended")}}selected{{/if}}>Suspended</option>
-
+            <option value="Terminated" {{#if (eq employee.status "Terminated")}}selected{{/if}}>Terminated</option>
         </select>
-    </div><br>
+    </div>
+    <br>
 
     <label for="department">Department:</label><br>
 
     <div class="select is-fullwidth">
         <select id="department" name="department">
-            {{!-- <option value="Administration">Administration</option>
-            <option value="Customer Service">Customer Service</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Finance">Finance</option> --}}
-            <option value="Human Resources"{{#if (eq employee.department "Human Resources")}}selected{{/if}} >Human Resources</option>
-            {{!-- <option value="Information Technology">Information Technology</option>
-            <option value="Legal">Legal</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Production">Production</option>
-            <option value="Quality Assurance">Quality Assurance</option>
-            <option value="Research and Development">Research and Development</option>
-            <option value="Sales">Sales</option>
-            <option value="Shipping">Shipping</option> --}}
-            <option value="IT Department" {{#if (eq employee.department "IT Department")}}selected{{/if}}>IT Department</option>
+            <option value="Human Resources" {{#if (eq employee.department "Human Resources")}}selected{{/if}}>Human
+                Resources
+            </option>
+            <option value="IT Department" {{#if (eq employee.department "IT Department")}}selected{{/if}}>IT
+                Department
+            </option>
             <option value="Accounting" {{#if (eq employee.department "Accounting")}}selected{{/if}}>Accounting</option>
         </select>
-        </div>
-        <br>
+    </div>
+    <br>
 
-        <label for="manager">Manager:</label><br>
-        <input class="input" type="text" id="manager" name="manager" value="{{employee.manager}}"><br>
+    <label for="manager">Manager:</label><br>
+    <input class="input" type="text" id="manager" name="manager" value="{{employee.manager}}"><br>
 
-        <label for="permissions">Permissions:</label><br>
-        <input class="input" type="text" id="permissions" name="permissions" value="{{employee.permissions}}"><br>
+    <label for="permissions">Permissions:</label><br>
+    <span class="select is-fullwidth">
+        <select id="permissions" name="permissions">
+            <option value="Yes" {{#if  (eq employee.permissions "Yes")}}selected{{/if}}>Yes</option>
+            <option value="No" {{#if  (eq employee.permissions "No")}}selected{{/if}}>No</option>
+        </select>
+    </span>
+    <br>
+    <br>
 
-        <label for="shifts">Shifts: </label><br>
-        <input class="input" type="text" id="shifts" name="shifts" value="{{employee.shifts}}">
-        <br>
-        <br>
-
-        <input class="button is-primary" type="submit" value="Submit">
+    <input class="button is-primary" type="submit" value="Submit">
+    <hr>
+    <div class="buttons">
+        <a class="button is-success" href="/shifts/view/{{employee.employeeID}}">View Shifts</a>
+        <a class="button is-warning" href="/shifts/edit?employeeID={{employee.employeeID}}">Edit Shifts</a>
+        <a class="button is-info" href="/shifts/create?employeeID={{employee.employeeID}}">Add Shift</a>
+    </div>
 </form>

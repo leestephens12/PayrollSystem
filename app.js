@@ -17,6 +17,7 @@ const employeesRouter = require("./routes/employees");
 const addEmployeeRouter = require("./routes/addEmployee");
 const removeEmployeeRouter = require("./routes/removeEmployee");
 const updateEmployeeRouter = require("./routes/updateEmployee");
+const expenseActionRouter = require("./routes/expenseAction");
 
 
 const app = express();
@@ -43,17 +44,31 @@ app.use("/employees", employeesRouter);
 app.use("/addEmployee", addEmployeeRouter);
 app.use("/removeEmployee/?", removeEmployeeRouter);
 app.use("/updateEmployee/?", updateEmployeeRouter);
+app.use("/expenseAction", expenseActionRouter);
 
 
 //comparison operator for if statements in hbs
-hbs.registerHelper('eq', function (value1, value2) {
+hbs.registerHelper("eq", function (value1, value2) {
 	return value1 === value2;
 });
 
-hbs.registerHelper("json", function (content) {
-	return JSON.stringify(content);
-});
-
+hbs.registerHelper("json", content => JSON.stringify(content));
+hbs.registerHelper("date", date => date instanceof Date ? date.toLocaleDateString() : null);
+hbs.registerHelper("time", date => date instanceof Date ? date.toLocaleTimeString(Intl.NumberFormat().resolvedOptions().locale, {hour: "2-digit", minute: "2-digit",hour12: false}) : null);
+hbs.registerHelper("getShiftDuration", /** @param {Shift} shift */ shift=> shift.getDuration().TotalHours);
+hbs.registerHelper("toCurrency",  value =>
+// credits https://stackoverflow.com/a/16233919/16929246
+// Create our number formatter.
+	new Intl.NumberFormat("en-US", {
+		style: "currency",
+		currency: "USD",
+		signDisplay:"auto",
+		// These options are needed to round to whole numbers if that's what you want.
+		minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+	// maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+	}).format(value)
+);
+hbs.registerHelper("getDeduction", (deductible,amount)=>deductible.calculateDeductibleAmount(amount));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -72,3 +87,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+module.exports.hbs = hbs;

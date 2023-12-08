@@ -12,14 +12,13 @@ class Shift {
 
 	//#region type definitions
 	/**
-	 * @typedef {"waiting" | "approved" | "denied" | "requestedOff" | "canceled" | "completed"} ShiftStatus
+	 * @typedef {"requested off" | "cancelled" | "completed" | "in progress" | "not started"} ShiftStatus
 	 * @description
 	 * status of shift
-	 *
 	 */
-	/** @type {ShiftStatus[]}
+	/** @type {....ShiftStatus[]}
 	 * @readonly	*/
-	static ShiftStatus = ["waiting", "approved", "denied", "requestedOff", "canceled", "completed"];
+	static ShiftStatuses = /** @type {ShiftStatus[]} */["requested off", "cancelled", "completed", "in progress", "not started"];
 	//#endregion
 
 	/**
@@ -83,7 +82,8 @@ class Shift {
 					const schStartString = stringArray[1];
 					const endDateString = stringArray[2];
 					const schEndString = stringArray[3];
-					const shift = Shift.fromFirestoreDataString(startDateString, endDateString, schStartString, schEndString);
+					const status = stringArray[4];
+					const shift = Shift.fromFirestoreDataString(startDateString, endDateString, schStartString, schEndString, status);
 					shiftList.push(shift);
 				});
 			return shiftList;
@@ -97,14 +97,15 @@ class Shift {
 	 * @param {string} endDateString - The end date string of the shift.
 	 * @param {string} scheduledStartString - The scheduled start date string of the shift.
 	 * @param {string} scheduledEndString - The scheduled end date string of the shift.
+	 * @param {ShiftStatus} status - The status of the shift.
 	 * @return {Shift} - The newly created Shift object.
 	 */
-	static fromFirestoreDataString(startDateString, endDateString,scheduledStartString, scheduledEndString) {
+	static fromFirestoreDataString(startDateString, endDateString,scheduledStartString, scheduledEndString, status) {
 		const startDate = startDateString === "null" ? null : new Date(startDateString);
 		const endDate = endDateString === "null" ? null : new Date(endDateString);
 		const scheduledStart = scheduledStartString === "null" ? null : new Date(scheduledStartString);
 		const scheduledEnd = scheduledEndString === "null" ? null : new Date(scheduledEndString);
-		return new Shift(startDate, endDate, scheduledStart, scheduledEnd);
+		return new Shift(startDate, endDate, scheduledStart, scheduledEnd, status);
 	}
 
 	/**
@@ -113,49 +114,66 @@ class Shift {
 	 * @return {string} A string representing the date and time values in the format "startDate/scheduledStart/endDate/scheduledEnd".
 	 */
 	toFirestoreString() {
-		return `${this.startDate}/${this.scheduledStart}/${this.endDate}/${this.scheduledEnd}`;
+		return `${this.startDate}/${this.scheduledStart}/${this.endDate}/${this.scheduledEnd}/${this.status}`;
 	}
 
 	/**
 	 * @description
 	 * creates a new shift
-	 * @param {Date} startDateTime the actual start time (and date) of the shift
+	 * @param {Date | null} startDateTime the actual start time (and date) of the shift
 	 * @param {Date | null} endDateTime the actual end time (and date) of the shift
 	 * @param {Date | null} scheduledStart the scheduled start time (and date) of the shift
 	 * @param {Date | null} scheduledEnd the scheduled end time (and date) of the shift
+	 * @param {....ShiftStatus} status the status of the shift
 	 * @throws {Error} if startDateTime is not a Date, or any [scheduled] date is after its corresponding [scheduled] end date
 	 */
-	constructor(startDateTime, endDateTime, scheduledStart, scheduledEnd) {
-		this.startDate = startDateTime;
+	constructor(startDateTime, endDateTime, scheduledStart, scheduledEnd, status) {
+		this.startDate = startDateTime ?? null;
 		this.endDate = endDateTime ?? null;
 		this.scheduledStart = scheduledStart ?? null;
 		this.scheduledEnd = scheduledEnd ?? null;
+		if(isNullOrUndefined(status))
+			if(this.endDate > new Date())
+				this.status = "completed";
+			else if(this.startDate >= new Date())
+				this.status = "in progress";
+			else
+				this.status = "not started";
+		else
+			this.status = status;
 	}
 
 	/**
 	 * @description
-	 * the start of the shift
+	 * the start of the shift, or null if the shift has not started yet
 	 * @memberof Shift
 	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
-	 * @returns {Date} the start of the shift
+	 * @returns {Date | null} the start of the shift, or null if the shift has not started yet
 	 */
 	get startDate() {
 		return this.#startDate;
 	}
 
 	/**
-	 * @param {Date} value
+	 * @param {Date | null} value
 	 * @throws {Error} if value is not a Date, null or undefined, or is after {@link endDate}
 	 * @throws {Error} if value is after end date
 	 */
 	set startDate(value) {
+		if(value === null)
+		{
+			this.#startDate = null;
+			return;
+		}
 		if(!(value instanceof Date))
 			throw new Error("invalid date: start date must be a Date object");
 		if(isNullOrUndefined(value))
 			throw new Error("invalid date: start date cannot be null or undefined");
-		if(value > this.#endDate)
+		if(this.#endDate !== null &&value > this.#endDate)
 			throw new Error("invalid date: start date must be before end date");
 		this.#startDate = value;
+		if(this.#startDate !== null && this.#endDate === null)
+			this.#status = "in progress";
 	}
 
 	/**
@@ -180,28 +198,35 @@ class Shift {
 			throw new Error("invalid date: end date must be a Date object or null");
 		if(value === undefined)
 			throw new Error("invalid date:	end date cannot be undefined");
-		if(value !== null && value < this.#startDate)
+		if(value < this.#startDate && this.#startDate !== null)
 			throw new Error("invalid date: end date must be after start date");
 		this.#endDate = value;
+
+		if(this.#startDate !== null && this.#endDate !== null)
+			this.#status = "completed";
 	}
 
 	/**
-	 * @description
 	 * the status of the shift
-	 * @memberof Shift
-	 * @see {@link ShiftStatus}
-	 * @returns {ShiftStatus} the status of the shift
+	 * @returns {ShiftStatus}
 	 */
 	get status() {
 		return this.#status;
 	}
 
+	/**
+	 * Sets the status of the object.
+	 *
+	 * @param {ShiftStatus} value - The new status value.
+	 * @throws {Error} If the value is null or undefined.
+	 * @throws {Error} If the value is not one of the valid status options.
+	 */
 	set status(value) {
 		if(typeof value !== "string")
 			throw new Error("invalid status: status must be a string");
 		if(isNullOrUndefined(value))
 			throw new Error("invalid status: status cannot be null or undefined");
-		if(Shift.ShiftStatus.find(s => s.toLocaleLowerCase() === value.toLocaleLowerCase()) === undefined)
+		if(Shift.ShiftStatuses.find(s => s.toLocaleLowerCase() === value.toLocaleLowerCase()) === undefined)
 			throw new Error("invalid status: status must be one of: waiting, approved, denied, requestedOff, canceled, completed");
 		else
 			this.#status = value;
@@ -229,7 +254,7 @@ class Shift {
 			throw new Error("invalid date: scheduled start date must be a Date object or null");
 		if(value === undefined)
 			throw new Error("invalid date: scheduled start date cannot be undefined");
-		if(value > this.scheduledEnd)
+		if(value > this.scheduledEnd && this.scheduledEnd !== null)
 			throw new Error("invalid date: scheduled start date must be before the scheduled end date");
 		this.#scheduledStart = value;
 	}
@@ -257,7 +282,7 @@ class Shift {
 			throw new Error("invalid date: scheduled end date must be a Date object or null");
 		if(value === undefined)
 			throw new Error("invalid date: scheduled end date cannot be null or undefined");
-		if(value < this.scheduledStart)
+		if(value < this.scheduledStart && this.scheduledStart !== null)
 			throw new Error("invalid date: scheduled end date must be after the scheduled start date");
 		this.#scheduledEnd = value;
 	}
@@ -274,6 +299,21 @@ class Shift {
 	 */
 	getDuration() {
 		return new Period(this.startDate, this.endDate);
+	}
+
+	/**
+	 * Converts the current object to a plain JavaScript object.
+	 * @return {Object} An object containing the start date, end date, scheduled start time, scheduled end time, and status of the current object.
+	 */
+	toObject() {
+		return {
+			startDate: this.startDate,
+			endDate: this.endDate,
+			scheduledStart: this.scheduledStart,
+			scheduledEnd: this.scheduledEnd,
+			status: this.status,
+			getDuration: this.getDuration,
+		};
 	}
 }
 

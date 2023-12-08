@@ -4,6 +4,7 @@ const {createUser, getAuth} = require("firebase-admin/auth");
 const serviceAccount = require("../../firestore/service-account.json");
 
 const Shift = require("../Shift");
+const Expense = require("../Expense");
 const Employee = require("../Employee");
 const Workplace = require("../Workplace");
 
@@ -15,20 +16,61 @@ class Database {
 	static #db = getFirestore(this.#app);
 	static #auth = getAuth(this.#app);
 
-	static async addExpense(expense) {
+	/*static async addExpense(expense) {
 		return this.addDoc("expense", expense);
+	}*/
+/////Changed to this method below so i could add the employee as doc ref to update it
+	static async addExpense(expID, data) {
+		try {
+			const db = this.getCollection("expense");
+			const converter = this.#getFirestoreConverter("expense");
+			return db.withConverter(converter).doc(expID).set(data);
+		}
+		catch(error) {
+			console.log(error);
+		}
 	}
 
-	static async getExpenseList() {
+	static async getExpense(id) {
 		try {
-			const querySnapshot = await this.#db.collection("expense").get();
+			const querySnapshot = await this.#db.collection("expense").where("id", "==", id).get();
+			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
-				return querySnapshot.docs.map(doc => doc.data());
+				return querySnapshot.docs[0].data(); // Returns the data of the first document
 			} else {
-				return "Query is empty";
+				return null;
 			}
+
 		} catch (error) {
-			return error;
+			return null;
+		}
+	}
+
+	static async getExpenseList(id, permission) {
+		console.log("this is from db: " + id + permission)
+		if (permission == "Yes") {
+			try {
+				const querySnapshot = await this.#db.collection("expense").where("to", "==", id).get();
+				if (!querySnapshot.empty) {
+					return querySnapshot.docs.map(doc => doc.data());
+				} else {
+					return "Query is empty";
+				}
+			} catch (error) {
+				return error;
+			}
+		}
+		else if (permission == "No") {
+			try {
+				const querySnapshot = await this.#db.collection("expense").where("from", "==", id).get();
+				if (!querySnapshot.empty) {
+					return querySnapshot.docs.map(doc => doc.data());
+				} else {
+					return "Query is empty";
+				}
+			} catch (error) {
+				return error;
+			}
 		}
 	}
 
@@ -100,7 +142,7 @@ class Database {
 
 	static async getEmployeeByEmpID(id) {
 		try {
-			const querySnapshot = await this.#db.collection("employees").where("employeeID", "==", id).get();
+			const querySnapshot = await this.#db.collection("employees").withConverter(Employee.EmployeeConverter).where("employeeID", "==", id).get();
 			//returns the first entry as we are only expecting one return value
 			if (!querySnapshot.empty) {
 				return querySnapshot.docs[0].data(); // Returns the data of the first document
@@ -129,7 +171,7 @@ class Database {
 	}
 
 	/**
-	 *
+	 * @param {string} employeeID the id of the employee to be updated
 	 * @param {Employee} employee employee object to be updated
 	 * @returns {Promise<WriteResult>} the result of the update
 	 */
@@ -137,6 +179,9 @@ class Database {
 		return this.updateDoc("employees", employeeID, employee);
 	}
 
+	static async updateExpense(expID, expense) {
+		return this.updateDoc("expense", expID, expense);
+	}
 	/**
 	 *
 	 * @param {Employee} employee employee object to be added
@@ -296,6 +341,8 @@ class Database {
 			return Employee.EmployeeConverter;
 		case "workplace":
 			return Workplace.WorkplaceConverter;
+		case "expense":
+			return Expense.ExpenseConverter;
 		default:
 			return null;
 		}
