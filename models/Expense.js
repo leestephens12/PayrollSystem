@@ -1,5 +1,4 @@
 class Expense {
-
 	static ExpenseConverter = {
 		toFirestore: (expense) => {
 			return {
@@ -17,7 +16,7 @@ class Expense {
 		}
 	};
 
-	constructor(id, type, amount, to, from, status) {
+	constructor(id, type, amount, from, to, status) {
 		this.id = id;
 		this.type = type;
 		this.amount = amount;
@@ -42,7 +41,7 @@ class Expense {
 		if (value == "Mileage" || value == "Supplies" || value =="Meal")
 			this._type = value;
 		else
-			this._type = "null";
+			throw new Error("Type must be selected");
 	}
 
 
@@ -54,9 +53,8 @@ class Expense {
 	set amount(value) {
 		//Ensure the amount is more than 0
 		if (value <= 0)
-			this.amount = "null";
-		else
-			this._amount = value;
+			throw new Error("Amount cannot be negative");
+		this._amount = value;
 	}
 
 	get to() {
@@ -75,13 +73,7 @@ class Expense {
 
 
 	set from(value) {
-		//Same requirements as employee ID
-		if (value.length == 10 && value.substring(2,3) == "#"){
-			this._from = value;
-		}else {
-		
-			this._from = "null";
-		}
+		this._from = value;
 	}
 
 	get status() {
@@ -91,18 +83,6 @@ class Expense {
 	set status(value) {
 		this._status = value;
 	}
-
-
-	approve() {
-
-
-	}
-	deny() {
-
-
-	}
-
-
-
-
 }
+
+module.exports = Expense;

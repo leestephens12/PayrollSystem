@@ -19,18 +19,11 @@
 				<input type="radio" value="Meal" name="type">
 			</li>
 		</ul>
-
 		<label for="amount"><b>Amount:</b></label>
-		<input type="text" placeholder="Enter Amount" name="amount">
+		<input type="number" step="0.01" placeholder="Enter Amount" name="amount">
 
-		<label for="from"><b>Manager(To):</b></label>
+		<label for="to"><b>Manager(To):</b></label>
 		<input type="text" placeholder="Manager ID" name="to" value="{{currentEmp.manager}}" readonly><br>
-
-		{{!-- <li>
-			<label for="proof"><b>Proof:</b></label>
-			<input type="file" id="myFile" name="proof">
-		</li> --}}
-
 	</div>
 	<button type="submit">Submit</button>
 </form>
@@ -43,7 +36,7 @@
             <th>Type</th>
             <th>Amount</th>
 			<th>To</th>
-			<th>status</th>
+			<th>Status</th>
 			{{#if (eq currentEmp.permissions "Yes") }}
 			<th>Action</td>
 			{{/if}}

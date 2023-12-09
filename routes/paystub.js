@@ -3,33 +3,33 @@ const Database = require("../models/utility/database");
 const Employee = require("../models/Employee");
 const {Router} = express;
 const router = Router();
-
 const Paystub = require("../models/PayStub");
+const { parseEmployeeFromRequestCookie } = require("../models/utility/helpers");
 
-router.get("/", (req, res, next) => {
-	const search =(req.query.search);
-
-	const employeeObject = req.cookies["Employee"];
-	const { _employeeID,	_firstName,		_lastName,		_department,		_permissions,		_status,		_manager,_uid, _shifts} = employeeObject;
-	const employee = new Employee(_employeeID, _firstName, _lastName, _department, _permissions, _status, _manager,_shifts, _uid);
+router.get("/", (req, res) => {
+	const employee =parseEmployeeFromRequestCookie(req);
 	employee.generatePaystubs();
 	const paystubs = employee.paystubs;
-	if(search)
-	{
-		//todo: filter/query based on query
-	}
 	res.render("paystub/paystubs", { title: "Paystubs", paystubs });
 });
 
-router.get("/:id", (req, res, next) => {
-	res.render("paystub/paystub", { title: "Paystub" });
+router.get("/:index", (req, res) => {
+	const index = req.params.index;
+	const employee = parseEmployeeFromRequestCookie(req);
+	employee.generatePaystubs();
+	const paystubs = employee.paystubs;
+	const paystub = paystubs[index];
+	res.render("paystub/paystub", {  index: req.params.index, paystub ,employee});
 });
 
-router.get("/:id/download", async (req, res, next) => {
-	const id = req.params.id;
-	const paystub = new Paystub();
+router.get("/:index/download", async (req, res) => {
+	const index = Number(req.params.index);
+	const employee = parseEmployeeFromRequestCookie(req);
+	employee.generatePaystubs();
+	const paystubs = employee.paystubs;
+	const paystub = paystubs[index];
 	const pdf = await paystub.createPdf();
-	res.attachment(`paystub_${paystub.start}-${paystub.end}.pdf`).send(pdf);
+	res.attachment(`${employee.employeeID}_${paystub.startDate.toLocaleDateString()}_${paystub.endDate.toLocaleDateString()}.pdf`).send(pdf);
 });
 
 module.exports = router;

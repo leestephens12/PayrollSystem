@@ -4,10 +4,10 @@
     <label class="label" for="search">Search for a paystub:</label>
     <div class="field has-addons is-large">
         <span class="control is-expanded">
-            <input type="search" class="input" placeholder="Search..." name="search" autocomplete="off" />
+            <input type="search" class="input" disabled placeholder="Search..." name="search" autocomplete="off" />
         </span>
         <span class="control">
-            <button class="button is-primary" type="submit">Search</button>
+            <button class="button is-primary" disabled type="submit">Search</button>
         </span>
     </div>
 </form>
@@ -17,7 +17,6 @@
 <table class="table is-fullwidth is-striped sortable">
     <thead>
         <tr>
-            <th>id</th>
             <th>start date</th>
             <th>end date</th>
             <th>net profit</th>
@@ -28,16 +27,13 @@
     <tbody>
         {{#each paystubs}}
             <tr>
+                <td>{{date startDate}} @ {{time startDate}}</td>
+                <td>{{date endDate}} @ {{time endDate}}</td>
+                <td>{{toCurrency netProfit}}</td>
+                <td>{{toCurrency totalDeducted}}</td>
                 <td>
-                    <a href="/paystub/{{id}}">{{id}}</a>
-                </td>
-                <td>{{startDate}}</td>
-                <td>{{endDate}}</td>
-                <td>{{netProfit}}</td>
-                <td>{{deducted}}</td>
-                <td>
-                    <a href="/paystub/{{id}}">View</a>
-                    <a href="/paystub/{{id}}/download">Download</a>
+                    <a class="button is-primary" href="/paystub/{{@index}}">View</a>
+                    <a class="button is-success" href="/paystub/{{@index}}/download">Download</a>
                 </td>
             </tr>
         {{/each}}

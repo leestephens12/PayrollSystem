@@ -12,13 +12,13 @@ class Shift {
 
 	//#region type definitions
 	/**
-	 * @typedef {"requestedOff" | "cancelled" | "completed" | "in progress" | "not started"} ShiftStatus
+	 * @typedef {"requested off" | "cancelled" | "completed" | "in progress" | "not started"} ShiftStatus
 	 * @description
 	 * status of shift
 	 */
 	/** @type {....ShiftStatus[]}
 	 * @readonly	*/
-	static ShiftStatuses = /** @type {ShiftStatus[]} */["requestedOff", "cancelled", "completed", "in progress", "not started"];
+	static ShiftStatuses = /** @type {ShiftStatus[]} */["requested off", "cancelled", "completed", "in progress", "not started"];
 	//#endregion
 
 	/**
@@ -172,6 +172,8 @@ class Shift {
 		if(this.#endDate !== null &&value > this.#endDate)
 			throw new Error("invalid date: start date must be before end date");
 		this.#startDate = value;
+		if(this.#startDate !== null && this.#endDate === null)
+			this.#status = "in progress";
 	}
 
 	/**
@@ -199,12 +201,14 @@ class Shift {
 		if(value < this.#startDate && this.#startDate !== null)
 			throw new Error("invalid date: end date must be after start date");
 		this.#endDate = value;
+
+		if(this.#startDate !== null && this.#endDate !== null)
+			this.#status = "completed";
 	}
 
 	/**
 	 * the status of the shift
-	 * @memberof Shift
-	 * @returns {....ShiftStatus} the status of the shift
+	 * @returns {ShiftStatus}
 	 */
 	get status() {
 		return this.#status;

@@ -12,7 +12,8 @@
 			"shift",
 			"db",
 			"firebase",
-			"employee"
+			"employee",
+			"webpage"
 		],
 		"cSpell.words": [
 			"Firestore",

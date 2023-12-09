@@ -9,7 +9,7 @@
         <div class="select is-fullwidth">
             <select class="input" name="status" id="status" required>
                 {{#each statuses as |status|}}
-                    <option {{#if (eq status ../shift.status)}}selected{{/if}} value="{{status}}">{{status}}</option>
+                    <option {{#if (eq status "requested off")}}disabled{{/if}} {{#if (eq status ../shift.status)}}selected{{/if}} value="{{status}}">{{status}}</option>
                 {{/each}}
             </select>
         </div>
@@ -64,6 +64,7 @@
         const scheduledStart = formData.get("scheduledStartTime");
         const scheduledEnd = formData.get("scheduledEndTime");
         const dateValue = formData.get("date");
+        const status = formData.get("status");
         if (start && end && start > end) {
             alert("Start time must be before end time");
             startTimeInput.classList.add("is-danger");
@@ -74,6 +75,11 @@
             alert("Scheduled start time must be before scheduled end time");
             scheduledStartTimeInput.classList.add("is-danger");
             scheduledEndTimeInput.classList.add("is-danger");
+            event.preventDefault();
+        }
+
+        if(!status || status === "requested off"){
+            alert("Please select a status: that is not requested off (must resolve request)");
             event.preventDefault();
         }
     });

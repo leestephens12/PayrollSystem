@@ -59,8 +59,8 @@ class Workplace{
         //remove the negative to allow operation
         workplace.latitude = Math.abs(workplace.latitude)
         workplace.longitude = Math.abs(workplace.longitude)
-        // console.log(latitude)
-        // console.log(longitude)
+     //   console.log(latitude)
+      //  console.log(longitude)
         // console.log("______")
         // console.log( workplace.latitude -0.001)
         // console.log(workplace.latitude + 0.001)

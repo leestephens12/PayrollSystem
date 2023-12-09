@@ -34,8 +34,8 @@ class Deductible {
 	/**
 	 * creates a new Deductible object
 	 * @param {string} name
-	 * @param description
-	 * @param value
+	 * @param {string} description
+	 * @param {number} value
 	 * @param {DeductibleType} type
 	 */
 	constructor(name, description, value, type) {
