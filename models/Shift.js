@@ -288,8 +288,7 @@ class Shift {
 	}
 
 	requestOff() {
-		this.#status = "requestedOff";
-		throw new Error("not implemented");
+		this.#status = "requested off";
 	}
 
 

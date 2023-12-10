@@ -1,7 +1,7 @@
 <h2>Shifts</h2>
 <p>View your upcoming and past shifts.</p>
 
-<p>🔴 - red shifts are missed/canceled</p>
+<p>🔴 - red shifts are canceled</p>
 <p>🟣 - purple shifts are in progress</p>
 <p>🟡 - yellow shifts have been requested off</p>
 <p>🔵 - blue shifts are scheduled</p>
@@ -11,9 +11,14 @@
 <div id="calendar"></div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
         const calendarEl = document.getElementById("calendar");
         const calendar = new FullCalendar.Calendar(calendarEl, {{{ json calendarOptions }}});
-        calendar.render();
+    function requestOff(info) {
+        if (confirm("Would you like to request off for your shift on " + info.event.start.toLocaleDateString() + "?"))
+            window.location.href = `/shifts/requestOff/${info.event.id}`;
+    }
+    calendar.on('eventClick', requestOff);
+    calendar.render();
     });
 </script>

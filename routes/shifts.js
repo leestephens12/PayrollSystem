@@ -25,28 +25,35 @@ const calendarOptions ={
 router.get("/", (req, res, next) => {
 	const employee = parseEmployeeFromRequestCookie(req);
 	const shifts = employee.shifts;
-	const pastShifts = getPastShifts(employee).map(shift => shift.toObject());
-	let upcomingShifts = getUpcomingShifts(employee);
 	//create events for each upcoming shift for the (full)calendar
 	calendarOptions.events = createFullCalendarEventsFromShifts(shifts);
-	upcomingShifts = upcomingShifts.map(shift => shift.toObject());
-	res.render("shift/viewShifts", { title: "Shifts", calendarOptions,upcomingShifts,shifts,pastShifts });
+	res.render("shift/viewShifts", { title: "Shifts", calendarOptions });
 });
 
 //view given employee's shifts; managers only of subordinate employees
-router.get("/view/:employeeID", async (req, res, next) => {
+router.get("/view/:employeeID", async (req, res) => {
 	const manager = parseEmployeeFromRequestCookie(req);
 	const employeeID = req.params.employeeID;
 	if (!isManager(manager) && isEmployee(manager, employeeID))
 		return res.redirect(403, "/shifts"); //forbidden access
 	const employee = await Database.getEmployeeByEmpID(employeeID);
 	const shifts = employee.shifts;
-	const pastShifts = getPastShifts(employee).map(shift => shift.toObject());
-	let upcomingShifts = getUpcomingShifts(employee);
 	//create events for each upcoming shift for the (full)calendar
 	calendarOptions.events = createFullCalendarEventsFromShifts(shifts);
-	upcomingShifts = upcomingShifts.map(shift => shift.toObject());
-	res.render("shift/viewShifts", {layout: "managerLayout", calendarOptions, upcomingShifts, shifts, pastShifts, employee});
+	res.render("shift/viewShifts", {layout: "managerLayout", calendarOptions, employee});
+});
+
+router.get("/requestOff/:index", async (req, res) => {
+	let employee = parseEmployeeFromRequestCookie(req);
+	const index = req.params.index;
+	/** @type {Shift} */
+	const shift = employee.shifts[index];
+	shift.requestOff();
+	await Database.updateEmployee(employee.employeeID,Employee.EmployeeConverter.toFirestore(employee));
+	employee = await Database.getEmployeeByEmpID(employee.employeeID);
+	employee.shifts = employee.shifts.map(shift => shift.toFirestoreString());
+	res.cookie("Employee", employee);
+	res.redirect("/shifts");
 });
 
 
@@ -62,7 +69,7 @@ router.get("/delete/:shiftIndex", async (req, res) => {
 	const employee = await Database.getEmployeeByEmpID(employeeID);
 	employee.shifts.splice(req.params.shiftIndex, 1);
 	Database.updateEmployee(employee.employeeID,Employee.EmployeeConverter.toFirestore(employee));
-	res.redirect("/shifts/edit?employeeID=" + employeeID);
+	res.redirect(`/shifts/edit?employeeID=${employeeID}`);
 });
 
 router.get("/edit", async (req, res) => {
@@ -200,13 +207,15 @@ function isManager(employee) {
  */
 function createFullCalendarEventsFromShifts(shifts) {
 	const events = [];
-	for (const shift of shifts) {
+	for (let i = 0; i < shifts.length; i++) {
+		const shift = shifts[i];
 		/** @type {import('@fullcalendar/core').EventInput} */
 		const event = {
 			title: `${shift.getDuration().TotalHours}hrs - ${shift.status}`,
 			start: shift.scheduledStart,
 			end: shift.scheduledEnd,
 			editable: false,
+			id: i,
 		};
 		switch (shift.status) {
 		case "completed":
@@ -215,7 +224,7 @@ function createFullCalendarEventsFromShifts(shifts) {
 		case "canceled":
 			event.backgroundColor = "red";
 			break;
-		case "requestedOff":
+		case "requested off":
 			event.backgroundColor = "yellow";
 			break;
 		case "not started":
