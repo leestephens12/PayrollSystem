@@ -221,7 +221,7 @@ function createFullCalendarEventsFromShifts(shifts) {
 		case "completed":
 			event.color = "green";
 			break;
-		case "canceled":
+		case "cancelled":
 			event.backgroundColor = "red";
 			break;
 		case "requested off":
